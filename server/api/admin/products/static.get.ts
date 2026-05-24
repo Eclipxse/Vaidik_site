@@ -53,6 +53,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/AfGQfY4iZuE',
   },
   {
     slug: 'pc-visible-aimbot-internal',
@@ -180,14 +181,16 @@ const STATIC_PRODUCTS: StaticProduct[] = [
   {
     slug: 'pc-streamer-panel',
     name: 'PC Streamer Panel',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: 'Stream proof external panel — OBS/screen share safe with mobile control.',
     badge: 'Stream Safe',
-    images: ['/products/PC_STREAMER_PANEL/streamer_panel.png'],
+    images: [
+      '/products/PC_STREAMER_PANEL/streamer_panel.png',
+    ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹249',  stock: 25 },
-      { label: '10 Days', days: 10, price: '₹1,499',stock: 15 },
-      { label: '30 Days', days: 30, price: '₹3,499',stock: 7  },
+      { label: '1 Day', days: 1, price: '₹249', stock: 25 },
+      { label: '10 Days', days: 10, price: '₹1,499', stock: 15 },
+      { label: '30 Days', days: 30, price: '₹3,499', stock: 7 },
     ],
     features: [
       'Aimbot External',
@@ -206,6 +209,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/klHsMV_CTCY',
   },
   {
     slug: 'phone-panel',
@@ -234,6 +238,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'Root / Non-Root Both Device Working',
       'All Android Phone or Tablet Working',
     ],
+    youtube_url: 'https://youtu.be/9NAGuvTdKD8',
   },
   {
     slug: 'ios-panel',

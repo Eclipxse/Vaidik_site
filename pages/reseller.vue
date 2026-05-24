@@ -30,6 +30,7 @@
           :key="plan.id"
           class="plan-card"
           :class="{ 'plan-card--featured': plan.is_featured }"
+          @click="openDetail(plan)"
         >
           <div v-if="plan.is_featured" class="featured-label">Most Popular</div>
 
@@ -57,13 +58,23 @@
             {{ plan.stock_status === 'active' ? 'Available' : plan.stock_status === 'limited' ? 'Limited Stock' : 'Out of Stock' }}
           </div>
 
-          <button
-            class="btn-buy"
-            :disabled="plan.stock_status === 'out'"
-            @click="handleBuyNow(plan.name, 'Reseller')"
-          >
-            {{ plan.stock_status === 'out' ? 'Out of Stock' : 'Get Started →' }}
-          </button>
+          <!-- Side-by-side actions (View Details & Get Started) -->
+          <div class="plan-actions">
+            <NuxtLink
+              :to="`/product/${plan.id}`"
+              class="btn-details"
+              @click.stop
+            >
+              View Details
+            </NuxtLink>
+            <button
+              class="btn-buy"
+              :disabled="plan.stock_status === 'out'"
+              @click.stop="handleBuyNow(plan.name, 'Reseller')"
+            >
+              {{ plan.stock_status === 'out' ? 'Out of Stock' : 'Get Started →' }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -101,6 +112,7 @@
 definePageMeta({ layout: 'default' })
 useHead({ title: 'Reseller Plan — ASLIL GANG PANEL' })
 
+const router = useRouter()
 const { handleBuyNow, ownerNumber } = useWhatsApp()
 const client = useSupabaseClient()
 
@@ -133,6 +145,10 @@ const { data: resellerPlans, pending, error } = await useAsyncData(
     }>
   }
 )
+
+function openDetail(plan: any) {
+  router.push(`/product/${plan.id}`)
+}
 
 const steps = [
   { num: '01', title: 'Choose a Plan', desc: 'Pick the reseller tier that matches your goals and budget.' },
@@ -229,6 +245,7 @@ const steps = [
   padding: 2.5rem 2rem; border-radius: 20px;
   background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
   transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
 }
 .plan-card:hover {
   border-color: rgba(230,30,38,0.35); transform: translateY(-6px);
@@ -312,14 +329,67 @@ const steps = [
 .stock--out     { background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
 .stock--out .stock-dot     { background: #ef4444; }
 
-.btn-buy {
-  width: 100%; padding: 0.85rem; border-radius: 9999px; background: var(--red); color: #fff;
-  font-family: var(--font-body); font-size: 0.85rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em; border: none; cursor: pointer;
-  transition: all 0.25s ease; box-shadow: 0 4px 16px rgba(230,30,38,0.3); margin-top: auto;
+/* Plan Actions layout */
+.plan-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: auto;
 }
-.btn-buy:hover:not(:disabled) { background: #ff2a35; box-shadow: 0 6px 24px rgba(230,30,38,0.5); }
-.btn-buy:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-details {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.btn-details:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-buy {
+  flex: 1.25;
+  padding: 0.85rem;
+  border-radius: 9999px;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(230, 30, 38, 0.3);
+  box-sizing: border-box;
+}
+
+.btn-buy:hover:not(:disabled) {
+  background: #ff2a35;
+  box-shadow: 0 6px 24px rgba(230, 30, 38, 0.5);
+}
+
+.btn-buy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* How it works */
 .how-section { margin-bottom: 4rem; }

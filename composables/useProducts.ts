@@ -55,6 +55,7 @@ export const ALL_PRODUCTS: Product[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/AfGQfY4iZuE',
   },
 
   {
@@ -220,36 +221,27 @@ export const ALL_PRODUCTS: Product[] = [
   {
     slug: 'pc-streamer-panel',
     name: 'PC Streamer Panel',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: 'Stream proof external panel — OBS/screen share safe with mobile control.',
     badge: 'Stream Safe',
     images: [
       '/products/PC_STREAMER_PANEL/streamer_panel.png',
-      '/products/PC_STREAMER_PANEL/1.png',
-      '/products/PC_STREAMER_PANEL/2.webp',
-      '/products/PC_STREAMER_PANEL/3.webp',
-      '/products/PC_STREAMER_PANEL/4.webp',
-      '/products/PC_STREAMER_PANEL/5.webp',
-      '/products/PC_STREAMER_PANEL/6.webp',
-      '/products/PC_STREAMER_PANEL/7.webp',
     ],
     durations: [
-      { label: '1 Day',  days: 1,  price: '₹249',  stock: 25 },
-      { label: '10 Days',days: 10, price: '₹1,499',stock: 15 },
-      { label: '30 Days',days: 30, price: '₹3,499',stock: 7  },
+      { label: '1 Day', days: 1, price: '₹249', stock: 25 },
+      { label: '10 Days', days: 10, price: '₹1,499', stock: 15 },
+      { label: '30 Days', days: 30, price: '₹3,499', stock: 7 },
     ],
     features: [
       'Aimbot External',
       'AI Aimbot (Female Fixed)',
-      'All Functions In-Game ON/OFF in 1 Second (Without Lag)',
+      'All Functions In-Game ON/OFF in 1 Second',
       'Sniper Scope — Left Fire Button',
       'Sniper Quick Switch',
       'ESP Features: Line, Skeleton, Info',
       'Streamer Mode Enabled',
       'Mobile Control (Android & iPhone Supported)',
       'Website Control Also',
-      'Compatible with PIE64, MSI & BlueStacks',
-      'Easy to Use & Smooth Gameplay',
     ],
     support: [
       'Windows 10 / 11 Both Working',
@@ -257,6 +249,7 @@ export const ALL_PRODUCTS: Product[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/klHsMV_CTCY',
   },
 
   // ─── Mobile ────────────────────────────────────────────────
@@ -287,6 +280,7 @@ export const ALL_PRODUCTS: Product[] = [
       'Root / Non-Root Both Device Working',
       'All Android Phone or Tablet Working',
     ],
+    youtube_url: 'https://youtu.be/9NAGuvTdKD8',
   },
 
   // ─── iOS ───────────────────────────────────────────────────

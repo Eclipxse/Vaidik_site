@@ -122,6 +122,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Invalid product payload' })
   }
 
+  // Check if we are running in a serverless environment (Netlify/Vercel)
+  const isServerless = process.env.NETLIFY || process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || process.env.NODE_ENV === 'production'
+  if (isServerless) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Saving changes directly on the live website is disabled due to Netlify\'s read-only serverless architecture. To make permanent edits, run your site locally in development mode (npm run dev) where the files are fully writable, then stage and push your changes to GitHub to redeploy automatically!'
+    })
+  }
+
   const composablePath = join(process.cwd(), 'composables', 'useProducts.ts')
   const getApiPath = join(process.cwd(), 'server', 'api', 'admin', 'products', 'static.get.ts')
 

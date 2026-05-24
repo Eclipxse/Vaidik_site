@@ -12,6 +12,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
+  // Check if we are running in a serverless environment (Netlify/Vercel)
+  const isServerless = process.env.NETLIFY || process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || process.env.NODE_ENV === 'production'
+  if (isServerless) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Uploading images directly on the live website is disabled due to Netlify\'s read-only serverless architecture. Please perform all asset configurations locally in development mode (npm run dev) and push them to GitHub.'
+    })
+  }
+
   const form = await readMultipartFormData(event)
   if (!form || form.length === 0) {
     throw createError({ statusCode: 400, statusMessage: 'No file received' })

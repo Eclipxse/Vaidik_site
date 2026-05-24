@@ -305,7 +305,8 @@ async function handleFileUpload(e: Event) {
     imagesList.value.push({ id: `img-${Date.now()}-${Math.random()}`, value: res.path })
     showToast('Image uploaded successfully!')
   } catch (err: any) {
-    showToast(err.statusMessage || 'Failed to upload image', 'error')
+    const errorMsg = err.data?.statusMessage || err.statusMessage || err.message || 'Failed to upload image'
+    showToast(errorMsg, 'error')
   } finally {
     target.value = ''
   }
@@ -331,7 +332,8 @@ async function saveProduct() {
     original = JSON.parse(JSON.stringify(form))
     showToast('Product saved and site updated successfully!')
   } catch (err: any) {
-    showToast(err.statusMessage || 'Failed to save product', 'error')
+    const errorMsg = err.data?.statusMessage || err.statusMessage || err.message || 'Failed to save product'
+    showToast(errorMsg, 'error')
   } finally {
     saving.value = false
   }

@@ -164,7 +164,8 @@ async function doStaticDelete() {
     staticProducts.value = staticProducts.value.filter(p => p.slug !== deleteStaticTarget.value!.slug)
     deleteStaticTarget.value = null
   } catch (err: any) {
-    alert('Failed to delete static product: ' + (err.message || err))
+    const errorMsg = err.data?.statusMessage || err.statusMessage || err.message || 'Failed to delete static product'
+    alert(errorMsg)
   } finally {
     deletingStatic.value = false
   }

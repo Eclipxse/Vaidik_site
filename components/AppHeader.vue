@@ -261,9 +261,18 @@ onMounted(() => {
   nextTick(() => resetPill())
 })
 
+watch(mobileOpen, (open) => {
+  if (open) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+})
+
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('mousemove', onMouseMove)
+  document.body.style.overflow = ''
 })
 </script>
 
@@ -685,8 +694,11 @@ onUnmounted(() => {
   z-index: 90;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 3rem;
+  justify-content: flex-start; /* Flow from top so overflowing menu is scrollable */
+  overflow-y: auto; /* Allow native vertical scrolling for small screens */
+  -webkit-overflow-scrolling: touch; /* Inertial touch scroll in iOS Safari */
+  overscroll-behavior: contain; /* Prevent body scrolling chaining */
+  padding-bottom: 4rem;
 }
 
 @media (min-width: 1024px) { .mobile-overlay { display: none !important; } }
@@ -694,15 +706,15 @@ onUnmounted(() => {
 .mobile-overlay-bg {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.96);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  background: rgba(5, 5, 5, 0.98); /* Almost solid black for high performance */
+  backdrop-filter: blur(8px); /* Efficient blur radius to avoid WebKit lag */
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .mobile-nav {
   position: relative;
   z-index: 1;
-  padding: 5rem 2rem 2rem;
+  padding: 6rem 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -782,10 +794,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin: 2rem 2rem 0;
+  margin: 1.5rem 2rem 0;
   padding: 1rem 2rem;
   border-radius: 14px;
-  background: var(--red);
+  background: #25D366; /* Solid WhatsApp Green brand color */
   color: #fff;
   font-family: var(--font-body);
   font-size: 0.9rem;
@@ -793,18 +805,20 @@ onUnmounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   text-decoration: none;
-  box-shadow: 0 8px 30px rgba(230,30,38,0.4);
+  box-shadow: 0 8px 30px rgba(37,211,102,0.4);
   animation: mobile-link-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
   animation-delay: 0.5s;
   transform: translateX(-20px);
   opacity: 0;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.2s;
 }
 
 .mobile-wa-btn:hover {
+  background: #20ba56;
   transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(230,30,38,0.6);
+  box-shadow: 0 14px 40px rgba(37,211,102,0.6);
 }
+
 
 /* ── Mobile overlay transition ── */
 .mobile-overlay-enter-active { transition: opacity 0.35s ease; }

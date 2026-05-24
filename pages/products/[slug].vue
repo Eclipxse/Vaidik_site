@@ -277,6 +277,10 @@ function doBuy() {
     grid-template-columns: 1fr 1fr;
     align-items: start;
   }
+  .gallery-col {
+    position: sticky;
+    top: 7rem;
+  }
 }
 
 /* ── Gallery ── */
@@ -284,8 +288,6 @@ function doBuy() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  position: sticky;
-  top: 7rem;
 }
 
 .main-image-wrap {

@@ -58,16 +58,16 @@ const STATIC_PRODUCTS: StaticProduct[] = [
   {
     slug: 'pc-visible-aimbot-internal',
     name: 'Visible + Internal Aimbot',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: 'Best all-rounder panel — combines visible hack with rage internal aimbot.',
     badge: 'All-Rounder',
     images: [
       '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/VISIBLE_AIMBOT_INTERNAL.png',
     ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹149',  stock: 35 },
-      { label: '10 Days', days: 10, price: '₹999',  stock: 20 },
-      { label: '30 Days', days: 30, price: '₹2,499',stock: 10 },
+      { label: '1 Day', days: 1, price: '₹149', stock: 35 },
+      { label: '10 Days', days: 10, price: '₹999', stock: 20 },
+      { label: '30 Days', days: 30, price: '₹2,499', stock: 10 },
     ],
     features: [
       'Aimbot AI (Female Fix)',
@@ -84,18 +84,21 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/WH77Bkj9wOM',
   },
   {
     slug: 'pc-uid-bypass',
     name: 'PC UID Bypass',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: 'Ultimate bypass — remove PC logo, play in tournaments, 50 players in BR rank.',
     badge: 'Anti-Ban',
-    images: ['/products/PC_UID_BYPASS/UID_BYPASS.png'],
+    images: [
+      '/products/PC_UID_BYPASS/UID_BYPASS.png',
+    ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹299',  stock: 20 },
-      { label: '10 Days', days: 10, price: '₹1,999',stock: 12 },
-      { label: '30 Days', days: 30, price: '₹4,999',stock: 5  },
+      { label: '1 Day', days: 1, price: '₹299', stock: 20 },
+      { label: '10 Days', days: 10, price: '₹1,999', stock: 12 },
+      { label: '30 Days', days: 30, price: '₹4,999', stock: 5 },
     ],
     features: [
       'PC Logo Remove',
@@ -109,18 +112,21 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/2NCErqBs8nI',
   },
   {
     slug: 'pc-aimkill',
     name: 'PC Aimkill Panel',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: 'Fastest aimkill panel — tele-kill, fly hack, joystick control and more.',
     badge: 'Rage Mode',
-    images: ['/products/PC_PANEL_AIMKILL/AIMKILL.png'],
+    images: [
+      '/products/PC_PANEL_AIMKILL/AIMKILL.png',
+    ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹149',  stock: 38 },
-      { label: '10 Days', days: 10, price: '₹999',  stock: 22 },
-      { label: '30 Days', days: 30, price: '₹2,499',stock: 11 },
+      { label: '1 Day', days: 1, price: '₹149', stock: 38 },
+      { label: '10 Days', days: 10, price: '₹999', stock: 22 },
+      { label: '30 Days', days: 30, price: '₹2,499', stock: 11 },
     ],
     features: [
       'Aimkill (Fastest)',
@@ -146,18 +152,21 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/Qv25AeNeIQs',
   },
   {
     slug: 'pc-silent-aim',
     name: 'PC Silent Aim Max',
-    category: 'PC',
+    category: 'PC' as const,
     tagline: '360° silent aim, pull magnet, camera right and all advanced functions.',
     badge: 'Undetected',
-    images: ['/products/PC_SILENT_AIM/aim_silent.png'],
+    images: [
+      '/products/PC_SILENT_AIM/aim_silent.png',
+    ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹199',  stock: 30 },
-      { label: '10 Days', days: 10, price: '₹1,299',stock: 18 },
-      { label: '30 Days', days: 30, price: '₹2,999',stock: 8  },
+      { label: '1 Day', days: 1, price: '₹199', stock: 30 },
+      { label: '10 Days', days: 10, price: '₹1,299', stock: 18 },
+      { label: '30 Days', days: 30, price: '₹2,999', stock: 8 },
     ],
     features: [
       'Aim Silent (360°)',
@@ -177,6 +186,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'PIE 64-Bit Working',
       'Easy to Set Up',
     ],
+    youtube_url: 'https://youtu.be/gj1hSDPDDtU',
   },
   {
     slug: 'pc-streamer-panel',
@@ -243,14 +253,16 @@ const STATIC_PRODUCTS: StaticProduct[] = [
   {
     slug: 'ios-panel',
     name: 'iOS Panel',
-    category: 'iOS',
+    category: 'iOS' as const,
     tagline: 'iPhone & iPad panel — no jailbreak, 10-min setup, all servers safe.',
     badge: 'No Jailbreak',
-    images: ['/products/IOS_PANEL/IOSPANEL.png'],
+    images: [
+      '/products/IOS_PANEL/IOSPANEL.png',
+    ],
     durations: [
-      { label: '1 Day',   days: 1,  price: '₹149',  stock: 40 },
-      { label: '10 Days', days: 10, price: '₹799',  stock: 25 },
-      { label: '30 Days', days: 30, price: '₹1,999',stock: 12 },
+      { label: '1 Day', days: 1, price: '₹149', stock: 40 },
+      { label: '10 Days', days: 10, price: '₹799', stock: 25 },
+      { label: '30 Days', days: 30, price: '₹1,999', stock: 12 },
     ],
     features: [
       'Aimbot Module',
@@ -268,6 +280,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       'Fastest Support — Always Ready to Help',
       'All Servers Safe — Play Tension-Free',
     ],
+    youtube_url: 'https://youtu.be/AslK454w5d8',
   },
 ]
 

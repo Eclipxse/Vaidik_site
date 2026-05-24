@@ -28,52 +28,48 @@
         <div
           v-for="plan in resellerPlans"
           :key="plan.id"
-          class="plan-card"
-          :class="{ 'plan-card--featured': plan.is_featured }"
+          class="product-card"
           @click="openDetail(plan)"
         >
-          <div v-if="plan.is_featured" class="featured-label">Most Popular</div>
-
-          <!-- Thumbnail if available -->
-          <div v-if="plan.thumbnail_url" class="plan-thumb-wrap">
-            <img :src="plan.thumbnail_url" :alt="plan.name" class="plan-thumb" loading="lazy" />
+          <!-- Image -->
+          <div class="card-gallery">
+            <img
+              :src="plan.thumbnail_url || '/products/uploads/1779623174189_content.png'"
+              :alt="plan.name"
+              class="card-img"
+              loading="lazy"
+            />
+            <span class="card-badge" v-if="plan.is_featured">Most Popular</span>
+            <span class="card-badge" v-else>Reseller</span>
+            <div class="card-img-glow" aria-hidden="true" />
           </div>
 
-          <h2 class="plan-name">{{ plan.name }}</h2>
-          <p class="plan-desc">{{ plan.description }}</p>
+          <!-- Body -->
+          <div class="card-body">
+            <span class="card-cat">Reseller Plan</span>
+            <h2 class="card-name">{{ plan.name }}</h2>
+            <p class="card-desc">{{ plan.description }}</p>
 
-          <div class="plan-price">
-            <span class="price-main">₹{{ plan.price }}</span>
-            <span class="price-period" v-if="plan.duration">/{{ plan.duration }}</span>
-          </div>
+            <!-- Feature pills — top 4 only -->
+            <ul class="card-feats" v-if="plan.features && plan.features.length">
+              <li v-for="f in plan.features.slice(0, 4)" :key="f">
+                <span class="feat-dot" aria-hidden="true" />{{ f }}
+              </li>
+            </ul>
 
-          <ul v-if="plan.features && plan.features.length" class="plan-feats">
-            <li v-for="f in plan.features" :key="f">
-              <span class="check">✓</span> {{ f }}
-            </li>
-          </ul>
-
-          <div class="plan-stock" :class="`stock--${plan.stock_status}`">
-            <span class="stock-dot" />
-            {{ plan.stock_status === 'active' ? 'Available' : plan.stock_status === 'limited' ? 'Limited Stock' : 'Out of Stock' }}
-          </div>
-
-          <!-- Side-by-side actions (View Details & Get Started) -->
-          <div class="plan-actions">
-            <NuxtLink
-              :to="`/product/${plan.id}`"
-              class="btn-details"
-              @click.stop
-            >
-              View Details
-            </NuxtLink>
-            <button
-              class="btn-buy"
-              :disabled="plan.stock_status === 'out'"
-              @click.stop="handleBuyNow(plan.name, 'Reseller')"
-            >
-              {{ plan.stock_status === 'out' ? 'Out of Stock' : 'Get Started →' }}
-            </button>
+            <!-- Price + CTA -->
+            <div class="card-footer">
+              <div class="price-wrap">
+                <span class="price">₹{{ plan.price }}</span>
+                <span class="price-note" v-if="plan.duration">/ {{ plan.duration }}</span>
+              </div>
+              <span class="btn-buy-details">
+                View Details
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -239,156 +235,216 @@ const steps = [
   margin: 0;
 }
 
-/* Plan card */
-.plan-card {
-  position: relative; display: flex; flex-direction: column; gap: 1.25rem;
-  padding: 2.5rem 2rem; border-radius: 20px;
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-  transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-  cursor: pointer;
-}
-.plan-card:hover {
-  border-color: rgba(230,30,38,0.35); transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-.plan-card--featured {
-  border-color: rgba(230,30,38,0.3);
-  background: rgba(230,30,38,0.06);
-  box-shadow: 0 0 0 1px rgba(230,30,38,0.1);
-}
-
-.featured-label {
-  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-  padding: 0.2rem 1rem; border-radius: 9999px;
-  background: var(--red); color: #fff;
-  font-family: var(--font-body); font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
-}
-
-.plan-thumb-wrap {
-  width: 100%;
-  height: 160px;
-  border-radius: 12px;
+/* ── Card ── */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
   overflow: hidden;
-  background: rgba(0,0,0,0.3);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+  transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  text-align: left;
 }
 
-.plan-thumb {
+.product-card:hover {
+  border-color: rgba(230,30,38,0.5);
+  transform: translateY(-8px);
+  box-shadow:
+    0 28px 70px rgba(0,0,0,0.7),
+    0 0 0 1px rgba(230,30,38,0.15),
+    0 0 60px rgba(230,30,38,0.1);
+}
+
+/* ── Gallery ── */
+.card-gallery {
+  position: relative;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
+  background: #080808;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  max-height: 300px;
 }
 
-.plan-card:hover .plan-thumb { transform: scale(1.04); }
-
-.plan-name {
-  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
-  color: #fff; margin: 0; text-transform: uppercase;
+.card-img {
+  width: 100%;
+  height: 280px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.5s ease, filter 0.5s ease;
+  background: #080808;
 }
 
-.plan-desc { font-family: var(--font-body); font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin: 0; }
-
-.plan-price {
-  display: flex; align-items: baseline; gap: 0.3rem;
-  padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.06);
+.product-card:hover .card-img {
+  transform: scale(1.04);
+  filter: brightness(1.08);
 }
-.price-main { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: #fff; }
-.price-period { font-family: var(--font-body); font-size: 0.8rem; color: var(--gray); }
 
-.plan-feats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-.plan-feats li { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-body); font-size: 0.85rem; color: rgba(255,255,255,0.7); }
-.check { color: var(--red); font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+/* Red glow sweep on hover */
+.card-img-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 120%, rgba(230,30,38,0.18) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
 
-/* Stock badge */
-.plan-stock {
-  display: inline-flex;
+.product-card:hover .card-img-glow { opacity: 1; }
+
+.card-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.28rem 0.8rem;
+  border-radius: 9999px;
+  background: rgba(230,30,38,0.92);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 12px rgba(230,30,38,0.5);
+}
+
+/* ── Body ── */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.4rem 1.5rem 1.5rem;
+  flex: 1;
+}
+
+.card-cat {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.card-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.card-desc {
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  color: var(--gray);
+  line-height: 1.55;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Feature pills */
+.card-feats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.card-feats li {
+  display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.3rem 0.75rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 9999px;
-  width: fit-content;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: var(--font-body);
+  font-size: 0.67rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.stock-dot {
-  width: 6px; height: 6px;
+.product-card:hover .card-feats li {
+  background: rgba(230,30,38,0.07);
+  border-color: rgba(230,30,38,0.2);
+}
+
+.feat-dot {
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
+  background: var(--red);
   flex-shrink: 0;
 }
 
-.stock--active  { background: rgba(34,197,94,0.08); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
-.stock--active .stock-dot  { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8); }
-.stock--limited { background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
-.stock--limited .stock-dot { background: #f59e0b; }
-.stock--out     { background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
-.stock--out .stock-dot     { background: #ef4444; }
-
-/* Plan Actions layout */
-.plan-actions {
+/* Footer */
+.card-footer {
   display: flex;
-  gap: 0.75rem;
-  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
   margin-top: auto;
 }
 
-.btn-details {
-  flex: 1;
+.price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.price-note {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--gray);
+}
+
+.btn-buy-details {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.85rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-.btn-details:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.btn-buy {
-  flex: 1.25;
-  padding: 0.85rem;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 9999px;
   background: var(--red);
   color: #fff;
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: none;
-  cursor: pointer;
+  letter-spacing: 0.06em;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(230, 30, 38, 0.3);
-  box-sizing: border-box;
+  box-shadow: 0 4px 18px rgba(230,30,38,0.35);
+  cursor: pointer;
+  border: none;
 }
 
-.btn-buy:hover:not(:disabled) {
+.product-card:hover .btn-buy-details {
   background: #ff2a35;
-  box-shadow: 0 6px 24px rgba(230, 30, 38, 0.5);
-}
-
-.btn-buy:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  gap: 0.7rem;
+  box-shadow: 0 6px 28px rgba(230,30,38,0.55);
 }
 
 /* How it works */

@@ -41,6 +41,12 @@
             <span class="bullet green-dot"></span>
             <strong>100% LEGIT &amp; UNDETECTED</strong>
           </li>
+          <li style="gap: 8px;">
+            <svg class="bullet-tick-svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px #22c55e); flex-shrink: 0; margin-left: -2px; margin-right: 2px;">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <strong>ALL SERVER SAFE &amp; 100% TRUSTED SELLER</strong>
+          </li>
         </ul>
       </div>
     </div>

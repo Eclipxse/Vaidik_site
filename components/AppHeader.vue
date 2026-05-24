@@ -158,7 +158,7 @@ const { ownerNumber } = useWhatsApp()
 // ── State ──────────────────────────────────────────
 const scrolled       = ref(false)
 const navHidden      = ref(false)
-const mobileOpen     = ref(false)
+const mobileOpen     = useState('mobileOpen', () => false)
 const annVisible     = ref(true)
 const scrollProgress = ref(0)
 

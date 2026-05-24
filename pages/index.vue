@@ -14,7 +14,7 @@
     </div>
 
     <!-- ── CATEGORIES ──────────────────────────────── -->
-    <section class="sect" aria-labelledby="cats-heading">
+    <section class="sect" id="arsenal" aria-labelledby="cats-heading">
       <div class="sect-inner">
         <div class="sect-head reveal-up">
           <span class="sect-eyebrow">What We Offer</span>

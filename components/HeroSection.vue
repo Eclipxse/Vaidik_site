@@ -95,7 +95,7 @@
 
     <!-- CTA Buttons -->
     <div class="hero-actions" ref="actionsEl">
-      <button class="btn-red btn-glow" @click="handleBuyNow('Premium Services', 'Hero')">
+      <button class="btn-red btn-glow" @click="handleBrowseCollection">
         <span>Browse Collection</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
@@ -127,6 +127,23 @@
 
 <script setup lang="ts">
 const { handleBuyNow } = useWhatsApp()
+const mobileOpen = useState('mobileOpen', () => false)
+
+function handleBrowseCollection() {
+  if (window.innerWidth >= 992) {
+    const el = document.getElementById('arsenal')
+    if (el) {
+      const lenis = (useNuxtApp() as any).$lenis
+      if (lenis) {
+        lenis.scrollTo(el)
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  } else {
+    mobileOpen.value = true
+  }
+}
 
 const canvasEl    = ref<HTMLCanvasElement | null>(null)
 const badgeEl     = ref<HTMLElement | null>(null)

@@ -6,10 +6,6 @@
         <h1 class="page-title">Operations Console</h1>
         <p class="page-sub">Overview of your gaming store catalog assets</p>
       </div>
-      <NuxtLink :to="`/${adminPath}/products/new`" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add New Product
-      </NuxtLink>
     </div>
 
     <!-- Stats Bento Grid -->
@@ -134,22 +130,21 @@
           </div>
           
           <div class="table-rows-container">
-            <div v-for="p in products" :key="p.id" class="table-row">
+            <div v-for="p in products" :key="p.slug" class="table-row">
               <span class="row-name">
                 {{ p.name }}
-                <span v-if="p.is_featured" class="badge-featured-star">⭐</span>
+                <span v-if="isFeatured(p)" class="badge-featured-star">⭐</span>
               </span>
               <span class="row-cat">
                 <span class="cat-pill">{{ p.category }}</span>
               </span>
               <span class="row-status">
-                <span :class="statusClass(p.stock_status)">
-                  {{ p.stock_status }}
+                <span :class="statusClass(getStockStatus(p))">
+                  {{ getStockStatus(p) }}
                 </span>
-                <span v-if="!p.is_published" class="badge-draft">draft</span>
               </span>
               <span class="row-actions">
-                <NuxtLink :to="`/${adminPath}/products/${p.id}`" class="action-link">
+                <NuxtLink :to="`/${adminPath}/products/edit-static/${p.slug}`" class="action-link">
                   ✏️ Edit
                 </NuxtLink>
               </span>
@@ -176,19 +171,33 @@ const products = ref<Record<string, any>[]>([])
 interface CategoryStat { name: string; count: number }
 const categories = ref<CategoryStat[]>([])
 
+function getStockStatus(p: any) {
+  if (!p.durations || p.durations.every((d: any) => d.stock === 0)) return 'out'
+  if (p.durations.some((d: any) => d.stock > 0 && d.stock <= 15)) return 'limited'
+  return 'active'
+}
+
+function isFeatured(p: any) {
+  return p.badge && (
+    p.badge.toLowerCase().includes('best') || 
+    p.badge.toLowerCase().includes('featured') || 
+    p.badge.toLowerCase().includes('round')
+  )
+}
+
 const stats = computed(() => {
   const total = products.value.length
-  const published = products.value.filter(p => p.is_published).length
-  const limited = products.value.filter(p => p.stock_status === 'limited').length
-  const out = products.value.filter(p => p.stock_status === 'out').length
-  const featured = products.value.filter(p => p.is_featured).length
-  const drafts = products.value.filter(p => !p.is_published).length
+  const published = products.value.length // all static site products are live
+  const limited = products.value.filter(p => getStockStatus(p) === 'limited').length
+  const out = products.value.filter(p => getStockStatus(p) === 'out').length
+  const featured = products.value.filter(p => isFeatured(p)).length
+  const drafts = 0
   return { total, published, limited, out, featured, drafts }
 })
 
 onMounted(async () => {
   try {
-    const data = await $fetch<Record<string, any>[]>('/api/admin/products')
+    const data = await $fetch<Record<string, any>[]>('/api/admin/products/static')
     products.value = data
 
     // Build category stats
@@ -200,6 +209,8 @@ onMounted(async () => {
     categories.value = Object.entries(catMap)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
+  } catch (err) {
+    console.error('Failed to load dashboard stats', err)
   } finally {
     loading.value = false
   }
@@ -239,39 +250,6 @@ function statusClass(status: string) {
   color: #64748b;
   margin: 0;
   font-weight: 500;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
-  background: linear-gradient(135deg, #e61e26 0%, #ff425f 100%);
-  border-radius: 12px;
-  color: white;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  text-decoration: none;
-  box-shadow: 0 6px 20px rgba(230, 30, 38, 0.35);
-  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  white-space: nowrap;
-  border: none;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(230, 30, 38, 0.5);
-}
-
-.btn-primary svg {
-  transition: transform 0.25s ease;
-}
-
-.btn-primary:hover svg {
-  transform: rotate(90deg);
 }
 
 /* ── Stats Bento Grid ── */
@@ -601,16 +579,6 @@ function statusClass(status: string) {
   background: rgba(239, 68, 68, 0.08);
   border-color: rgba(239, 68, 68, 0.2);
   color: #ef4444;
-}
-
-.badge-draft {
-  background: rgba(100, 116, 139, 0.08);
-  border-color: rgba(100, 116, 139, 0.2);
-  color: #94a3b8;
-  font-size: 9px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  text-transform: uppercase;
 }
 
 .action-link {

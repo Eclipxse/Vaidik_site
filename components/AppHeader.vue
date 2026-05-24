@@ -704,7 +704,7 @@ onUnmounted(() => {
 @media (min-width: 1024px) { .mobile-overlay { display: none !important; } }
 
 .mobile-overlay-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(5, 5, 5, 0.98); /* Almost solid black for high performance */
   backdrop-filter: blur(8px); /* Efficient blur radius to avoid WebKit lag */

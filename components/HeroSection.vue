@@ -458,7 +458,7 @@ onMounted(() => {
 .hero-char {
   display: inline-block;
   opacity: 0;
-  font-size: clamp(3.5rem, 12vw, 9rem);
+  font-size: clamp(2rem, 10vw, 9rem);
   transition: filter 0.3s ease;
 }
 
@@ -648,8 +648,6 @@ onMounted(() => {
   50% { transform: translateY(-10px); }
 }
 
-
-
 .shield-flag-wrap {
   width: 100%;
   height: 140px;
@@ -796,7 +794,7 @@ onMounted(() => {
   100% { background-position: -200% 0; }
 }
 
-/* Make it responsive - staying aligned on the left, not centered! */
+/* Make it responsive - staying aligned on the left on desktop, centered & reordered on mobile! */
 @media (max-width: 1200px) {
   .patriotic-side-shield {
     left: 2vw !important;
@@ -814,17 +812,67 @@ onMounted(() => {
 }
 
 @media (max-width: 992px) {
+  /* Dynamic Flex Reordering to preserve premium fold layout on mobile */
+  .hero-badge { order: 1 !important; }
+  .hero-headline { order: 2 !important; }
+  .hero-sub { order: 3 !important; }
+  .hero-desc { order: 4 !important; }
+  .hero-actions { order: 5 !important; }
+  .patriotic-side-shield { order: 6 !important; }
+  .stats-bar { order: 7 !important; }
+  .scroll-hint { order: 8 !important; }
+
+  .hero {
+    padding: 8rem 1.5rem 6rem !important; /* More balanced padding on mobile */
+  }
+
   .patriotic-side-shield {
     position: relative !important;
     left: auto !important;
     top: auto !important;
     transform: none !important;
-    margin: 28px 0 0 24px !important;
-    width: calc(100% - 48px) !important;
+    margin: 2.5rem auto 1.5rem !important; /* Centered with vertical breathing room */
+    width: 100% !important;
     max-width: 320px !important;
-    align-self: flex-start !important; /* Keeps it left-aligned inside centered flex! */
-    opacity: 1 !important; /* Force visible on mobile */
-    animation: none !important;
+    align-self: center !important; /* Center horizontally in vertical stack */
+    opacity: 1 !important;
+    animation: float-badge 6s ease-in-out infinite !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 6rem 1rem 4rem !important;
+  }
+  .hero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.8rem !important;
+  }
+  .hero-actions > * {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .patriotic-side-shield {
+    padding: 16px !important;
+    max-width: 290px !important;
+    margin: 2rem auto 1rem !important;
+  }
+  .shield-flag-wrap {
+    height: 100px !important;
+  }
+  .shield-main-title {
+    font-size: 20px !important;
+  }
+  .shield-points li {
+    font-size: 10.5px !important;
+  }
+  .stats-bar {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+  }
+  .stat-item {
+    padding: 0.5rem 1rem !important;
   }
 }
 </style>

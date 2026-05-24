@@ -1,0 +1,336 @@
+// composables/useProducts.ts
+// Central product data store — all 8 products with full feature lists
+
+export interface ProductDuration {
+  label: string
+  days: number
+  price: string
+  stock: number
+}
+
+export interface Product {
+  slug: string
+  name: string
+  category: 'PC' | 'Mobile' | 'iOS'
+  tagline: string
+  badge: string
+  images: string[]
+  durations: ProductDuration[]
+  features: string[]
+  support: string[]
+}
+
+export const ALL_PRODUCTS: Product[] = [
+  // ─── PC ────────────────────────────────────────────────────
+  {
+    slug: 'pc-external-panel',
+    name: 'PC External Panel',
+    category: 'PC' as const,
+    tagline: 'The most trusted external cheat for Free Fire PC. 5-type aimbot with AI targeting.',
+    badge: 'BEST PANEL',
+    images: [
+      '/products/PC_EXTERNAL PANEL/External.png',
+      '/products/PC_EXTERNAL PANEL/1.png',
+      '/products/PC_EXTERNAL PANEL/2.webp',
+    ],
+    durations: [
+      { label: '1 Day', days: 1, price: '₹99', stock: 42 },
+      { label: '10 Days', days: 10, price: '₹799', stock: 28 },
+      { label: '30 Days', days: 30, price: '₹1,999', stock: 15 },
+    ],
+    features: [
+      'External Aimbot — 5 Types',
+      'Aimbot AI',
+      'Sniper Scope',
+      'Sniper Fast Switch',
+      'ESP Location',
+      'Female Fix Aimbot',
+      '0% Lag on Applying Function',
+      'Streamer Mode',
+      'And More Functions',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  {
+    slug: 'pc-visible-aimbot-internal',
+    name: 'Visible + Internal Aimbot',
+    category: 'PC',
+    tagline: 'Best all-rounder panel — combines visible hack with rage internal aimbot.',
+    badge: 'All-Rounder',
+    images: [
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/VISIBLE_AIMBOT_INTERNAL.png',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/1.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/2.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/3.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/4.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/5.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/6.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/7.webp',
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/8.webp',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹149',  stock: 35 },
+      { label: '10 Days',days: 10, price: '₹999',  stock: 20 },
+      { label: '30 Days',days: 30, price: '₹2,499',stock: 10 },
+    ],
+    features: [
+      'Aimbot AI (Female Fix)',
+      'Internal Aimbot (Rage)',
+      'Ignore Knock',
+      'ESP Location',
+      '0% Lag on Applying Function',
+      'Streamer Mode (Hide on Screen Share)',
+      'Best All-Rounder Panel',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  {
+    slug: 'pc-uid-bypass',
+    name: 'PC UID Bypass',
+    category: 'PC',
+    tagline: 'Ultimate bypass — remove PC logo, play in tournaments, 50 players in BR rank.',
+    badge: 'Anti-Ban',
+    images: [
+      '/products/PC_UID_BYPASS/UID_BYPASS.png',
+      '/products/PC_UID_BYPASS/1.webp',
+      '/products/PC_UID_BYPASS/2.webp',
+      '/products/PC_UID_BYPASS/3.webp',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹299',  stock: 20 },
+      { label: '10 Days',days: 10, price: '₹1,999',stock: 12 },
+      { label: '30 Days',days: 30, price: '₹4,999',stock: 5  },
+    ],
+    features: [
+      'PC Logo Remove',
+      '50 Players in BR Rank',
+      'No Hacker in Game (CS / BR Both)',
+      'Play as Phone Player in Tournament',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  {
+    slug: 'pc-aimkill',
+    name: 'PC Aimkill Panel',
+    category: 'PC',
+    tagline: 'Fastest aimkill panel — tele-kill, fly hack, joystick control and more.',
+    badge: 'Rage Mode',
+    images: [
+      '/products/PC_PANEL_AIMKILL/AIMKILL.png',
+      '/products/PC_PANEL_AIMKILL/image.png',
+      '/products/PC_PANEL_AIMKILL/image.webp',
+      '/products/PC_PANEL_AIMKILL/image2.png',
+      '/products/PC_PANEL_AIMKILL/image3.png',
+      '/products/PC_PANEL_AIMKILL/image4.png',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹149',  stock: 38 },
+      { label: '10 Days',days: 10, price: '₹999',  stock: 22 },
+      { label: '30 Days',days: 30, price: '₹2,499',stock: 11 },
+    ],
+    features: [
+      'Aimkill (Fastest)',
+      'Aimkill Down',
+      'Aim FOV 1000',
+      'Up Player',
+      'Tele-Kill 10M',
+      'Teleport Mark',
+      'Auto Revive',
+      'Auto Fire',
+      'Fly Hack',
+      'Snap Fly',
+      'Joystick / Shifter',
+      'Fast Fire',
+      'Keybind System',
+      'ESP Location',
+      'BR / CS Working',
+      'Non-Root',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  {
+    slug: 'pc-silent-aim',
+    name: 'PC Silent Aim Max',
+    category: 'PC',
+    tagline: '360° silent aim, pull magnet, camera right and all advanced functions.',
+    badge: 'Undetected',
+    images: [
+      '/products/PC_SILENT_AIM/aim_silent.png',
+      '/products/PC_SILENT_AIM/1.webp',
+      '/products/PC_SILENT_AIM/2.webp',
+      '/products/PC_SILENT_AIM/3.webp',
+      '/products/PC_SILENT_AIM/4.webp',
+      '/products/PC_SILENT_AIM/5.webp',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹199',  stock: 30 },
+      { label: '10 Days',days: 10, price: '₹1,299',stock: 18 },
+      { label: '30 Days',days: 30, price: '₹2,999',stock: 8  },
+    ],
+    features: [
+      'Aim Silent (360°)',
+      'Aimbot Visible (AI / Rage)',
+      'Pull Magnet',
+      'Fly Hack',
+      'Fast Fire',
+      'Teleport',
+      'Teleport Mark',
+      'No Recoil',
+      'Lock Target',
+      'Glitch Fire',
+      'Camera Right',
+      'Aim FOV 999',
+      'Ignore Knock',
+      'ESP Location',
+      'Hot Key Binding',
+      'Streamer Mode',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  {
+    slug: 'pc-streamer-panel',
+    name: 'PC Streamer Panel',
+    category: 'PC',
+    tagline: 'Stream proof external panel — OBS/screen share safe with mobile control.',
+    badge: 'Stream Safe',
+    images: [
+      '/products/PC_STREAMER_PANEL/streamer_panel.png',
+      '/products/PC_STREAMER_PANEL/1.png',
+      '/products/PC_STREAMER_PANEL/2.webp',
+      '/products/PC_STREAMER_PANEL/3.webp',
+      '/products/PC_STREAMER_PANEL/4.webp',
+      '/products/PC_STREAMER_PANEL/5.webp',
+      '/products/PC_STREAMER_PANEL/6.webp',
+      '/products/PC_STREAMER_PANEL/7.webp',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹249',  stock: 25 },
+      { label: '10 Days',days: 10, price: '₹1,499',stock: 15 },
+      { label: '30 Days',days: 30, price: '₹3,499',stock: 7  },
+    ],
+    features: [
+      'Aimbot External',
+      'AI Aimbot (Female Fixed)',
+      'All Functions In-Game ON/OFF in 1 Second (Without Lag)',
+      'Sniper Scope — Left Fire Button',
+      'Sniper Quick Switch',
+      'ESP Features: Line, Skeleton, Info',
+      'Streamer Mode Enabled',
+      'Mobile Control (Android & iPhone Supported)',
+      'Website Control Also',
+      'Compatible with PIE64, MSI & BlueStacks',
+      'Easy to Use & Smooth Gameplay',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+
+  // ─── Mobile ────────────────────────────────────────────────
+  {
+    slug: 'phone-panel',
+    name: 'Phone Panel',
+    category: 'Mobile' as const,
+    tagline: 'Non-Root Mobile Panel — safe, smooth, VIP bypass. Works on all Android phones.',
+    badge: 'Non-Root',
+    images: [
+      '/products/PHONE_PANEL/Phonepanel.png',
+    ],
+    durations: [
+      { label: '1 Day', days: 1, price: '₹99', stock: 50 },
+      { label: '10 Days', days: 10, price: '₹599', stock: 35 },
+      { label: '90 Days', days: 90, price: '₹1,499', stock: 20 },
+    ],
+    features: [
+      'Aimbot + Chams Location (All Device Working)',
+      'Root AND Non-Root Both Work',
+      'VIP Bypass Added',
+      'Drag Headshot',
+      'Body Headshot',
+      '0% Lag — Smooth Gameplay',
+      'Chams Location',
+    ],
+    support: [
+      'Root / Non-Root Both Device Working',
+      'All Android Phone or Tablet Working',
+    ],
+  },
+
+  // ─── iOS ───────────────────────────────────────────────────
+  {
+    slug: 'ios-panel',
+    name: 'iOS Panel',
+    category: 'iOS',
+    tagline: 'iPhone & iPad panel — no jailbreak, 10-min setup, all servers safe.',
+    badge: 'No Jailbreak',
+    images: [
+      '/products/IOS_PANEL/IOSPANEL.png',
+    ],
+    durations: [
+      { label: '1 Day',  days: 1,  price: '₹149',  stock: 40 },
+      { label: '10 Days',days: 10, price: '₹799',  stock: 25 },
+      { label: '30 Days',days: 30, price: '₹1,999',stock: 12 },
+    ],
+    features: [
+      'Aimbot Module',
+      'Aimbot Neck',
+      'Aimbot Head',
+      'Aimbot Legit',
+      'Aimbot Body',
+      'Hologram ESP',
+    ],
+    support: [
+      'Works on All iPhone & iPad Versions',
+      '10-Min Fast Setup — No Complications',
+      'No Jailbreak Required',
+      'Regular Updates for Best Performance',
+      'Fastest Support — Always Ready to Help',
+      'All Servers Safe — Play Tension-Free',
+    ],
+  },
+]
+
+export function useProducts() {
+  function getProduct(slug: string): Product | undefined {
+    return ALL_PRODUCTS.find(p => p.slug === slug)
+  }
+
+  function getProductsByCategory(cat: Product['category']): Product[] {
+    return ALL_PRODUCTS.filter(p => p.category === cat)
+  }
+
+  return { allProducts: ALL_PRODUCTS, getProduct, getProductsByCategory }
+}

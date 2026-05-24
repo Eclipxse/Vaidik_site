@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════════════════════════════ */
+@layer base {
+  :root {
+    --red:       #E61E26;
+    --red-bright:#ff2a35;
+    --black:     #000000;
+    --white:     #ffffff;
+    --gray:      #888888;
+    --gray-lt:   #bbbbbb;
+
+    --font-display: 'Nunito', sans-serif;
+    --font-body:    'Inter', sans-serif;
+
+    /* The signature radial glow — matches reference image exactly */
+    --hero-bg:
+      radial-gradient(ellipse 90% 70% at 50% 20%, rgba(160, 8, 8, 0.70) 0%, rgba(80,2,2,0.3) 45%, transparent 75%),
+      #000000;
+  }
+
+  html {
+    background: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hide default cursor on non-touch devices — custom cursor takes over (public site only) */
+  @media (pointer: fine) {
+    html:not(:has(.admin-shell)) a,
+    html:not(:has(.admin-shell)) button {
+      cursor: none !important;
+    }
+    html:not(:has(.admin-shell)) {
+      cursor: none !important;
+    }
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    font-family: var(--font-body);
+    background: var(--hero-bg);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  * { box-sizing: border-box; }
+
+  ::selection { background: var(--red); color: #fff; }
+
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 900; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   COMPONENTS
+════════════════════════════════════════════════════════════════ */
+@layer components {
+
+  /* ── Red Filled Button (matches "BROWSE COLLECTION" in image) ── */
+  .btn-red {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    border-radius: 9999px;
+    background: var(--red);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 24px rgba(230,30,38,0.4);
+    white-space: nowrap;
+  }
+  .btn-red:hover {
+    background: var(--red-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 36px rgba(230,30,38,0.55);
+  }
+
+  /* ── Outline Button (matches "LEARN MORE" in image) ── */
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    border-radius: 9999px;
+    background: transparent;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    text-decoration: none;
+    border: 2px solid rgba(255,255,255,0.35);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+  }
+  .btn-outline:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.65);
+    transform: translateY(-2px);
+  }
+
+  /* ── Legacy alias so existing code still works ── */
+  .btn-premium {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    border-radius: 9999px;
+    background: var(--red);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 24px rgba(230,30,38,0.4);
+    white-space: nowrap;
+  }
+  .btn-premium:hover {
+    background: var(--red-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 36px rgba(230,30,38,0.55);
+  }
+  .btn-premium:disabled {
+    opacity: 0.4; cursor: not-allowed; transform: none;
+  }
+
+  /* ── Product / Feature Card ── */
+  .premium-card {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 1.75rem;
+    overflow: hidden;
+    transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .premium-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(230,30,38,0.07) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .premium-card:hover {
+    border-color: rgba(230,30,38,0.4);
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,30,38,0.1);
+  }
+  .premium-card:hover::after { opacity: 1; }
+
+  /* ── Modal ── */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(14px);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-enter-active, .modal-leave-active { transition: all 0.3s ease; }
+  .modal-enter-from, .modal-leave-to { opacity: 0; transform: scale(0.95); }
+
+  /* ── Page transition ── */
+  .page-enter-active, .page-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+  .page-enter-from { opacity: 0; transform: translateY(12px); }
+  .page-leave-to   { opacity: 0; transform: translateY(-6px); }
+
+  /* ── Section utility ── */
+  .section-label {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SCROLLBAR
+════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: rgba(230,30,38,0.5); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--red); }
+
+/* ════════════════════════════════════════════════════════════════
+   KEYFRAMES
+════════════════════════════════════════════════════════════════ */
+@keyframes revealUp {
+  from { transform: translateY(110%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 20px rgba(230,30,38,0.3); }
+  50%       { box-shadow: 0 0 50px rgba(230,30,38,0.7); }
+}

@@ -1,0 +1,274 @@
+// server/api/admin/products/static.get.ts
+// Returns the hardcoded products from the site's useProducts composable
+// These are the products currently shown on the public site pages
+
+import { isAdminAuthenticated } from '~/server/utils/adminAuth'
+import { createError } from 'h3'
+
+// Mirror of the Product type from composables/useProducts.ts
+interface StaticProduct {
+  slug: string
+  name: string
+  category: string
+  tagline: string
+  badge: string
+  images: string[]
+  durations: Array<{ label: string; days: number; price: string; stock: number }>
+  features: string[]
+  support: string[]
+}
+
+// This is the canonical list of products shown on the public site
+const STATIC_PRODUCTS: StaticProduct[] = [
+  {
+    slug: 'pc-external-panel',
+    name: 'PC External Panel',
+    category: 'PC' as const,
+    tagline: 'The most trusted external cheat for Free Fire PC. 5-type aimbot with AI targeting.',
+    badge: 'BEST PANEL',
+    images: [
+      '/products/PC_EXTERNAL PANEL/External.png',
+      '/products/PC_EXTERNAL PANEL/1.png',
+      '/products/PC_EXTERNAL PANEL/2.webp',
+    ],
+    durations: [
+      { label: '1 Day', days: 1, price: '₹99', stock: 42 },
+      { label: '10 Days', days: 10, price: '₹799', stock: 28 },
+      { label: '30 Days', days: 30, price: '₹1,999', stock: 15 },
+    ],
+    features: [
+      'External Aimbot — 5 Types',
+      'Aimbot AI',
+      'Sniper Scope',
+      'Sniper Fast Switch',
+      'ESP Location',
+      'Female Fix Aimbot',
+      '0% Lag on Applying Function',
+      'Streamer Mode',
+      'And More Functions',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'pc-visible-aimbot-internal',
+    name: 'Visible + Internal Aimbot',
+    category: 'PC',
+    tagline: 'Best all-rounder panel — combines visible hack with rage internal aimbot.',
+    badge: 'All-Rounder',
+    images: [
+      '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/VISIBLE_AIMBOT_INTERNAL.png',
+    ],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹149',  stock: 35 },
+      { label: '10 Days', days: 10, price: '₹999',  stock: 20 },
+      { label: '30 Days', days: 30, price: '₹2,499',stock: 10 },
+    ],
+    features: [
+      'Aimbot AI (Female Fix)',
+      'Internal Aimbot (Rage)',
+      'Ignore Knock',
+      'ESP Location',
+      '0% Lag on Applying Function',
+      'Streamer Mode (Hide on Screen Share)',
+      'Best All-Rounder Panel',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'pc-uid-bypass',
+    name: 'PC UID Bypass',
+    category: 'PC',
+    tagline: 'Ultimate bypass — remove PC logo, play in tournaments, 50 players in BR rank.',
+    badge: 'Anti-Ban',
+    images: ['/products/PC_UID_BYPASS/UID_BYPASS.png'],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹299',  stock: 20 },
+      { label: '10 Days', days: 10, price: '₹1,999',stock: 12 },
+      { label: '30 Days', days: 30, price: '₹4,999',stock: 5  },
+    ],
+    features: [
+      'PC Logo Remove',
+      '50 Players in BR Rank',
+      'No Hacker in Game (CS / BR Both)',
+      'Play as Phone Player in Tournament',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'pc-aimkill',
+    name: 'PC Aimkill Panel',
+    category: 'PC',
+    tagline: 'Fastest aimkill panel — tele-kill, fly hack, joystick control and more.',
+    badge: 'Rage Mode',
+    images: ['/products/PC_PANEL_AIMKILL/AIMKILL.png'],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹149',  stock: 38 },
+      { label: '10 Days', days: 10, price: '₹999',  stock: 22 },
+      { label: '30 Days', days: 30, price: '₹2,499',stock: 11 },
+    ],
+    features: [
+      'Aimkill (Fastest)',
+      'Aimkill Down',
+      'Aim FOV 1000',
+      'Up Player',
+      'Tele-Kill 10M',
+      'Teleport Mark',
+      'Auto Revive',
+      'Auto Fire',
+      'Fly Hack',
+      'Snap Fly',
+      'Joystick / Shifter',
+      'Fast Fire',
+      'Keybind System',
+      'ESP Location',
+      'BR / CS Working',
+      'Non-Root',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'pc-silent-aim',
+    name: 'PC Silent Aim Max',
+    category: 'PC',
+    tagline: '360° silent aim, pull magnet, camera right and all advanced functions.',
+    badge: 'Undetected',
+    images: ['/products/PC_SILENT_AIM/aim_silent.png'],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹199',  stock: 30 },
+      { label: '10 Days', days: 10, price: '₹1,299',stock: 18 },
+      { label: '30 Days', days: 30, price: '₹2,999',stock: 8  },
+    ],
+    features: [
+      'Aim Silent (360°)',
+      'Aimbot Visible (AI / Rage)',
+      'Pull Magnet',
+      'Fly Hack',
+      'Fast Fire',
+      'Teleport',
+      'No Recoil',
+      'Lock Target',
+      'ESP Location',
+      'Streamer Mode',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'pc-streamer-panel',
+    name: 'PC Streamer Panel',
+    category: 'PC',
+    tagline: 'Stream proof external panel — OBS/screen share safe with mobile control.',
+    badge: 'Stream Safe',
+    images: ['/products/PC_STREAMER_PANEL/streamer_panel.png'],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹249',  stock: 25 },
+      { label: '10 Days', days: 10, price: '₹1,499',stock: 15 },
+      { label: '30 Days', days: 30, price: '₹3,499',stock: 7  },
+    ],
+    features: [
+      'Aimbot External',
+      'AI Aimbot (Female Fixed)',
+      'All Functions In-Game ON/OFF in 1 Second',
+      'Sniper Scope — Left Fire Button',
+      'Sniper Quick Switch',
+      'ESP Features: Line, Skeleton, Info',
+      'Streamer Mode Enabled',
+      'Mobile Control (Android & iPhone Supported)',
+      'Website Control Also',
+    ],
+    support: [
+      'Windows 10 / 11 Both Working',
+      'Virus Protection ON',
+      'PIE 64-Bit Working',
+      'Easy to Set Up',
+    ],
+  },
+  {
+    slug: 'phone-panel',
+    name: 'Phone Panel',
+    category: 'Mobile' as const,
+    tagline: 'Non-Root Mobile Panel — safe, smooth, VIP bypass. Works on all Android phones.',
+    badge: 'Non-Root',
+    images: [
+      '/products/PHONE_PANEL/Phonepanel.png',
+    ],
+    durations: [
+      { label: '1 Day', days: 1, price: '₹99', stock: 50 },
+      { label: '10 Days', days: 10, price: '₹599', stock: 35 },
+      { label: '90 Days', days: 90, price: '₹1,499', stock: 20 },
+    ],
+    features: [
+      'Aimbot + Chams Location (All Device Working)',
+      'Root AND Non-Root Both Work',
+      'VIP Bypass Added',
+      'Drag Headshot',
+      'Body Headshot',
+      '0% Lag — Smooth Gameplay',
+      'Chams Location',
+    ],
+    support: [
+      'Root / Non-Root Both Device Working',
+      'All Android Phone or Tablet Working',
+    ],
+  },
+  {
+    slug: 'ios-panel',
+    name: 'iOS Panel',
+    category: 'iOS',
+    tagline: 'iPhone & iPad panel — no jailbreak, 10-min setup, all servers safe.',
+    badge: 'No Jailbreak',
+    images: ['/products/IOS_PANEL/IOSPANEL.png'],
+    durations: [
+      { label: '1 Day',   days: 1,  price: '₹149',  stock: 40 },
+      { label: '10 Days', days: 10, price: '₹799',  stock: 25 },
+      { label: '30 Days', days: 30, price: '₹1,999',stock: 12 },
+    ],
+    features: [
+      'Aimbot Module',
+      'Aimbot Neck',
+      'Aimbot Head',
+      'Aimbot Legit',
+      'Aimbot Body',
+      'Hologram ESP',
+    ],
+    support: [
+      'Works on All iPhone & iPad Versions',
+      '10-Min Fast Setup — No Complications',
+      'No Jailbreak Required',
+      'Regular Updates for Best Performance',
+      'Fastest Support — Always Ready to Help',
+      'All Servers Safe — Play Tension-Free',
+    ],
+  },
+]
+
+export default defineEventHandler((event) => {
+  if (!isAdminAuthenticated(event)) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+  return STATIC_PRODUCTS
+})

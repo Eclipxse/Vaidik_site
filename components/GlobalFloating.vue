@@ -1,30 +1,4 @@
 <template>
-  <!-- ── SVG Gooey Filter ── -->
-  <svg class="cursor-goo-svg" aria-hidden="true">
-    <defs>
-      <filter id="goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -8" result="goo" />
-        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-      </filter>
-    </defs>
-  </svg>
-
-  <!-- ── Liquid Gooey Cursor ── -->
-  <div
-    class="cursor-goo-container"
-    :class="{
-      'is-touch': isTouchDevice,
-      'is-idle': isIdle,
-      'is-clicked': isClicked,
-      'is-hovered': isHovered
-    }"
-    aria-hidden="true"
-  >
-    <div class="cursor-blob-small" ref="smallEl" />
-    <div class="cursor-blob-large" ref="largeEl" />
-  </div>
-
   <!-- Floating WhatsApp button -->
   <Transition name="fab-pop">
     <a
@@ -65,108 +39,9 @@
 <script setup lang="ts">
 const { ownerNumber } = useWhatsApp()
 
-const smallEl = ref<HTMLElement | null>(null)
-const largeEl = ref<HTMLElement | null>(null)
-
 const showFab    = ref(false)
 const showBtt    = ref(false)
 const fabHovered = ref(false)
-const isIdle     = ref(false)
-const isClicked  = ref(false)
-const isHovered  = ref(false)
-const isTouchDevice = ref(false)
-
-// Smooth JS Lerp coordinates and scales
-let targetX = -100
-let targetY = -100
-let smallX = -100
-let smallY = -100
-let largeX = -100
-let largeY = -100
-
-// Lerp states for scale & opacity
-let smallScale = 1.0
-let largeScale = 1.0
-let largeOpacity = 0.8
-
-let idleTimer: ReturnType<typeof setTimeout> | null = null
-let rafId: number
-
-function loop() {
-  // Smoothly lerp small cursor (very fast & responsive)
-  const smallLerp = 0.25
-  smallX += (targetX - smallX) * smallLerp
-  smallY += (targetY - smallY) * smallLerp
-
-  // Smoothly lerp large trailing cursor
-  const largeLerp = isIdle.value ? 0.05 : 0.08
-  largeX += (targetX - largeX) * largeLerp
-  largeY += (targetY - largeY) * largeLerp
-
-  // Target scale & opacity based on active states
-  let targetSmallScale = 1.0
-  let targetLargeScale = 1.0
-  let targetLargeOpacity = 0.8
-
-  if (isClicked.value) {
-    targetSmallScale = 0.6
-    targetLargeScale = 0.5
-    targetLargeOpacity = 1.0
-  } else if (isHovered.value) {
-    targetSmallScale = 1.3
-    targetLargeScale = 1.75
-    targetLargeOpacity = 0.45
-  } else if (isIdle.value) {
-    targetSmallScale = 1.0
-    targetLargeScale = 1.3
-    targetLargeOpacity = 0.9
-  }
-
-  // Smoothly lerp scale and opacity (using fast rates for responsive feel)
-  const scaleLerpSmall = 0.2
-  const scaleLerpLarge = 0.15
-  smallScale += (targetSmallScale - smallScale) * scaleLerpSmall
-  largeScale += (targetLargeScale - largeScale) * scaleLerpLarge
-  largeOpacity += (targetLargeOpacity - largeOpacity) * 0.15
-
-  if (smallEl.value) {
-    smallEl.value.style.transform = `translate3d(${smallX}px, ${smallY}px, 0) translate(-50%, -50%) scale(${smallScale})`
-  }
-  if (largeEl.value) {
-    largeEl.value.style.transform = `translate3d(${largeX}px, ${largeY}px, 0) translate(-50%, -50%) scale(${largeScale})`
-    largeEl.value.style.opacity = largeOpacity.toString()
-  }
-
-  rafId = requestAnimationFrame(loop)
-}
-
-function onMouseMove(e: MouseEvent) {
-  targetX = e.clientX
-  targetY = e.clientY
-
-  if (isIdle.value) isIdle.value = false
-
-  if (idleTimer) clearTimeout(idleTimer)
-  idleTimer = setTimeout(() => {
-    isIdle.value = true
-  }, 400)
-}
-
-function onMouseDown() {
-  isClicked.value = true
-}
-function onMouseUp() {
-  isClicked.value = false
-}
-
-function onMouseOver(e: MouseEvent) {
-  const target = e.target as HTMLElement
-  if (!target) return
-  
-  // Detect if mouse is over interactive/clickable element
-  const isClickable = target.closest('a, button, input, select, textarea, [role="button"], .clickable, .social-icon-btn, .wa-btn')
-  isHovered.value = !!isClickable
-}
 
 function onScroll() {
   showFab.value = window.scrollY > 300
@@ -179,110 +54,17 @@ function scrollToTop() {
   else window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-function checkPointer() {
-  isTouchDevice.value = window.matchMedia('(pointer: coarse)').matches
-}
-
 onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-  window.addEventListener('mousedown', onMouseDown, { passive: true })
-  window.addEventListener('mouseup',   onMouseUp,   { passive: true })
-  window.addEventListener('mouseover', onMouseOver, { passive: true })
-  window.addEventListener('scroll',    onScroll,    { passive: true })
-  checkPointer()
-  rafId = requestAnimationFrame(loop)
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll() // check immediately in case of loaded page position
 })
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('mousedown', onMouseDown)
-  window.removeEventListener('mouseup',   onMouseUp)
-  window.removeEventListener('mouseover', onMouseOver)
-  window.removeEventListener('scroll',    onScroll)
-  cancelAnimationFrame(rafId)
-  if (idleTimer) clearTimeout(idleTimer)
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
 <style scoped>
-/* ═══════════════════════════════════════════════
-   LIQUID GOOEY CURSOR — vivid fuchsia/magenta
-   ═══════════════════════════════════════════════ */
-.cursor-goo-svg {
-  position: fixed;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  user-select: none;
-  z-index: -100;
-}
-
-.cursor-goo-container {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 99999;
-  filter: url('#goo');
-  overflow: hidden;
-  display: block;
-}
-
-.cursor-goo-container.is-touch {
-  display: none;
-}
-
-.cursor-blob-small,
-.cursor-blob-large {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 50%;
-  background: #e040fb;
-  will-change: transform, opacity;
-  pointer-events: none;
-}
-
-.cursor-blob-small {
-  width: 12px;
-  height: 12px;
-  background: #e040fb;
-  box-shadow: 
-    0 0 6px rgba(224, 64, 251, 0.7),
-    0 0 12px rgba(224, 64, 251, 0.3);
-  transition: 
-    background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.cursor-blob-large {
-  width: 22px;
-  height: 22px;
-  background: #e040fb;
-  box-shadow: 
-    0 0 10px rgba(224, 64, 251, 0.6),
-    0 0 20px rgba(224, 64, 251, 0.2);
-  transition: 
-    background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Idle grew state (stopped moving) */
-.cursor-goo-container.is-idle .cursor-blob-large {
-  box-shadow: 
-    0 0 15px rgba(224, 64, 251, 0.8),
-    0 0 30px rgba(224, 64, 251, 0.4);
-}
-
-/* Hover state (over interactive elements) */
-.cursor-goo-container.is-hovered .cursor-blob-small {
-  background-color: #ff80ff;
-  box-shadow: 0 0 15px rgba(255, 128, 255, 0.9);
-}
-.cursor-goo-container.is-hovered .cursor-blob-large {
-  background-color: #ff80ff;
-  box-shadow: 0 0 20px rgba(255, 128, 255, 0.6);
-}
-
 /* ═══════════════════════════════════════════════
    WHATSAPP FLOATING BUTTON
    ═══════════════════════════════════════════════ */
@@ -365,7 +147,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: none;
+  cursor: pointer; /* Back to normal cursor style */
   transition: all 0.25s ease;
 }
 

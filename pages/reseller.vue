@@ -96,7 +96,7 @@
       <div class="cta-box">
         <p class="cta-text">Ready to start? Message us on WhatsApp and we'll get you set up within minutes.</p>
         <a :href="`https://wa.me/${ownerNumber}?text=${encodeURIComponent('Hi! I want to become a reseller.')}`"
-           target="_blank" rel="noopener noreferrer" class="btn-red">
+           target="_blank" rel="noopener noreferrer" class="btn-green">
           Become a Reseller →
         </a>
       </div>

@@ -566,7 +566,7 @@ onMounted(() => {
 .btn-buy {
   padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  background: var(--red);
+  background: #25D366; /* WhatsApp Green */
   color: #fff;
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -576,14 +576,14 @@ onMounted(() => {
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(230,30,38,0.3);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
   white-space: nowrap;
 }
 
 .btn-buy:hover {
-  background: #ff2a35;
+  background: #20ba56;
   transform: translateX(2px);
-  box-shadow: 0 6px 24px rgba(230,30,38,0.5);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6);
 }
 
 /* ── TransitionGroup animations ── */

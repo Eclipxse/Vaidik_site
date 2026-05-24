@@ -58,7 +58,7 @@
       <div class="cta-box">
         <p class="cta-text">Want to see all available IDs? Contact us directly on WhatsApp for the latest stock.</p>
         <a :href="`https://wa.me/${ownerNumber}?text=${encodeURIComponent('Hi! I want to buy a Free Fire ID.')}`"
-           target="_blank" rel="noopener noreferrer" class="btn-red">
+           target="_blank" rel="noopener noreferrer" class="btn-green">
           WhatsApp for Stock →
         </a>
       </div>

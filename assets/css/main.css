@@ -32,17 +32,6 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Hide default cursor on non-touch devices — custom cursor takes over (public site only) */
-  @media (pointer: fine) {
-    html:not(:has(.admin-shell)) a,
-    html:not(:has(.admin-shell)) button {
-      cursor: none !important;
-    }
-    html:not(:has(.admin-shell)) {
-      cursor: none !important;
-    }
-  }
-
   body {
     margin: 0;
     overflow-x: hidden;
@@ -89,6 +78,31 @@
     background: var(--red-bright);
     transform: translateY(-2px);
     box-shadow: 0 8px 36px rgba(230,30,38,0.55);
+  }
+
+  /* ── Solid WhatsApp Green Button ── */
+  .btn-green {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    border-radius: 9999px;
+    background: #25D366;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 24px rgba(37, 211, 102, 0.4);
+    white-space: nowrap;
+  }
+  .btn-green:hover {
+    background: #20ba56;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 36px rgba(37, 211, 102, 0.55);
   }
 
   /* ── Outline Button (matches "LEARN MORE" in image) ── */

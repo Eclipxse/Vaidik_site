@@ -25,7 +25,7 @@
           </ul>
           <div class="card-footer">
             <span class="card-price">{{ plan.price }}</span>
-            <button class="btn-buy" @click="handleAction(plan)">
+            <button :class="['btn-buy', { 'btn-buy-green': !plan.isDb }]" @click="handleAction(plan)">
               {{ plan.isDb ? 'View Details →' : 'Buy Now →' }}
             </button>
           </div>
@@ -35,7 +35,7 @@
       <div class="cta-box">
         <p class="cta-text">Need a custom package? Contact us on WhatsApp for bulk orders and special pricing.</p>
         <a :href="`https://wa.me/${ownerNumber}?text=${encodeURIComponent('Hi! I want to buy an SSM Panel package.')}`"
-           target="_blank" rel="noopener noreferrer" class="btn-red">
+           target="_blank" rel="noopener noreferrer" class="btn-green">
           Contact on WhatsApp →
         </a>
       </div>
@@ -193,6 +193,15 @@ function handleAction(plan: any) {
   transition: all 0.25s ease; box-shadow: 0 4px 16px rgba(230,30,38,0.3);
 }
 .btn-buy:hover { background: #ff2a35; transform: translateX(2px); }
+.btn-buy-green {
+  background: #25D366 !important;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4) !important;
+}
+.btn-buy-green:hover {
+  background: #20ba56 !important;
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6) !important;
+}
+
 
 .cta-box {
   display: flex; flex-direction: column; align-items: center; gap: 1.5rem;

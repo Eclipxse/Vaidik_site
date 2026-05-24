@@ -76,7 +76,7 @@
           </header>
 
           <!-- Duration Selection -->
-          <section class="duration-section" v-if="product.category !== 'FF IDs'">
+          <section class="duration-section" v-if="product.category !== 'FF IDs' && durations.length > 0">
             <h3 class="section-label">Select Duration</h3>
             <div class="duration-grid">
               <button 
@@ -188,7 +188,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 const route = useRoute()
 const client = useSupabaseClient()
@@ -227,22 +227,27 @@ const displayImage = computed(() => {
   return galleryImages.value[activeImg.value] || product.value?.thumbnail_url
 })
 
-// Mock durations since original DB might only have a single price/duration
+// Check for custom db durations
 const durations = computed(() => {
-  const basePrice = product.value?.price || 50
-  return [
-    { id: '1d', label: '1 Day', price: basePrice },
-    { id: '10d', label: '10 Days', price: Math.round(basePrice * 5.5) },
-    { id: '30d', label: '30 Days', price: Math.round(basePrice * 11) },
-    { id: 'lt', label: 'Lifetime', price: Math.round(basePrice * 35) },
-  ]
+  if (product.value?.durations && Array.isArray(product.value.durations) && product.value.durations.length > 0) {
+    return product.value.durations
+  }
+  return []
 })
 
-const selectedDuration = ref('1d')
+const selectedDuration = ref('')
+
+watch(() => durations.value, (newDurs) => {
+  if (newDurs && newDurs.length > 0) {
+    if (!selectedDuration.value || !newDurs.some(d => d.id === selectedDuration.value)) {
+      selectedDuration.value = newDurs[0].id
+    }
+  }
+}, { immediate: true })
 
 const selectedDurationPrice = computed(() => {
-  if (product.value?.category === 'FF IDs') {
-    return product.value.price || 0
+  if (product.value?.category === 'FF IDs' || durations.value.length === 0) {
+    return product.value?.price || 0
   }
   return durations.value.find(d => d.id === selectedDuration.value)?.price || 0
 })
@@ -257,8 +262,8 @@ function openYoutube() {
 
 function onActivate() {
   if (!product.value) return
-  if (product.value.category === 'FF IDs') {
-    handleBuyNow(`${product.value.name}`, 'Free Fire ID')
+  if (product.value.category === 'FF IDs' || durations.value.length === 0) {
+    handleBuyNow(`${product.value.name}`, product.value.category || 'Product')
   } else {
     const durationLabel = durations.value.find(d => d.id === selectedDuration.value)?.label
     handleBuyNow(`${product.value.name} (${durationLabel})`, product.value.category)

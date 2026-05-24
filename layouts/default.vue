@@ -8,7 +8,6 @@
 
     <AppFooter />
 
-    <WhatsAppModal />
     <GlobalFloating />
   </div>
 </template>

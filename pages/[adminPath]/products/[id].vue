@@ -103,6 +103,28 @@
           </div>
         </div>
 
+        <!-- Custom Durations list -->
+        <div class="card" v-if="form.category !== 'FF IDs'">
+          <div class="card-head">
+            <h2 class="card-title">Custom Pricing & Durations</h2>
+            <button class="btn-add-row" @click="addDurationOption">+ Add Duration</button>
+          </div>
+          <div class="list-editor">
+            <div
+              v-for="(item, i) in durationsList"
+              :key="item.id"
+              class="list-row duration-row"
+            >
+              <input v-model="item.label" class="input list-input" placeholder="e.g. 1 Day, 10 Days, Lifetime" />
+              <input v-model.number="item.price" type="number" min="0" class="input price-input" placeholder="Price (₹)" />
+              <button class="btn-remove-row" @click="removeDurationOption(i)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </button>
+            </div>
+            <p v-if="!durationsList.length" class="empty-hint">No custom durations yet. If empty, the page will auto-calculate standard pricing (1 Day, 10 Days, 30 Days, Lifetime).</p>
+          </div>
+        </div>
+
         <!-- Features list -->
         <div class="card">
           <div class="card-head">
@@ -330,6 +352,7 @@ interface Form {
   support: string[]
   images: string[]
   youtube_url: string
+  durations: Array<{ id: string; label: string; price: number }>
 }
 
 const emptyForm = (): Form => ({
@@ -350,6 +373,7 @@ const emptyForm = (): Form => ({
   support: [],
   images: [],
   youtube_url: '',
+  durations: [],
 })
 
 const form = reactive<Form>(emptyForm())
@@ -360,6 +384,9 @@ interface ListItem { id: string; value: string }
 const featuresList = ref<ListItem[]>([])
 const supportList = ref<ListItem[]>([])
 const imagesList = ref<ListItem[]>([])
+
+interface DurationItem { id: string; label: string; price: number | null }
+const durationsList = ref<DurationItem[]>([])
 
 const toast = reactive({ show: false, message: '', type: 'success' as 'success' | 'error' })
 
@@ -389,6 +416,12 @@ function populateForm(data: Record<string, unknown>) {
     images = imagesRaw.map(String)
   }
 
+  const durationsRaw = data.durations
+  let durations: Array<{ id: string; label: string; price: number }> = []
+  if (Array.isArray(durationsRaw)) {
+    durations = durationsRaw as Array<{ id: string; label: string; price: number }>
+  }
+
   Object.assign(form, {
     name: String(data.name ?? ''),
     description: String(data.description ?? ''),
@@ -407,12 +440,14 @@ function populateForm(data: Record<string, unknown>) {
     support,
     images,
     youtube_url: String(data.youtube_url ?? ''),
+    durations,
   })
 
   // Map to keyed lists for focus stability
   featuresList.value = features.map((f, idx) => ({ id: `feat-${idx}-${Date.now()}`, value: f }))
   supportList.value = support.map((s, idx) => ({ id: `supp-${idx}-${Date.now()}`, value: s }))
   imagesList.value = images.map((img, idx) => ({ id: `img-${idx}-${Date.now()}`, value: img }))
+  durationsList.value = durations.map((d, idx) => ({ id: d.id || `dur-${idx}-${Date.now()}`, label: d.label || '', price: d.price ?? null }))
 
   original = JSON.parse(JSON.stringify(form))
 }
@@ -433,6 +468,7 @@ function resetForm() {
   featuresList.value = (original.features || []).map((f, idx) => ({ id: `feat-${idx}-${Date.now()}`, value: f }))
   supportList.value = (original.support || []).map((s, idx) => ({ id: `supp-${idx}-${Date.now()}`, value: s }))
   imagesList.value = (original.images || []).map((img, idx) => ({ id: `img-${idx}-${Date.now()}`, value: img }))
+  durationsList.value = (original.durations || []).map((d, idx) => ({ id: d.id || `dur-${idx}-${Date.now()}`, label: d.label || '', price: d.price ?? null }))
 }
 
 // stable features / support / images helper actions
@@ -455,6 +491,13 @@ function addImage() {
 }
 function removeImage(index: number) {
   imagesList.value.splice(index, 1)
+}
+
+function addDurationOption() {
+  durationsList.value.push({ id: `dur-${Date.now()}-${Math.random()}`, label: '', price: null })
+}
+function removeDurationOption(index: number) {
+  durationsList.value.splice(index, 1)
 }
 
 // Upload handlers
@@ -517,6 +560,9 @@ async function saveProduct() {
   form.features = featuresList.value.map(x => x.value).filter(Boolean)
   form.support = supportList.value.map(x => x.value).filter(Boolean)
   form.images = imagesList.value.map(x => x.value).filter(Boolean)
+  form.durations = durationsList.value
+    .filter(x => x.label && x.price !== null)
+    .map(x => ({ id: x.id, label: x.label, price: Number(x.price) }))
 
   if (!form.name || !form.category) {
     showToast('Name and Category are required', 'error')
@@ -543,6 +589,7 @@ async function saveProduct() {
         is_featured: form.is_featured,
         sort_order: form.sort_order,
         youtube_url: form.youtube_url || null,
+        durations: form.durations,
       },
     })
     original = JSON.parse(JSON.stringify(form))
@@ -774,6 +821,7 @@ const stockOptions = [
 .drag-handle { color: #475569; font-size: 16px; cursor: grab; flex-shrink: 0; }
 
 .list-input { flex: 1; }
+.price-input { width: 140px; flex-shrink: 0; }
 
 .btn-add-row {
   font-family: 'Outfit', sans-serif;

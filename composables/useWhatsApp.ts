@@ -30,12 +30,7 @@ export function useWhatsApp() {
    * - Desktop: shows QR modal
    */
   function handleBuyNow(productName: string, category: string) {
-    if (isMobile.value) {
-      window.open(buildWhatsAppLink(productName, category), '_blank', 'noopener,noreferrer')
-    } else {
-      modalProduct.value = { name: productName, category }
-      isModalOpen.value = true
-    }
+    window.open(buildWhatsAppLink(productName, category), '_blank', 'noopener,noreferrer')
   }
 
   function closeModal() {

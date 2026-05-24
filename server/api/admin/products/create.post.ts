@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     'name', 'description', 'category', 'sub_category', 'features',
     'price', 'original_price', 'duration', 'thumbnail_url',
     'stock_status', 'is_published', 'is_featured', 'sort_order',
-    'youtube_url', 'images', 'support',
+    'youtube_url', 'images', 'support', 'durations',
   ]
   const productData: Record<string, unknown> = {}
   for (const key of allowed) {

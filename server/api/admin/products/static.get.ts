@@ -32,9 +32,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_EXTERNAL PANEL/2.webp',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹99', stock: 42 },
-      { label: '10 Days', days: 10, price: '₹799', stock: 28 },
-      { label: '30 Days', days: 30, price: '₹1,999', stock: 15 },
+      { label: 'Lifetime ', days: 1, price: '₹999', stock: 42 },
+      { label: 'Lifetime + Personal Setup', days: 10, price: '₹1199', stock: 28 },
     ],
     features: [
       'External Aimbot — 5 Types',
@@ -65,9 +64,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/VISIBLE_AIMBOT_INTERNAL.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹149', stock: 35 },
-      { label: '10 Days', days: 10, price: '₹999', stock: 20 },
-      { label: '30 Days', days: 30, price: '₹2,499', stock: 10 },
+      { label: 'Lifetime ', days: 1, price: '₹999', stock: 35 },
+      { label: ' Lifetime + Personal Setup', days: 10, price: '₹1,199', stock: 20 },
     ],
     features: [
       'Aimbot AI (Female Fix)',
@@ -96,9 +94,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_UID_BYPASS/UID_BYPASS.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹299', stock: 20 },
-      { label: '10 Days', days: 10, price: '₹1,999', stock: 12 },
-      { label: '30 Days', days: 30, price: '₹4,999', stock: 5 },
+      { label: 'Lifetime', days: 1, price: '₹999', stock: 20 },
+      { label: ' Lifetime + Personal Setup', days: 10, price: '₹1,199', stock: 12 },
     ],
     features: [
       'PC Logo Remove',
@@ -124,9 +121,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_PANEL_AIMKILL/AIMKILL.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹149', stock: 38 },
-      { label: '10 Days', days: 10, price: '₹999', stock: 22 },
-      { label: '30 Days', days: 30, price: '₹2,499', stock: 11 },
+      { label: 'Lifetime', days: 10, price: '₹999', stock: 22 },
+      { label: ' Lifetime + Personal Setup', days: 30, price: '₹1,199', stock: 11 },
     ],
     features: [
       'Aimkill (Fastest)',
@@ -164,9 +160,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_SILENT_AIM/aim_silent.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹199', stock: 30 },
-      { label: '10 Days', days: 10, price: '₹1,299', stock: 18 },
-      { label: '30 Days', days: 30, price: '₹2,999', stock: 8 },
+      { label: 'Lifetime', days: 10, price: '₹999', stock: 18 },
+      { label: ' Lifetime + Personal Setup', days: 30, price: '₹1,199', stock: 8 },
     ],
     features: [
       'Aim Silent (360°)',
@@ -198,9 +193,7 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PC_STREAMER_PANEL/streamer_panel.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹249', stock: 25 },
-      { label: '10 Days', days: 10, price: '₹1,499', stock: 15 },
-      { label: '30 Days', days: 30, price: '₹3,499', stock: 7 },
+      { label: 'Lifetime (Personal setup free)', days: 10, price: '₹2,999', stock: 15 },
     ],
     features: [
       'Aimbot External',
@@ -231,9 +224,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/PHONE_PANEL/Phonepanel.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹99', stock: 50 },
-      { label: '10 Days', days: 10, price: '₹599', stock: 35 },
-      { label: '90 Days', days: 90, price: '₹1,499', stock: 20 },
+      { label: 'Full Season', days: 100, price: '₹999', stock: 50 },
+      { label: 'Permanent (lifetime)', days: 99999, price: '₹2,499', stock: 20 },
     ],
     features: [
       'Aimbot + Chams Location (All Device Working)',
@@ -260,9 +252,8 @@ const STATIC_PRODUCTS: StaticProduct[] = [
       '/products/IOS_PANEL/IOSPANEL.png',
     ],
     durations: [
-      { label: '1 Day', days: 1, price: '₹149', stock: 40 },
-      { label: '10 Days', days: 10, price: '₹799', stock: 25 },
-      { label: '30 Days', days: 30, price: '₹1,999', stock: 12 },
+      { label: 'Full Season', days: 9999, price: '₹1,999', stock: 25 },
+      { label: 'Permanent (lifetime)', days: 100, price: '₹2,999', stock: 12 },
     ],
     features: [
       'Aimbot Module',

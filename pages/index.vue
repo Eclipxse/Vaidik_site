@@ -44,50 +44,6 @@
       </div>
     </section>
 
-    <!-- ── FEATURED PRODUCTS ───────────────────────── -->
-    <section class="sect" aria-labelledby="prod-heading">
-      <div class="sect-inner">
-        <div class="sect-head flex-head reveal-up">
-          <div>
-            <span class="sect-eyebrow">Best Sellers</span>
-            <h2 id="prod-heading" class="sect-title">
-              Featured<br />
-              <span class="text-red">Products.</span>
-            </h2>
-          </div>
-          <NuxtLink to="/cheats" class="btn-outline">
-            View All →
-          </NuxtLink>
-        </div>
-
-        <!-- Products -->
-        <div class="products-grid">
-          <NuxtLink
-            v-for="(p, i) in featuredProducts"
-            :key="p.id"
-            to="/cheats"
-            class="feat-card reveal-card"
-            :style="{ '--delay': `${i * 0.1}s` }"
-          >
-            <div class="feat-img-wrap">
-              <img :src="p.thumbnail" :alt="p.name" class="feat-img" loading="lazy" />
-              <span class="feat-badge">{{ p.badge }}</span>
-            </div>
-            <div class="feat-body">
-              <span class="feat-cat">{{ p.category }}</span>
-              <h3 class="feat-name">{{ p.name }}</h3>
-              <ul class="feat-tags">
-                <li v-for="f in p.features" :key="f">{{ f }}</li>
-              </ul>
-              <div class="feat-footer">
-                <span class="feat-price">{{ p.price }}<small> / day</small></span>
-                <span class="feat-cta">View →</span>
-              </div>
-            </div>
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
 
     <!-- ── CTA BANNER ──────────────────────────────── -->
     <section class="cta-band" aria-labelledby="cta-heading">
@@ -135,45 +91,6 @@ const marqueeItems = [
   '24/7 Support', 'PC & Mobile', 'India No.1', 'Free Fire Pro',
 ]
 
-// Static featured products
-const featuredProducts = [
-  {
-    id: 'pc-external-panel',
-    name: 'PC External Panel',
-    category: 'PC',
-    price: '₹99',
-    thumbnail: '/products/PC_EXTERNAL PANEL/External.png',
-    badge: 'Best Seller',
-    features: ['Aimbot', 'ESP', 'Auto Headshot', 'No Recoil'],
-  },
-  {
-    id: 'pc-aimkill',
-    name: 'PC Aimkill Panel',
-    category: 'PC',
-    price: '₹149',
-    thumbnail: '/products/PC_PANEL_AIMKILL/AIMKILL.png',
-    badge: 'Popular',
-    features: ['Aimkill', 'Auto Lock', 'Headshot Lock', 'Anti-Ban'],
-  },
-  {
-    id: 'pc-silent-aim',
-    name: 'PC Silent Aim',
-    category: 'PC',
-    price: '₹199',
-    thumbnail: '/products/PC_SILENT_AIM/aim_silent.png',
-    badge: 'Undetected',
-    features: ['Silent Aimbot', 'No Recoil', 'Triggerbot'],
-  },
-  {
-    id: 'phone-panel',
-    name: 'Phone Panel',
-    category: 'Mobile',
-    price: '₹99',
-    thumbnail: '/products/PHONE_PANEL/Phonepanel.png',
-    badge: 'New',
-    features: ['Auto Headshot', 'ESP', 'No Root'],
-  },
-]
 
 const categories = [
   { id: 'ios',     to: '/cheats/ios',     name: 'iOS Panel',      desc: 'Undetected panel for iPhone & iPad with full features.' },
@@ -359,35 +276,6 @@ onMounted(() => {
   transform: translateX(4px);
 }
 
-/* ── Products Grid ── */
-.products-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 640px)  { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .products-grid { grid-template-columns: repeat(4, 1fr); } }
-
-.skeleton {
-  height: 380px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  animation: shimmer 1.8s ease infinite;
-}
-
-@keyframes shimmer {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
-}
-
-.state-msg {
-  text-align: center;
-  padding: 4rem;
-  color: var(--gray);
-  font-family: var(--font-body);
-}
 
 /* ── CTA Band ── */
 .cta-band {
@@ -437,146 +325,6 @@ onMounted(() => {
   margin: 0;
   max-width: 400px;
 }
-
-/* ── Featured Product Cards (homepage) ── */
-.feat-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 20px;
-  overflow: hidden;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.feat-card:hover {
-  border-color: rgba(230,30,38,0.4);
-  transform: translateY(-8px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,30,38,0.08);
-}
-
-.feat-img-wrap {
-  position: relative;
-  width: 100%;
-  min-height: 180px;
-  overflow: hidden;
-  background: #080808;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.feat-img {
-  width: 100%;
-  height: 200px;
-  object-fit: contain;
-  background: #080808;
-  display: block;
-  transition: transform 0.6s ease, filter 0.5s ease;
-}
-
-.feat-card:hover .feat-img { transform: scale(1.05); filter: brightness(1.07); }
-
-.feat-badge {
-  position: absolute;
-  top: 0.75rem; left: 0.75rem;
-  padding: 0.22rem 0.65rem;
-  border-radius: 9999px;
-  background: var(--red);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.feat-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1.25rem;
-  flex: 1;
-}
-
-.feat-cat {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--red);
-}
-
-.feat-name {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: #fff;
-  margin: 0;
-  text-transform: uppercase;
-  line-height: 1.1;
-}
-
-.feat-tags {
-  list-style: none;
-  margin: 0; padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.feat-tags li {
-  padding: 0.18rem 0.6rem;
-  border-radius: 9999px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.07);
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.55);
-}
-
-.feat-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 0.875rem;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  margin-top: auto;
-}
-
-.feat-price {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #fff;
-}
-
-.feat-price small {
-  font-size: 0.7rem;
-  color: var(--gray);
-  font-family: var(--font-body);
-  font-weight: 400;
-}
-
-.feat-cta {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.45rem 1rem;
-  border-radius: 9999px;
-  background: var(--red);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: background 0.25s ease;
-}
-
-.feat-card:hover .feat-cta { background: #ff2a35; }
 
 /* ── Reveal states (GSAP will animate to visible) ── */
 .reveal-up {
@@ -661,19 +409,6 @@ onMounted(() => {
   color: rgba(230,30,38,0.06);
 }
 
-/* ── Product card image shine sweep ── */
-.feat-img-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.07) 50%, transparent 60%);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
-  pointer-events: none;
-}
-
-.feat-card:hover .feat-img-shine {
-  transform: translateX(100%);
-}
 
 /* ── CTA badge ── */
 .cta-badge {

@@ -1,13 +1,27 @@
 // server/api/admin/products/[id].get.ts
-// Returns a single product (simplified to return empty object, removing database dependency)
+// Returns a single database-backed product
 
 import { isAdminAuthenticated } from '~/server/utils/adminAuth'
-import { createError } from 'h3'
+import { useAdminSupabase } from '~/server/utils/adminSupabase'
+import { getRouterParam, createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
   if (!isAdminAuthenticated(event)) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  return {}
+  const id = getRouterParam(event, 'id')
+  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing product id' })
+
+  const { data, error } = await useAdminSupabase()
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+  }
+
+  return data
 })

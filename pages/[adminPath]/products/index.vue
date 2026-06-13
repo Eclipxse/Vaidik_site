@@ -6,6 +6,9 @@
         <h1 class="page-title">Store Inventory</h1>
         <p class="page-sub">{{ filteredStatic.length }} assets registered in ledger</p>
       </div>
+      <NuxtLink :to="`/${adminPath}/products/new`" class="btn-primary">
+        Add New Product
+      </NuxtLink>
     </div>
 
     <!-- Search & Filter Bar -->
@@ -199,6 +202,14 @@ onMounted(async () => {
 }
 .page-title { font-family: 'Outfit', sans-serif; font-size: 30px; font-weight: 900; color: #fff; margin: 0 0 4px; letter-spacing: -0.02em; }
 .page-sub { font-size: 14px; color: #64748b; margin: 0; font-weight: 500; }
+.btn-primary {
+  display: inline-flex; align-items: center; padding: 12px 22px;
+  background: linear-gradient(135deg, #e61e26, #ff425f);
+  border-radius: 12px; color: #fff; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 800; text-decoration: none;
+  box-shadow: 0 6px 20px rgba(230,30,38,.35); transition: all .25s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(230,30,38,.5); }
 
 /* Toolbar inputs */
 .toolbar { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }

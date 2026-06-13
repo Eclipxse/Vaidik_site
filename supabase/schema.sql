@@ -13,6 +13,7 @@ create table if not exists public.products (
   description   text,
   category      text not null,       -- 'FF Cheats' | 'FF IDs' | 'SSM Panel' | 'Reseller'
   sub_category  text,                -- 'iOS Panel' | 'Android Panel' | 'PC Panel'
+  badge         text,
   features      jsonb default '[]'::jsonb,
   price         numeric(10,2) not null,
   original_price numeric(10,2),
@@ -21,6 +22,7 @@ create table if not exists public.products (
   youtube_url   text,
   images        jsonb default '[]'::jsonb,
   support       jsonb default '[]'::jsonb,
+  durations     jsonb default '[]'::jsonb,
   stock_status  text not null default 'active'
                   check (stock_status in ('active', 'out', 'limited')),
   is_published  boolean not null default true,
@@ -196,4 +198,6 @@ values
 -- ALTER TABLE public.products ADD COLUMN IF NOT EXISTS youtube_url text;
 -- ALTER TABLE public.products ADD COLUMN IF NOT EXISTS images jsonb DEFAULT '[]'::jsonb;
 -- ALTER TABLE public.products ADD COLUMN IF NOT EXISTS support jsonb DEFAULT '[]'::jsonb;
+-- ALTER TABLE public.products ADD COLUMN IF NOT EXISTS badge text;
+-- ALTER TABLE public.products ADD COLUMN IF NOT EXISTS durations jsonb DEFAULT '[]'::jsonb;
 

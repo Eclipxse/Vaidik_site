@@ -44,6 +44,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Server-only keys (never exposed to client)
+    supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY || '',
     adminSecret: process.env.ADMIN_SECRET_PATH || 'admin-x7k2',
     adminPassword: process.env.ADMIN_PASSWORD || '',
     adminSessionSecret: process.env.ADMIN_SESSION_SECRET || 'change-me-in-production',

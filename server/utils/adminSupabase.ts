@@ -3,7 +3,7 @@ import { createError } from 'h3'
 
 export function useAdminSupabase() {
   const config = useRuntimeConfig()
-  const url = process.env.SUPABASE_URL
+  const url = config.supabaseUrl
   const serviceKey = config.supabaseServiceKey
 
   if (!url || !serviceKey) {

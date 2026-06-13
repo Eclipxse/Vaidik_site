@@ -55,6 +55,7 @@ export default defineNuxtConfig({
       ownerWhatsapp: process.env.NUXT_PUBLIC_OWNER_WHATSAPP || '917874883702',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
       adminPath: process.env.ADMIN_SECRET_PATH || 'admin-x7k2',
+      googleAnalyticsId: process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_ID || '',
     },
   },
 

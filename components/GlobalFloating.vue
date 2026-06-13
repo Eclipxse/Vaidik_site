@@ -165,4 +165,22 @@ onUnmounted(() => {
 .fab-pop-enter-active { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .fab-pop-leave-active  { transition: all 0.2s ease; }
 .fab-pop-enter-from, .fab-pop-leave-to { opacity: 0; transform: scale(0.5) translateY(20px); }
+
+@media (max-width: 768px) {
+  .wa-fab {
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: 54px;
+    height: 54px;
+  }
+
+  .btt-btn {
+    right: 1rem;
+    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 4.5rem);
+  }
+
+  .wa-fab-ripple {
+    display: none;
+  }
+}
 </style>

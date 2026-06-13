@@ -21,6 +21,7 @@
         'site-header--scrolled': scrolled,
         'site-header--hidden': navHidden,
         'site-header--shifted': annVisible,
+        'site-header--menu-open': mobileOpen,
       }"
     >
       <!-- Red spotlight sweep on hover -->
@@ -118,6 +119,10 @@
         <div v-if="mobileOpen" class="mobile-overlay" role="dialog" aria-modal="true">
           <div class="mobile-overlay-bg" aria-hidden="true" />
           <nav class="mobile-nav">
+            <div class="mobile-nav-heading">
+              <span>Explore</span>
+              <small>Choose a section</small>
+            </div>
             <NuxtLink
               v-for="(link, i) in navLinks"
               :key="link.to"
@@ -145,6 +150,19 @@
             </svg>
             Connect on WhatsApp
           </a>
+          <div class="mobile-socials" aria-label="Social media links">
+            <a
+              v-for="s in socialLinks"
+              :key="s.name"
+              :href="s.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mobile-social-link"
+              :aria-label="s.name"
+              :style="{ color: s.color }"
+              v-html="s.icon"
+            />
+          </div>
         </div>
       </Transition>
     </header>
@@ -247,6 +265,7 @@ function onMouseMove(e: MouseEvent) {
 let lastScroll = 0
 
 function onScroll() {
+  if (mobileOpen.value) return
   const y = window.scrollY
   const maxY = document.documentElement.scrollHeight - window.innerHeight
   scrollProgress.value = maxY > 0 ? y / maxY : 0
@@ -264,20 +283,43 @@ watch(() => route.path, () => {
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('mousemove', onMouseMove, { passive: true })
+  window.addEventListener('keydown', onKeydown)
   nextTick(() => resetPill())
 })
 
+let lockedScrollY = 0
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && mobileOpen.value) mobileOpen.value = false
+}
+
 watch(mobileOpen, (open) => {
   if (open) {
+    lockedScrollY = window.scrollY
+    navHidden.value = false
+    document.documentElement.classList.add('mobile-menu-open')
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${lockedScrollY}px`
+    document.body.style.width = '100%'
     document.body.style.overflow = 'hidden'
   } else {
+    document.documentElement.classList.remove('mobile-menu-open')
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.width = ''
     document.body.style.overflow = ''
+    window.scrollTo(0, lockedScrollY)
   }
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('mousemove', onMouseMove)
+  window.removeEventListener('keydown', onKeydown)
+  document.documentElement.classList.remove('mobile-menu-open')
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
   document.body.style.overflow = ''
 })
 </script>
@@ -359,6 +401,14 @@ onUnmounted(() => {
 
 .site-header--hidden {
   transform: translateY(-110%);
+}
+
+.site-header--menu-open {
+  top: 0;
+  z-index: 1000;
+  transform: none !important;
+  overflow: visible;
+  transition: none;
 }
 
 /* ── Spotlight effect ── */
@@ -698,14 +748,20 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
   z-index: 90;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Flow from top so overflowing menu is scrollable */
-  overflow-y: auto; /* Allow native vertical scrolling for small screens */
-  -webkit-overflow-scrolling: touch; /* Inertial touch scroll in iOS Safari */
-  overscroll-behavior: contain; /* Prevent body scrolling chaining */
-  padding-bottom: 4rem;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  scrollbar-width: none;
 }
+
+.mobile-overlay::-webkit-scrollbar { display: none; }
 
 @media (min-width: 1024px) { .mobile-overlay { display: none !important; } }
 
@@ -724,6 +780,29 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0;
+}
+
+.mobile-nav-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 0 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.mobile-nav-heading span {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.mobile-nav-heading small {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.35);
 }
 
 .mobile-link {
@@ -825,6 +904,31 @@ onUnmounted(() => {
   box-shadow: 0 14px 40px rgba(37,211,102,0.6);
 }
 
+.mobile-socials {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0.25rem 1rem 0;
+  padding: 1rem 0;
+}
+
+.mobile-social-link {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+}
+
+.mobile-social-link :deep(svg) {
+  width: 19px;
+  height: 19px;
+}
+
 
 /* ── Mobile overlay transition ── */
 .mobile-overlay-enter-active { transition: opacity 0.35s ease; }
@@ -855,5 +959,43 @@ onUnmounted(() => {
   border-color: rgba(230, 30, 38, 0.65);
   box-shadow: 0 0 24px rgba(230, 30, 38, 0.55);
   transform: scale(1.05) rotate(4deg);
+}
+
+@media (max-width: 1023px) {
+  .site-header,
+  .site-header--scrolled,
+  .mobile-overlay-bg {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .mobile-overlay-bg {
+    background:
+      radial-gradient(circle at 85% 15%, rgba(230,30,38,0.14), transparent 28%),
+      linear-gradient(180deg, #080808 0%, #030303 100%);
+  }
+
+  .mobile-nav {
+    padding: 5.5rem 1rem 1rem;
+  }
+
+  .mobile-link {
+    min-height: 58px;
+    padding: 0.9rem 0.25rem;
+  }
+
+  .mobile-link-label {
+    font-size: clamp(1.35rem, 7vw, 1.85rem);
+  }
+
+  .mobile-wa-btn {
+    min-height: 48px;
+    margin: 1rem;
+  }
+
+  .site-header--menu-open .header-inner {
+    background: rgba(5,5,5,0.96);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
 }
 </style>

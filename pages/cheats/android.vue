@@ -57,7 +57,9 @@
             <div class="card-footer">
               <div class="price-wrap">
                 <span class="price">{{ product.durations[0].price }}</span>
-                <span class="price-note">/ day</span>
+                <span v-if="product.durations[0].label" class="price-note">
+                  / {{ product.durations[0].label }}
+                </span>
               </div>
               <span class="btn-buy">View Details →</span>
             </div>
@@ -121,7 +123,14 @@ const products = computed(() => {
         p.thumbnail_url || '/products/PHONE_PANEL/Phonepanel.png',
         ...(Array.isArray(p.images) ? p.images : []),
       ].filter(Boolean),
-      durations: [{ label: p.duration || 'day', days: 1, price: `₹${p.price}`, stock: 50 }],
+      durations: Array.isArray(p.durations) && p.durations.length > 0
+        ? p.durations.map((duration: any) => ({
+            label: duration.label || p.duration || '',
+            days: Number(duration.days || 1),
+            price: `₹${duration.price ?? p.price}`,
+            stock: Number(duration.stock ?? 50),
+          }))
+        : [{ label: p.duration || '', days: 1, price: `₹${p.price}`, stock: 50 }],
       features: Array.isArray(p.features) ? p.features : [],
       support: Array.isArray(p.support) ? p.support : [],
       isDb: true,

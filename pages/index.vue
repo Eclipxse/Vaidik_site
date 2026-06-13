@@ -104,6 +104,16 @@ const categories = [
 onMounted(() => {
   const { $gsap, $ScrollTrigger } = useNuxtApp()
   if (!$gsap || !$ScrollTrigger) return
+  const useLightEffects = window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches
+
+  if (useLightEffects) {
+    $gsap.set('.reveal-up, .reveal-card, .cta-badge, .cta-title, .cta-sub, .cta-btn', {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+    })
+    return
+  }
 
   // ── Section headings ──
   $gsap.utils.toArray('.reveal-up').forEach((el: any) => {
@@ -207,6 +217,25 @@ onMounted(() => {
 
 @media (min-width: 640px)  { .cats-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .cats-grid { grid-template-columns: repeat(3, 1fr); } }
+
+@media (max-width: 639px) {
+  .sect { padding: 4.5rem 0; }
+  .sect-inner { padding: 0 1rem; }
+  .sect-head { margin-bottom: 2rem; }
+  .cats-grid { gap: 0.75rem; border: 0; overflow: visible; }
+  .cat-card {
+    min-height: 0;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+  }
+  .cat-name { font-size: 1.2rem; }
+  .cat-desc { font-size: 0.82rem; }
+  .cta-band { padding: 5rem 1rem; }
+  .cta-glow { filter: none; opacity: 0.65; }
+  .marquee-item { padding: 0 1.25rem; }
+}
 
 .cat-card {
   display: flex;

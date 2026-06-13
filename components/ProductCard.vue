@@ -251,4 +251,34 @@ withDefaults(defineProps<{
   cursor: default;
   pointer-events: none;
 }
+
+@media (max-width: 520px) {
+  .product-card {
+    border-radius: 14px;
+  }
+
+  .product-card:hover,
+  .product-card:hover .card-thumb img {
+    transform: none;
+  }
+
+  .card-thumb {
+    aspect-ratio: 16 / 10;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .card-footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .card-btn {
+    min-height: 44px;
+    justify-content: center;
+  }
+}
 </style>

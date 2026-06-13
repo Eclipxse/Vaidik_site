@@ -3,6 +3,15 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+
+  // Native scrolling is faster and more predictable on touch devices.
+  if (prefersReducedMotion || isTouchDevice) {
+    nuxtApp.provide('lenis', null)
+    return
+  }
+
   const lenis = new Lenis({
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

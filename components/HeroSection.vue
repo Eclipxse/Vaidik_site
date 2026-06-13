@@ -266,11 +266,28 @@ function startTypewriter(el: HTMLElement) {
 }
 
 onMounted(() => {
-  if (canvasEl.value) initParticles(canvasEl.value)
-  if (typeEl.value)   setTimeout(() => startTypewriter(typeEl.value!), 1800)
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
+  const useLightEffects = prefersReducedMotion || isMobile
+
+  if (canvasEl.value && !useLightEffects) initParticles(canvasEl.value)
+  if (typeEl.value) {
+    if (useLightEffects) typeEl.value.textContent = typewriterTexts[0]
+    else setTimeout(() => startTypewriter(typeEl.value!), 1800)
+  }
 
   const { $gsap } = useNuxtApp()
   if (!$gsap) return
+
+  if (prefersReducedMotion) {
+    $gsap.set([
+      badgeEl.value, subEl.value, descEl.value, actionsEl.value,
+      prideBadgeEl.value, statsEl.value, scrollHintEl.value,
+      '.hero-char--red', '.hero-char--white',
+    ], { opacity: 1, x: 0, y: 0, scale: 1, rotationX: 0 })
+    stats.value.forEach(stat => { stat.current = stat.end })
+    return
+  }
 
   // ── Master intro timeline ────────────────────────────
   const tl = $gsap.timeline({ defaults: { ease: 'power4.out' } })
@@ -343,15 +360,19 @@ onMounted(() => {
   )
 
   // ── Orb float animations ─────────────────────────────
-  $gsap.to('.orb-1', { y: -30, x: 15,  duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-  $gsap.to('.orb-2', { y: 25,  x: -20, duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 })
-  $gsap.to('.orb-3', { y: -20, x: 10,  duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2 })
+  if (!useLightEffects) {
+    $gsap.to('.orb-1', { y: -30, x: 15,  duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+    $gsap.to('.orb-2', { y: 25,  x: -20, duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 })
+    $gsap.to('.orb-3', { y: -20, x: 10,  duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2 })
+  }
 
   // ── Btn glow pulse ───────────────────────────────────
-  $gsap.to('.btn-glow', {
-    boxShadow: '0 0 50px rgba(230,30,38,0.7), 0 4px 24px rgba(230,30,38,0.5)',
-    duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1
-  })
+  if (!useLightEffects) {
+    $gsap.to('.btn-glow', {
+      boxShadow: '0 0 50px rgba(230,30,38,0.7), 0 4px 24px rgba(230,30,38,0.5)',
+      duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1
+    })
+  }
 })
 </script>
 
@@ -846,7 +867,26 @@ onMounted(() => {
   .scroll-hint { order: 8 !important; }
 
   .hero {
-    padding: 8rem 1.5rem 6rem !important; /* More balanced padding on mobile */
+    min-height: auto;
+    padding: 8rem 1.5rem 4rem !important;
+  }
+
+  .hero-canvas,
+  .orb,
+  .scroll-hint {
+    display: none;
+  }
+
+  .hero-grid {
+    opacity: 0.45;
+    mask-image: none;
+  }
+
+  .hero-badge,
+  .stats-bar,
+  .patriotic-side-shield {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .patriotic-side-shield {
@@ -859,7 +899,7 @@ onMounted(() => {
     max-width: 320px !important;
     align-self: center !important; /* Center horizontally in vertical stack */
     opacity: 1 !important;
-    animation: float-badge 6s ease-in-out infinite !important;
+    animation: none !important;
   }
 }
 
@@ -876,6 +916,28 @@ onMounted(() => {
     width: 100% !important;
     justify-content: center !important;
   }
+  .hero-badge {
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+  .hero-headline {
+    line-height: 0.95;
+    margin-bottom: 1.25rem;
+  }
+  .hero-char {
+    font-size: clamp(2rem, 14vw, 4.25rem);
+  }
+  .hero-sub {
+    min-height: 2.8em;
+    font-size: 0.95rem;
+  }
+  .hero-desc {
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+  }
   .patriotic-side-shield {
     padding: 16px !important;
     max-width: 290px !important;
@@ -891,11 +953,20 @@ onMounted(() => {
     font-size: 10.5px !important;
   }
   .stats-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
     padding: 1rem !important;
     border-radius: 16px !important;
   }
   .stat-item {
     padding: 0.5rem 1rem !important;
+  }
+  .stat-item:nth-child(2)::after {
+    display: none;
+  }
+  .stat-item:nth-child(-n+2) {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 }
 </style>

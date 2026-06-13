@@ -22,6 +22,7 @@
               :src="activeImg === -1 ? product.images[0] : product.images[activeImg + 1]"
               :alt="product.name"
               class="main-image"
+              decoding="async"
             />
           </Transition>
           <!-- Badge -->
@@ -42,7 +43,7 @@
             @click="activeImg = -1"
             title="Cover image"
           >
-            <img :src="product.images[0]" :alt="product.name + ' cover'" class="cover-img" />
+            <img :src="product.images[0]" :alt="product.name + ' cover'" class="cover-img" loading="lazy" decoding="async" />
             <span class="cover-label">Main</span>
           </button>
 
@@ -55,7 +56,7 @@
               :class="{ 'thumb-btn--active': activeImg === i }"
               @click="activeImg = i"
             >
-              <img :src="img" :alt="`Screenshot ${i + 1}`" class="thumb-img" />
+              <img :src="img" :alt="`Screenshot ${i + 1}`" class="thumb-img" loading="lazy" decoding="async" />
             </button>
           </div>
         </div>
@@ -814,5 +815,77 @@ function doBuy() {
 
 .btn-telegram-slug:hover svg {
   transform: scale(1.15);
+}
+
+@media (max-width: 640px) {
+  .detail-page {
+    padding: 6.5rem 1rem 4rem;
+  }
+
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  .detail-grid {
+    gap: 2rem;
+  }
+
+  .main-image-wrap {
+    min-height: 210px;
+    border-radius: 14px;
+  }
+
+  .main-image {
+    max-height: 360px;
+  }
+
+  .info-col {
+    gap: 1.1rem;
+  }
+
+  .product-title {
+    font-size: 1.9rem;
+  }
+
+  .price-main {
+    font-size: 2.4rem;
+  }
+
+  .dur-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dur-btn {
+    min-height: 70px;
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+  }
+
+  .actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+  }
+
+  .btn-yt-watch,
+  .btn-telegram-slug,
+  .btn-buy-main {
+    min-height: 48px;
+    padding: 0.85rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .pulse-ring-green {
+    display: none;
+  }
+
+  .features-card,
+  .support-card {
+    padding: 1.25rem;
+  }
 }
 </style>

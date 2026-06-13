@@ -4,7 +4,7 @@
     <div class="page-header">
       <div>
         <h1 class="page-title">Store Inventory</h1>
-        <p class="page-sub">{{ filteredStatic.length }} assets registered in ledger</p>
+        <p class="page-sub">{{ filteredStatic.length + filteredDb.length }} assets registered in ledger</p>
       </div>
       <NuxtLink :to="`/${adminPath}/products/new`" class="btn-primary">
         Add New Product
@@ -112,6 +112,70 @@
       <div v-else class="empty-hint-row card">No live products match your search filters.</div>
     </div>
 
+    <!-- Products created from the admin panel -->
+    <div class="section-block">
+      <div class="section-label-row">
+        <div class="section-dot db-dot" />
+        <h2 class="section-heading">Admin-Created Products</h2>
+        <span class="section-badge">{{ filteredDb.length }} products saved in Supabase</span>
+      </div>
+
+      <div v-if="loadingDb" class="skeleton-list">
+        <div v-for="i in 2" :key="i" class="row-skeleton" />
+      </div>
+
+      <div v-else-if="filteredDb.length" class="products-table">
+        <div
+          v-for="p in filteredDb"
+          :key="String(p.id)"
+          class="db-product-row"
+          :class="{ 'row--draft': !p.is_published }"
+        >
+          <div class="db-product-info">
+            <div class="row-name">{{ p.name }}</div>
+            <div class="row-tagline">
+              {{ p.sub_category || p.category }} · ₹{{ p.price }}
+            </div>
+          </div>
+          <span :class="stockClass(String(p.stock_status))">{{ p.stock_status }}</span>
+          <label class="publish-toggle">
+            <input
+              type="checkbox"
+              :checked="Boolean(p.is_published)"
+              @change="togglePublish(p)"
+            />
+            <span>{{ p.is_published ? 'Live' : 'Draft' }}</span>
+          </label>
+          <div class="row-actions">
+            <NuxtLink :to="`/${adminPath}/products/${p.id}`" class="btn-edit">Edit</NuxtLink>
+            <button class="btn-delete" @click="confirmDelete(p)">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="empty-hint-row card">No admin-created products match your search filters.</div>
+    </div>
+
+    <div v-if="deleteTarget" class="modal-overlay" @click.self="deleteTarget = null">
+      <div class="modal">
+        <div class="modal-alert-icon">!</div>
+        <h2 class="modal-title">Delete Product?</h2>
+        <p class="modal-body">
+          Unpublish hides "{{ deleteTarget.name }}" from customers. Select permanent deletion to remove it completely.
+        </p>
+        <label class="modal-check">
+          <input v-model="hardDelete" type="checkbox" />
+          Permanently delete
+        </label>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="deleteTarget = null">Cancel</button>
+          <button class="btn-confirm-delete" :disabled="deleting" @click="doDelete">
+            {{ hardDelete ? 'Delete Forever' : 'Unpublish' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Static Delete Modal -->
     <div v-if="deleteStaticTarget" class="modal-overlay" @click.self="deleteStaticTarget = null">
       <div class="modal">
@@ -145,9 +209,14 @@ interface StaticProduct {
 }
 const staticProducts = ref<StaticProduct[]>([])
 const loadingStatic = ref(true)
+const dbProducts = ref<Record<string, any>[]>([])
+const loadingDb = ref(true)
 
 const search = ref('')
 const filterCat = ref('')
+const deleteTarget = ref<Record<string, any> | null>(null)
+const hardDelete = ref(false)
+const deleting = ref(false)
 
 // Static product deletion state
 const deleteStaticTarget = ref<StaticProduct | null>(null)
@@ -183,16 +252,75 @@ const filteredStatic = computed(() => {
   })
 })
 
-onMounted(async () => {
-  try {
-    const data = await $fetch<StaticProduct[]>('/api/admin/products/static')
-    staticProducts.value = data
-  } catch (err) {
-    console.error('Failed to load static products', err)
-  } finally {
-    loadingStatic.value = false
-  }
+const filteredDb = computed(() => {
+  return dbProducts.value.filter(p => {
+    const q = search.value.toLowerCase()
+    const nameMatch = !q
+      || String(p.name).toLowerCase().includes(q)
+      || String(p.description || '').toLowerCase().includes(q)
+    const catMatch = !filterCat.value || p.category === filterCat.value
+    return nameMatch && catMatch
+  })
 })
+
+onMounted(async () => {
+  await Promise.allSettled([
+    $fetch<StaticProduct[]>('/api/admin/products/static')
+      .then(data => { staticProducts.value = data })
+      .finally(() => { loadingStatic.value = false }),
+    $fetch<Record<string, any>[]>('/api/admin/products')
+      .then(data => { dbProducts.value = data })
+      .finally(() => { loadingDb.value = false }),
+  ])
+})
+
+function stockClass(status: string) {
+  return {
+    active: 'badge badge-active',
+    limited: 'badge badge-limited',
+    out: 'badge badge-out',
+  }[status] || 'badge'
+}
+
+async function togglePublish(p: Record<string, any>) {
+  const previous = Boolean(p.is_published)
+  p.is_published = !previous
+  try {
+    await $fetch(`/api/admin/products/${p.id}`, {
+      method: 'PUT',
+      body: { is_published: p.is_published },
+    })
+  } catch (err: any) {
+    p.is_published = previous
+    alert(err.data?.statusMessage || err.message || 'Failed to update product')
+  }
+}
+
+function confirmDelete(p: Record<string, any>) {
+  deleteTarget.value = p
+  hardDelete.value = false
+}
+
+async function doDelete() {
+  if (!deleteTarget.value) return
+  deleting.value = true
+  try {
+    await $fetch(`/api/admin/products/${deleteTarget.value.id}?hard=${hardDelete.value}`, {
+      method: 'DELETE',
+    })
+    if (hardDelete.value) {
+      dbProducts.value = dbProducts.value.filter(p => p.id !== deleteTarget.value!.id)
+    } else {
+      const product = dbProducts.value.find(p => p.id === deleteTarget.value!.id)
+      if (product) product.is_published = false
+    }
+    deleteTarget.value = null
+  } catch (err: any) {
+    alert(err.data?.statusMessage || err.message || 'Failed to delete product')
+  } finally {
+    deleting.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -245,6 +373,7 @@ onMounted(async () => {
   width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
 }
 .site-dot { background: #22c55e; box-shadow: 0 0 12px #22c55e; }
+.db-dot { background: #3b82f6; box-shadow: 0 0 12px #3b82f6; }
 .section-heading { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 900; color: #fff; margin: 0; letter-spacing: 0.02em; }
 .section-badge {
   font-size: 11px; color: #828fa9; background: rgba(255,255,255,0.02);
@@ -276,6 +405,14 @@ onMounted(async () => {
 }
 .table-row:last-child { border-bottom: none; }
 .table-row:hover { background: rgba(255, 255, 255, 0.015); }
+.db-product-row {
+  display: grid; grid-template-columns: minmax(180px, 1fr) 110px 100px 150px;
+  align-items: center; gap: 16px; padding: 18px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.db-product-row:last-child { border-bottom: none; }
+.row--draft { opacity: .65; }
+.db-product-info { min-width: 0; }
 
 /* Site Product card columns details */
 .row-product {
@@ -318,6 +455,17 @@ onMounted(async () => {
 }
 
 .row-actions { display: flex; gap: 8px; align-items: center; }
+.btn-edit {
+  padding: 7px 14px; background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.08); border-radius: 8px;
+  color: #cbd5e1; font-size: 12px; font-weight: 700; text-decoration: none;
+}
+.badge { padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.badge-active { background: rgba(34,197,94,.1); color: #22c55e; }
+.badge-limited { background: rgba(245,158,11,.1); color: #f59e0b; }
+.badge-out { background: rgba(239,68,68,.1); color: #ef4444; }
+.publish-toggle { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 12px; font-weight: 700; }
+.publish-toggle input { accent-color: #22c55e; }
 
 .btn-edit-site {
   padding: 8px 14px;
@@ -364,6 +512,8 @@ onMounted(async () => {
 .modal-alert-icon { font-size: 40px; margin-bottom: 16px; color: #ef4444; filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.4)); }
 .modal-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; color: #fff; margin: 0 0 12px; letter-spacing: 0.02em; }
 .modal-body { font-size: 14px; color: #94a3b8; margin: 0 0 24px; line-height: 1.5; font-weight: 500; }
+.modal-check { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; color: #cbd5e1; font-size: 13px; }
+.modal-check input { accent-color: #ef4444; }
 
 .modal-actions { display: flex; gap: 12px; justify-content: center; }
 .btn-cancel { padding: 12px 24px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; color: #cbd5e1; font-size: 13px; font-weight: 700; cursor: pointer !important; transition: all 0.2s; }
@@ -371,4 +521,8 @@ onMounted(async () => {
 .btn-confirm-delete { padding: 12px 24px; background: #ef4444; border: none; border-radius: 12px; color: white; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer !important; transition: all 0.2s; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35); }
 .btn-confirm-delete:hover { background: #ff3333; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5); }
 .btn-confirm-delete:disabled { opacity: .4; }
+
+@media (max-width: 800px) {
+  .db-product-row { grid-template-columns: 1fr; gap: 12px; }
+}
 </style>

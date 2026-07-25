@@ -29,7 +29,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Nunito"', 'sans-serif'],
+        display: ['"Space Grotesk"', 'sans-serif'],
         body:    ['"Inter"', 'sans-serif'],
       },
       borderRadius: {

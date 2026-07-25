@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+const requestUrl = useRequestURL()
+const socialImage = `${requestUrl.origin}/og.png`
 
-onMounted(() => {
-  if (process.client) {
-    console.log(
-      '%c' +
-      ' __  __   _   ___ ___ ___ \n' +
-      '|  \\/  | /_\\ | _ \\_ _/ _ \\\n' +
-      '| |\\/| |/ _ \\|   /| | (_) |\n' +
-      '|_|  |_/_/ \\_\\_|_\\___\\___/\n\n' +
-      '🔓 CONSOLE UNLOCKED BY MARIO',
-      'color: #ff2a35; font-weight: 900; font-family: monospace; font-size: 14px; text-shadow: 0 0 8px rgba(230,30,38,0.5);'
-    )
-  }
+useSeoMeta({
+  ogTitle: 'Aslil Gang Panel — Premium Free Fire Store',
+  ogDescription: 'Premium Free Fire panels, player IDs and reseller access with direct WhatsApp support.',
+  ogImage: socialImage,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Aslil Gang Panel — Premium Free Fire Store',
+  twitterDescription: 'Play sharp. Stay ahead.',
+  twitterImage: socialImage,
 })
 </script>
 

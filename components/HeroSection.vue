@@ -1,972 +1,568 @@
 <template>
-  <section class="hero" aria-label="Hero section">
-
-    <!-- Animated particle canvas -->
-    <canvas ref="canvasEl" class="hero-canvas" aria-hidden="true" />
-
-    <!-- Floating orbs background -->
-    <div class="orb orb-1" aria-hidden="true" />
-    <div class="orb orb-2" aria-hidden="true" />
-    <div class="orb orb-3" aria-hidden="true" />
-
-    <!-- Grid overlay -->
+  <section class="hero" aria-labelledby="hero-heading">
     <div class="hero-grid" aria-hidden="true" />
+    <div class="hero-glow" aria-hidden="true" />
 
-    <!-- Futuristic Left-Side Patriotic Shield -->
-    <div class="patriotic-side-shield" ref="prideBadgeEl">
-      <!-- Flag Container -->
-      <div class="shield-flag-wrap">
-        <img src="/indian_flag_waving.png" alt="Patriotic Pride Flag" class="shield-flag" />
-        <div class="glow-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-eyebrow hero-animate">
+          <span class="eyebrow-dot" aria-hidden="true" />
+          Built for serious Free Fire players
+        </div>
+
+        <h1 id="hero-heading" class="hero-title">
+          <span class="hero-animate">Play sharp.</span>
+          <span class="hero-animate title-accent">Stay ahead.</span>
+        </h1>
+
+        <p class="hero-description hero-animate">
+          Premium panels, player IDs and reseller access—curated in one
+          high-performance storefront with direct support when you need it.
+        </p>
+
+        <div class="hero-actions hero-animate">
+          <button class="btn-red" @click="scrollToCollection">
+            Explore the collection
+            <span aria-hidden="true">↓</span>
+          </button>
+          <NuxtLink to="/reseller" class="btn-outline">
+            Become a reseller
+            <span aria-hidden="true">↗</span>
+          </NuxtLink>
+        </div>
+
+        <dl class="hero-proof hero-animate" aria-label="Store highlights">
+          <div v-for="item in proof" :key="item.label">
+            <dt>{{ item.value }}</dt>
+            <dd>{{ item.label }}</dd>
+          </div>
+        </dl>
       </div>
-      
-      <!-- Written Content -->
-      <div class="shield-content">
-        <div class="shield-tag">🇮🇳 OFFICIAL PRIDE</div>
-        <h2 class="shield-main-title">ASLIL GANG</h2>
-        <p class="shield-sub-title">THE BEST IN INDIA</p>
-        
-        <div class="shield-divider"></div>
-        
-        <ul class="shield-points">
-          <li>
-            <span class="bullet saffron-dot"></span>
-            <strong>TOP 1 PANEL SELLER</strong>
-          </li>
-          <li>
-            <span class="bullet white-dot"></span>
-            <strong>BEST OF THE BEST</strong>
-          </li>
-          <li>
-            <span class="bullet green-dot"></span>
-            <strong>100% LEGIT &amp; UNDETECTED</strong>
-          </li>
-          <li style="gap: 8px;">
-            <svg class="bullet-tick-svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px #22c55e); flex-shrink: 0; margin-left: -2px; margin-right: 2px;">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            <strong>ALL SERVER SAFE &amp; 100% TRUSTED SELLER</strong>
-          </li>
-        </ul>
-      </div>
-    </div>
 
-    <!-- Badge -->
-    <div class="hero-badge" ref="badgeEl">
-      <span class="badge-pulse" />
-      <span>India's No.1 Panel</span>
-      <span class="badge-sep">·</span>
-      <span>Undetected</span>
-      <span class="badge-sep">·</span>
-      <span>Instant Delivery</span>
-    </div>
+      <div class="hero-visual hero-animate">
+        <div class="visual-meta">
+          <span>Featured drop</span>
+          <span>01 / 04</span>
+        </div>
 
-    <!-- Giant headline with char-by-char reveal -->
-    <h1 class="hero-headline" ref="headlineEl">
-      <span class="headline-line">
-        <span
-          v-for="(ch, i) in 'ASLIL GANG'.split('')"
-          :key="'r-'+i"
-          class="hero-char hero-char--red"
-          :style="{ '--i': i }"
-        >{{ ch === ' ' ? '\u00a0' : ch }}</span>
-      </span>
-      <span class="headline-line">
-        <span
-          v-for="(ch, i) in 'PANEL.'.split('')"
-          :key="'w-'+i"
-          class="hero-char hero-char--white"
-          :style="{ '--i': i }"
-        >{{ ch }}</span>
-      </span>
-    </h1>
+        <NuxtLink to="/pc-panel" class="visual-frame" aria-label="Explore PC panels">
+          <img
+            src="/products/PC_VISIBLE+AIMBOT+INTERNAL_PANEL/VISIBLE_AIMBOT_INTERNAL.png"
+            alt="Aslil Gang Visible Aimbot Internal panel package"
+          />
+          <div class="visual-shade" aria-hidden="true" />
+          <div class="visual-caption">
+            <span class="visual-kicker">PC collection</span>
+            <strong>Precision, packaged.</strong>
+            <span class="visual-link">View panels ↗</span>
+          </div>
+        </NuxtLink>
 
-    <!-- Typewriter subtitle -->
-    <p class="hero-sub" ref="subEl">
-      <span class="typewriter" ref="typeEl" />
-      <span class="cursor-blink">_</span>
-    </p>
+        <div class="visual-note visual-note--top">
+          <span class="note-icon">✓</span>
+          <span>
+            <strong>Direct support</strong>
+            <small>Before and after purchase</small>
+          </span>
+        </div>
 
-    <!-- Description -->
-    <p class="hero-desc" ref="descEl">
-      Premium Free Fire cheats, accounts &amp; subscriptions.
-      <strong>Instant delivery.</strong> Secure &amp; undetected.
-    </p>
-
-    <!-- CTA Buttons -->
-    <div class="hero-actions" ref="actionsEl">
-      <button class="btn-red btn-glow" @click="handleBrowseCollection">
-        <span>Browse Collection</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <NuxtLink to="/reseller" class="btn-outline">
-        Reseller Plan
-      </NuxtLink>
-    </div>
-
-    <!-- Animated stats bar -->
-    <div class="stats-bar" ref="statsEl">
-      <div v-for="stat in stats" :key="stat.label" class="stat-item">
-        <span class="stat-num">
-          {{ stat.label === 'Uptime' ? stat.current.toFixed(1) : Math.round(stat.current) }}{{ stat.suffix }}
-        </span>
-        <span class="stat-label">{{ stat.label }}</span>
+        <div class="visual-note visual-note--bottom">
+          <span class="note-pulse" aria-hidden="true" />
+          <span>
+            <strong>Fast checkout</strong>
+            <small>Order through WhatsApp</small>
+          </span>
+        </div>
       </div>
     </div>
 
-    <!-- Scroll hint -->
-    <div class="scroll-hint" ref="scrollHintEl" aria-hidden="true">
-      <span>SCROLL</span>
-      <div class="scroll-line">
-        <div class="scroll-dot" />
-      </div>
+    <div class="hero-bottom" aria-hidden="true">
+      <span>Aslil Gang / India</span>
+      <span class="hero-bottom__line" />
+      <span>Scroll to explore</span>
     </div>
-
   </section>
 </template>
 
 <script setup lang="ts">
-const { handleBuyNow } = useWhatsApp()
-const mobileOpen = useState('mobileOpen', () => false)
-
-function handleBrowseCollection() {
-  if (window.innerWidth >= 992) {
-    const el = document.getElementById('arsenal')
-    if (el) {
-      const lenis = (useNuxtApp() as any).$lenis
-      if (lenis) {
-        lenis.scrollTo(el)
-      } else {
-        el.scrollIntoView({ behavior: 'smooth' })
-      }
-    }
-  } else {
-    mobileOpen.value = true
-  }
-}
-
-const canvasEl    = ref<HTMLCanvasElement | null>(null)
-const badgeEl     = ref<HTMLElement | null>(null)
-const headlineEl  = ref<HTMLElement | null>(null)
-const subEl       = ref<HTMLElement | null>(null)
-const typeEl      = ref<HTMLElement | null>(null)
-const descEl      = ref<HTMLElement | null>(null)
-const actionsEl   = ref<HTMLElement | null>(null)
-const statsEl     = ref<HTMLElement | null>(null)
-const scrollHintEl = ref<HTMLElement | null>(null)
-const prideBadgeEl = ref<HTMLElement | null>(null)
-const stats = ref([
-  { display: '2K+',   label: 'Happy Customers',  end: 2,    current: 0, suffix: 'K+' },
-  { display: '99.9%', label: 'Uptime',           end: 99.9, current: 0, suffix: '%' },
-  { display: '8+',    label: 'Cheat Panels',     end: 8,    current: 0, suffix: '+' },
-  { display: '24/7',  label: 'Support',          end: 24,   current: 0, suffix: '/7' },
-])
-
-const typewriterTexts = [
-  'Best Than Any Other Panel Out There.',
-  'Undetected. Always Updated.',
-  'Instant Delivery. Premium Quality.',
+const proof = [
+  { value: '2K+', label: 'Customers served' },
+  { value: '24/7', label: 'Human support' },
+  { value: '8+', label: 'Curated panels' },
 ]
 
-// ── Particle canvas ──────────────────────────────────────
-function initParticles(canvas: HTMLCanvasElement) {
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
+function scrollToCollection() {
+  const collection = document.getElementById('collection')
+  if (!collection) return
 
-  let W = canvas.width = window.innerWidth
-  let H = canvas.height = window.innerHeight
-
-  const resize = () => {
-    W = canvas.width  = window.innerWidth
-    H = canvas.height = window.innerHeight
-  }
-  window.addEventListener('resize', resize, { passive: true })
-
-  interface Particle {
-    x: number; y: number
-    vx: number; vy: number
-    size: number; alpha: number
-    color: string
-  }
-
-  const count = Math.min(80, Math.floor(W * H / 14000))
-  const particles: Particle[] = Array.from({ length: count }, () => ({
-    x: Math.random() * W,
-    y: Math.random() * H,
-    vx: (Math.random() - 0.5) * 0.4,
-    vy: (Math.random() - 0.5) * 0.4,
-    size: Math.random() * 1.8 + 0.4,
-    alpha: Math.random() * 0.5 + 0.1,
-    color: Math.random() > 0.7 ? '#E61E26' : '#ffffff',
-  }))
-
-  let raf: number
-  function draw() {
-    ctx!.clearRect(0, 0, W, H)
-    for (const p of particles) {
-      p.x += p.vx; p.y += p.vy
-      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0
-      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0
-      ctx!.beginPath()
-      ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-      ctx!.fillStyle = p.color
-      ctx!.globalAlpha = p.alpha
-      ctx!.fill()
-    }
-    // Draw connecting lines between close particles
-    ctx!.globalAlpha = 1
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x
-        const dy = particles[i].y - particles[j].y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 120) {
-          ctx!.beginPath()
-          ctx!.moveTo(particles[i].x, particles[i].y)
-          ctx!.lineTo(particles[j].x, particles[j].y)
-          ctx!.strokeStyle = `rgba(230,30,38,${0.07 * (1 - dist / 120)})`
-          ctx!.lineWidth = 0.5
-          ctx!.stroke()
-        }
-      }
-    }
-    raf = requestAnimationFrame(draw)
-  }
-  draw()
-  onUnmounted(() => {
-    cancelAnimationFrame(raf)
-    window.removeEventListener('resize', resize)
-  })
-}
-
-// ── Typewriter ───────────────────────────────────────────
-function startTypewriter(el: HTMLElement) {
-  let textIdx = 0, charIdx = 0, deleting = false
-  const speed = { type: 55, delete: 30, pause: 2200 }
-
-  function tick() {
-    const text = typewriterTexts[textIdx]
-    if (!deleting) {
-      el.textContent = text.slice(0, ++charIdx)
-      if (charIdx === text.length) {
-        deleting = true
-        setTimeout(tick, speed.pause)
-        return
-      }
-    } else {
-      el.textContent = text.slice(0, --charIdx)
-      if (charIdx === 0) {
-        deleting = false
-        textIdx = (textIdx + 1) % typewriterTexts.length
-      }
-    }
-    setTimeout(tick, deleting ? speed.delete : speed.type)
-  }
-  tick()
-}
-
-onMounted(() => {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
-  const useLightEffects = prefersReducedMotion || isMobile
-
-  if (canvasEl.value && !useLightEffects) initParticles(canvasEl.value)
-  if (typeEl.value) {
-    if (useLightEffects) typeEl.value.textContent = typewriterTexts[0]
-    else setTimeout(() => startTypewriter(typeEl.value!), 1800)
-  }
-
-  const { $gsap } = useNuxtApp()
-  if (!$gsap) return
-
-  if (prefersReducedMotion) {
-    $gsap.set([
-      badgeEl.value, subEl.value, descEl.value, actionsEl.value,
-      prideBadgeEl.value, statsEl.value, scrollHintEl.value,
-      '.hero-char--red', '.hero-char--white',
-    ], { opacity: 1, x: 0, y: 0, scale: 1, rotationX: 0 })
-    stats.value.forEach(stat => { stat.current = stat.end })
+  const lenis = (useNuxtApp() as any).$lenis
+  if (lenis) {
+    lenis.scrollTo(collection, { offset: -80 })
     return
   }
 
-  // ── Master intro timeline ────────────────────────────
-  const tl = $gsap.timeline({ defaults: { ease: 'power4.out' } })
+  collection.scrollIntoView({ behavior: 'smooth' })
+}
 
-  // Badge slides in from top
-  tl.fromTo(badgeEl.value,
-    { opacity: 0, y: -30, scale: 0.9 },
-    { opacity: 1,  y: 0,  scale: 1, duration: 0.9 }
-  )
+onMounted(() => {
+  const { $gsap } = useNuxtApp()
+  if (!$gsap) return
 
-  // Chars animate in one by one
-  .fromTo('.hero-char--red',
-    { opacity: 0, y: 80, rotationX: -40 },
-    { opacity: 1, y: 0,  rotationX: 0,
-      duration: 0.7, stagger: 0.04, ease: 'back.out(1.5)' },
-    '-=0.3'
-  )
-  .fromTo('.hero-char--white',
-    { opacity: 0, y: 80, rotationX: -40 },
-    { opacity: 1, y: 0,  rotationX: 0,
-      duration: 0.6, stagger: 0.05, ease: 'back.out(1.5)' },
-    '-=0.5'
-  )
-
-  // Sub + desc
-  .fromTo([subEl.value, descEl.value],
-    { opacity: 0, y: 28 },
-    { opacity: 1, y: 0, duration: 0.8, stagger: 0.18 },
-    '-=0.3'
-  )
-
-  // Buttons with slight elastic bounce
-  .fromTo(actionsEl.value,
-    { opacity: 0, y: 24, scale: 0.94 },
-    { opacity: 1, y: 0,  scale: 1, duration: 0.8, ease: 'back.out(1.6)' },
-    '-=0.4'
-  )
-
-  // Pride Badge floating slide-in from left
-  .fromTo(prideBadgeEl.value,
-    { opacity: 0, x: -60, scale: 0.95 },
-    { opacity: 1, x: 0, scale: 1, duration: 1, ease: 'back.out(1.4)' },
-    '-=0.7'
-  )
-
-  // Stats bar slides up
-  .fromTo(statsEl.value,
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, duration: 0.8 },
-    '-=0.4'
-  )
-
-  // Trigger reactive count up when stats bar starts animating
-  tl.call(() => {
-    stats.value.forEach((stat) => {
-      $gsap.to(stat, {
-        current: stat.end,
-        duration: 1.5,
-        ease: 'power2.out',
-        snap: { current: stat.label === 'Uptime' ? 0.1 : 1 }
-      })
-    })
-  }, [], '-=0.4')
-
-  // Scroll hint
-  .fromTo(scrollHintEl.value,
-    { opacity: 0 },
-    { opacity: 1, duration: 1 },
-    '-=0.2'
-  )
-
-  // ── Orb float animations ─────────────────────────────
-  if (!useLightEffects) {
-    $gsap.to('.orb-1', { y: -30, x: 15,  duration: 7, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-    $gsap.to('.orb-2', { y: 25,  x: -20, duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 })
-    $gsap.to('.orb-3', { y: -20, x: 10,  duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2 })
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reducedMotion) {
+    $gsap.set('.hero-animate', { opacity: 1, y: 0 })
+    return
   }
 
-  // ── Btn glow pulse ───────────────────────────────────
-  if (!useLightEffects) {
-    $gsap.to('.btn-glow', {
-      boxShadow: '0 0 50px rgba(230,30,38,0.7), 0 4px 24px rgba(230,30,38,0.5)',
-      duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: -1
-    })
-  }
+  $gsap.fromTo(
+    '.hero-animate',
+    { opacity: 0, y: 26 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.85,
+      stagger: 0.09,
+      delay: 0.12,
+      ease: 'power3.out',
+    },
+  )
 })
 </script>
 
 <style scoped>
 .hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 10rem 2rem 8rem;
   position: relative;
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
   overflow: hidden;
+  padding: 8.75rem 1.5rem 5.5rem;
+  isolation: isolate;
 }
 
-/* ── Canvas ── */
-.hero-canvas {
+.hero::before {
   position: absolute;
+  z-index: -2;
   inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.6;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 46%, transparent 78%),
+    radial-gradient(circle at 72% 38%, rgba(255, 52, 65, 0.18), transparent 30%);
+  content: '';
 }
 
-/* ── Floating orbs ── */
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(80px);
-  z-index: 0;
-}
-
-.orb-1 {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(230,30,38,0.25) 0%, transparent 70%);
-  top: -120px; left: -100px;
-}
-
-.orb-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(230,30,38,0.15) 0%, transparent 70%);
-  bottom: -50px; right: -80px;
-}
-
-.orb-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(180,0,0,0.2) 0%, transparent 70%);
-  top: 40%; left: 60%;
-  filter: blur(100px);
-}
-
-/* ── Grid overlay ── */
 .hero-grid {
   position: absolute;
+  z-index: -3;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black 20%, transparent 92%);
 }
 
-/* All content above canvas */
-.hero > *:not(.hero-canvas):not(.orb):not(.hero-grid) {
+.hero-glow {
+  position: absolute;
+  z-index: -1;
+  top: 7%;
+  right: -14%;
+  width: min(60vw, 900px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 52, 65, 0.11);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 90px rgba(255, 52, 65, 0.025),
+    0 0 0 180px rgba(255, 52, 65, 0.015);
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(420px, 0.82fr);
+  align-items: center;
+  gap: clamp(3rem, 7vw, 7.5rem);
+  width: min(1320px, 100%);
+  margin: 0 auto;
+}
+
+.hero-copy {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* ── Badge ── */
-.hero-badge {
+.hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.45rem 1.4rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(230,30,38,0.35);
-  background: rgba(230,30,38,0.08);
-  backdrop-filter: blur(10px);
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 2.5rem;
-  opacity: 0;
-}
-
-.badge-pulse {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34,197,94,0.9);
-  animation: pulse-green 1.6s ease infinite;
-  flex-shrink: 0;
-}
-@keyframes pulse-green {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(34,197,94,0.9); }
-  50%       { opacity: 0.5; box-shadow: 0 0 16px rgba(34,197,94,0.4); }
-}
-
-.badge-sep { color: rgba(255,255,255,0.25); }
-
-/* ── Headline ── */
-.hero-headline {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-bottom: 1.6rem;
+  color: rgba(255, 255, 255, 0.7);
   font-family: var(--font-display);
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  margin: 0 0 1.8rem;
-  perspective: 800px;
-}
-
-.headline-line {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-
-.hero-char {
-  display: inline-block;
-  opacity: 0;
-  font-size: clamp(2rem, 10vw, 9rem);
-  transition: filter 0.3s ease;
-}
-
-.hero-char--red {
-  background: linear-gradient(160deg, #ff5555 0%, #E61E26 45%, #8b0000 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 30px rgba(230,30,38,0.5));
-}
-
-.hero-char--white { color: #fff; }
-
-/* ── Sub ── */
-.hero-sub {
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 2.5vw, 1.6rem);
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 1rem;
-  opacity: 0;
-  min-height: 2em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.1em;
-}
-
-.typewriter { color: rgba(255,255,255,0.85); }
-
-.cursor-blink {
-  color: var(--red);
-  animation: blink 1s step-end infinite;
-  font-weight: 300;
-}
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-/* ── Desc ── */
-.hero-desc {
-  font-family: var(--font-body);
-  font-size: clamp(0.9rem, 1.5vw, 1rem);
-  color: var(--gray);
-  line-height: 1.7;
-  max-width: 480px;
-  margin: 0 auto 3rem;
-  opacity: 0;
-}
-.hero-desc strong { color: #fff; }
-
-/* ── Actions ── */
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  opacity: 0;
-  margin-bottom: 4rem;
-}
-
-.btn-glow {
-  box-shadow: 0 4px 24px rgba(230,30,38,0.4);
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-/* ── Stats bar ── */
-.stats-bar {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  padding: 1.25rem 2.5rem;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  margin-bottom: 3rem;
-  opacity: 0;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem 2rem;
-  position: relative;
-}
-
-.stat-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0; top: 20%; bottom: 20%;
-  width: 1px;
-  background: rgba(255,255,255,0.1);
-}
-
-.stat-num {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 900;
-  color: #fff;
-  line-height: 1;
-}
-
-.stat-label {
-  font-family: var(--font-body);
   font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gray);
 }
 
-/* ── Scroll hint ── */
-.scroll-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
-  opacity: 0;
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scroll-line {
-  width: 1px;
-  height: 40px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 99px;
-  overflow: hidden;
-  position: relative;
-}
-
-.scroll-dot {
-  width: 100%;
-  height: 12px;
+.eyebrow-dot {
+  width: 8px;
+  height: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
   background: var(--red);
-  border-radius: 99px;
-  animation: scroll-drop 1.8s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(255, 52, 65, 0.72);
 }
 
-@keyframes scroll-drop {
-  0%   { transform: translateY(-100%); opacity: 0; }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { transform: translateY(400%);  opacity: 0; }
-}
-
-/* Futuristic Left-Side Patriotic Shield */
-.patriotic-side-shield {
-  position: absolute !important;
-  left: 4vw !important;
-  top: 22% !important;
-  width: 290px !important;
-  background: linear-gradient(135deg, rgba(20, 10, 30, 0.75) 0%, rgba(10, 5, 15, 0.9) 100%) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(230, 30, 38, 0.15) !important;
-  border-radius: 24px;
-  padding: 24px;
-  z-index: 10;
+.hero-title {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8),
-              0 0 40px rgba(230, 30, 38, 0.15),
-              inset 0 0 20px rgba(255, 255, 255, 0.02);
-  overflow: hidden;
-  box-sizing: border-box;
-  opacity: 0;
-  animation: float-badge 6s ease-in-out infinite;
+  margin: 0;
+  font-size: clamp(4.2rem, 8.4vw, 8.4rem);
+  line-height: 0.82;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
 }
 
-@keyframes float-badge {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+.hero-title > span {
+  display: block;
 }
 
-.shield-flag-wrap {
-  width: 100%;
-  height: 140px;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  background: #000;
+.title-accent {
+  color: var(--red);
+  background: linear-gradient(110deg, #ff6871 0%, var(--red) 48%, #b50616 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+  max-width: 620px;
+  margin: 2rem 0 0;
+  color: var(--gray-lt);
+  font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+  line-height: 1.75;
+}
+
+.hero-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 2.1rem;
 }
 
-.shield-flag {
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(590px, 100%);
+  margin: 3.2rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.hero-proof div {
+  padding: 1.25rem 1rem 0 0;
+}
+
+.hero-proof div + div {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--line);
+}
+
+.hero-proof dt {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.hero-proof dd {
+  margin: 0.25rem 0 0;
+  color: var(--gray);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.visual-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.visual-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 0.87;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 26px;
+  color: #fff;
+  background: #111;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.56),
+    0 0 0 8px rgba(255, 255, 255, 0.025);
+  text-decoration: none;
+  transform: perspective(1100px) rotateY(-4deg) rotateX(1deg);
+  transition: transform 500ms cubic-bezier(0.2, 0.75, 0.2, 1), border-color 240ms ease;
+}
+
+.visual-frame:hover {
+  border-color: rgba(255, 52, 65, 0.45);
+  transform: perspective(1100px) rotateY(0) rotateX(0) translateY(-4px);
+}
+
+.visual-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.02);
-  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  object-position: center;
+  filter: saturate(0.84) contrast(1.04);
+  transition: transform 700ms cubic-bezier(0.2, 0.75, 0.2, 1), filter 500ms ease;
 }
 
-.patriotic-side-shield:hover .shield-flag {
-  transform: scale(1.1);
+.visual-frame:hover img {
+  filter: saturate(1) contrast(1.02);
+  transform: scale(1.025);
 }
 
-.glow-overlay {
+.visual-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.6) 100%);
-  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(4, 4, 5, 0.97) 0%, rgba(4, 4, 5, 0.15) 46%, transparent 70%),
+    linear-gradient(135deg, transparent 55%, rgba(255, 52, 65, 0.14));
 }
 
-.shield-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+.visual-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 0.35rem 1rem;
+  padding: 1.7rem;
 }
 
-.shield-tag {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 900;
-  color: #ff425f;
-  letter-spacing: 0.15em;
-  margin-bottom: 6px;
-}
-
-.shield-main-title {
+.visual-kicker {
+  grid-column: 1 / -1;
+  color: var(--red-bright);
   font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  background: linear-gradient(90deg, #FF9933, #FFFFFF, #138808);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0 0 4px 0;
-  text-shadow: 0 0 20px rgba(255, 153, 51, 0.4), 0 2px 4px rgba(0,0,0,0.5);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.shield-sub-title {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.05em;
-  margin: 0;
-  text-shadow: 0 0 10px rgba(255,255,255,0.2);
+.visual-caption strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+  letter-spacing: -0.045em;
 }
 
-.shield-divider {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(230, 30, 38, 0.4) 0%, transparent 100%);
-  margin: 16px 0;
+.visual-link {
+  color: var(--gray-lt);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.shield-points {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.visual-note {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  min-width: 210px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+  background: rgba(10, 10, 11, 0.88);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(16px);
+}
+
+.visual-note--top {
+  top: 13%;
+  right: -2rem;
+}
+
+.visual-note--bottom {
+  bottom: 18%;
+  left: -2.75rem;
+}
+
+.visual-note > span:last-child {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100%;
+  gap: 0.18rem;
 }
 
-.shield-points li {
+.visual-note strong {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+}
+
+.visual-note small {
+  color: var(--gray);
+  font-size: 0.62rem;
+}
+
+.note-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 9px;
+  color: #0b1710;
+  background: #54e789;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.note-pulse {
+  width: 10px;
+  height: 10px;
+  margin: 0 0.6rem;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 7px rgba(255, 52, 65, 0.12), 0 0 20px rgba(255, 52, 65, 0.64);
+}
+
+.hero-bottom {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 11px;
-  color: #cbd5e1;
-  line-height: 1.4;
+  gap: 1rem;
+  width: min(1320px, calc(100% - 3rem));
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.34);
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.shield-points li strong {
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: 0.02em;
+.hero-bottom__line {
+  height: 1px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.bullet {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.hero-animate {
+  opacity: 0;
 }
 
-.saffron-dot {
-  background: #FF9933;
-  box-shadow: 0 0 8px #FF9933;
-}
-.white-dot {
-  background: #FFFFFF;
-  box-shadow: 0 0 8px #FFFFFF;
-}
-.green-dot {
-  background: #138808;
-  box-shadow: 0 0 8px #138808;
-}
-
-/* Waving ripple shine effect overlay */
-.shield-flag-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.08) 25%,
-    rgba(0, 0, 0, 0.15) 50%,
-    rgba(255, 255, 255, 0.08) 75%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 200% 100%;
-  animation: wave-ripple 3.5s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes wave-ripple {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Make it responsive - staying aligned on the left on desktop, centered & reordered on mobile! */
-@media (max-width: 1200px) {
-  .patriotic-side-shield {
-    left: 2vw !important;
-    width: 250px !important;
-    top: 22% !important;
-    padding: 16px;
-    gap: 14px;
-  }
-  .shield-flag-wrap {
-    height: 110px;
-  }
-  .shield-main-title {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 992px) {
-  /* Dynamic Flex Reordering to preserve premium fold layout on mobile */
-  .hero-badge { order: 1 !important; }
-  .hero-headline { order: 2 !important; }
-  .hero-sub { order: 3 !important; }
-  .hero-desc { order: 4 !important; }
-  .hero-actions { order: 5 !important; }
-  .patriotic-side-shield { order: 6 !important; }
-  .stats-bar { order: 7 !important; }
-  .scroll-hint { order: 8 !important; }
-
+@media (max-width: 1080px) {
   .hero {
     min-height: auto;
-    padding: 8rem 1.5rem 4rem !important;
+    padding-top: 9rem;
   }
 
-  .hero-canvas,
-  .orb,
-  .scroll-hint {
-    display: none;
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 4.5rem;
   }
 
-  .hero-grid {
-    opacity: 0.45;
-    mask-image: none;
+  .hero-copy {
+    max-width: 840px;
   }
 
-  .hero-badge,
-  .stats-bar,
-  .patriotic-side-shield {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+  .hero-visual {
+    width: min(660px, 92%);
+    margin: 0 auto;
   }
 
-  .patriotic-side-shield {
-    position: relative !important;
-    left: auto !important;
-    top: auto !important;
-    transform: none !important;
-    margin: 2.5rem auto 1.5rem !important; /* Centered with vertical breathing room */
-    width: 100% !important;
-    max-width: 320px !important;
-    align-self: center !important; /* Center horizontally in vertical stack */
-    opacity: 1 !important;
-    animation: none !important;
+  .visual-frame {
+    aspect-ratio: 1.05;
+    transform: none;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 680px) {
   .hero {
-    padding: 6rem 1rem 4rem !important;
+    padding: 7.5rem 1rem 4.5rem;
   }
+
+  .hero-title {
+    font-size: clamp(3.2rem, 16vw, 5.2rem);
+    line-height: 0.87;
+  }
+
+  .hero-description {
+    margin-top: 1.5rem;
+    font-size: 0.92rem;
+  }
+
   .hero-actions {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 0.8rem !important;
+    display: grid;
+    grid-template-columns: 1fr;
   }
+
   .hero-actions > * {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  .hero-badge {
-    gap: 0.4rem;
-    padding: 0.45rem 0.8rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.58rem;
-    letter-spacing: 0.06em;
-  }
-  .hero-headline {
-    line-height: 0.95;
-    margin-bottom: 1.25rem;
-  }
-  .hero-char {
-    font-size: clamp(2rem, 14vw, 4.25rem);
-  }
-  .hero-sub {
-    min-height: 2.8em;
-    font-size: 0.95rem;
-  }
-  .hero-desc {
-    margin-bottom: 2rem;
-    font-size: 0.85rem;
-  }
-  .patriotic-side-shield {
-    padding: 16px !important;
-    max-width: 290px !important;
-    margin: 2rem auto 1rem !important;
-  }
-  .shield-flag-wrap {
-    height: 100px !important;
-  }
-  .shield-main-title {
-    font-size: 20px !important;
-  }
-  .shield-points li {
-    font-size: 10.5px !important;
-  }
-  .stats-bar {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    padding: 1rem !important;
-    border-radius: 16px !important;
   }
-  .stat-item {
-    padding: 0.5rem 1rem !important;
+
+  .hero-proof {
+    margin-top: 2.3rem;
   }
-  .stat-item:nth-child(2)::after {
+
+  .hero-proof div {
+    padding-right: 0.5rem;
+  }
+
+  .hero-proof div + div {
+    padding-left: 0.7rem;
+  }
+
+  .hero-proof dt {
+    font-size: 1.2rem;
+  }
+
+  .hero-proof dd {
+    font-size: 0.54rem;
+  }
+
+  .hero-visual {
+    width: 100%;
+  }
+
+  .visual-frame {
+    aspect-ratio: 0.9;
+    border-radius: 20px;
+  }
+
+  .visual-caption {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
+
+  .visual-note {
     display: none;
   }
-  .stat-item:nth-child(-n+2) {
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  .hero-bottom {
+    display: none;
   }
 }
 </style>

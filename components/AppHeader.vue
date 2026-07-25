@@ -1,167 +1,116 @@
 <template>
   <div>
-    <!-- ── Scroll progress bar ── -->
-    <div class="scroll-progress" :style="{ transform: `scaleX(${scrollProgress})` }" aria-hidden="true" />
+    <div
+      class="scroll-progress"
+      :style="{ transform: `scaleX(${scrollProgress})` }"
+      aria-hidden="true"
+    />
 
-    <!-- ── Announcement bar ── -->
-    <Transition name="ann-bar">
-      <div v-if="annVisible" class="ann-bar">
-        <span class="ann-text">
-          🔥 <strong>Limited Stock!</strong> Prices go up after 50 more orders.
-          <NuxtLink to="/pc-panel" class="ann-link">Shop Now →</NuxtLink>
-        </span>
-        <button class="ann-close" @click="annVisible = false" aria-label="Dismiss">✕</button>
-      </div>
-    </Transition>
-
-    <!-- ── Main header ── -->
     <header
       class="site-header"
       :class="{
         'site-header--scrolled': scrolled,
-        'site-header--hidden': navHidden,
-        'site-header--shifted': annVisible,
         'site-header--menu-open': mobileOpen,
       }"
     >
-      <!-- Red spotlight sweep on hover -->
-      <div class="header-spotlight" ref="spotlightEl" aria-hidden="true" />
-
       <div class="header-inner">
-
-        <!-- Logo -->
-        <NuxtLink to="/" class="header-logo" aria-label="Aslil Gang Panel Home">
-          <div class="logo-img-wrap">
-            <img src="/products/favicon/logo/image.png" alt="ASLIL GANG PANEL Logo" class="logo-img" />
-          </div>
-          <div class="logo-words">
-            <span class="logo-main">ASLIL GANG</span>
-            <span class="logo-sub">PANEL</span>
-          </div>
-          <span class="logo-live-dot" aria-label="Online" />
+        <NuxtLink to="/" class="brand" aria-label="Aslil Gang Panel home">
+          <span class="brand-mark" aria-hidden="true">AG</span>
+          <span class="brand-copy">
+            <strong>Aslil Gang</strong>
+            <small>Premium panel store</small>
+          </span>
         </NuxtLink>
 
-        <!-- Desktop Nav with floating active indicator -->
-        <nav class="desktop-nav" aria-label="Main navigation" ref="navEl">
-          <div class="nav-pill-bg" ref="pillEl" aria-hidden="true" />
+        <nav class="desktop-nav" aria-label="Main navigation">
           <NuxtLink
             v-for="link in navLinks"
             :key="link.to"
             :to="link.to"
             class="nav-link"
             :class="{ 'nav-link--active': isActive(link.to) }"
-            :ref="el => setNavRef(link.to, el)"
-            @mouseenter="movePill(link.to)"
-            @mouseleave="resetPill"
           >
-            <span v-if="link.hot" class="nav-hot">NEW</span>
             {{ link.label }}
+            <span v-if="link.hot" class="nav-hot">Pro</span>
           </NuxtLink>
         </nav>
 
-        <!-- Right actions -->
-        <div class="header-right">
-
-          <!-- LIVE badge -->
-          <div class="live-badge">
-            <span class="live-ring" aria-hidden="true" />
-            <span class="live-dot" aria-hidden="true" />
-            <span>LIVE</span>
-          </div>
-
-          <!-- WhatsApp CTA -->
+        <div class="header-actions">
+          <span class="support-status">
+            <i aria-hidden="true" />
+            Support online
+          </span>
           <a
             :href="`https://wa.me/${ownerNumber}`"
             target="_blank"
             rel="noopener noreferrer"
-            class="wa-btn"
-            aria-label="Contact on WhatsApp"
+            class="header-cta"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            <span class="wa-btn-text">Contact</span>
+            WhatsApp
+            <span aria-hidden="true">↗</span>
           </a>
-
-          <!-- Social icons (Instagram / Telegram / YouTube) — RIGHT of Contact -->
-          <div class="social-icons" role="list" aria-label="Social media links">
-            <a
-              v-for="s in socialLinks"
-              :key="s.name"
-              :href="s.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="social-icon-btn"
-              :aria-label="s.name"
-              role="listitem"
-              :style="{ color: s.color }"
-              v-html="s.icon"
-            />
-          </div>
-
-          <!-- Hamburger -->
           <button
-            class="hamburger"
-            :class="{ 'hamburger--open': mobileOpen }"
+            class="menu-button"
+            :class="{ 'menu-button--open': mobileOpen }"
             :aria-expanded="mobileOpen"
-            aria-label="Toggle menu"
+            aria-controls="mobile-navigation"
+            aria-label="Toggle navigation"
             @click="mobileOpen = !mobileOpen"
           >
-            <span class="hb-line" />
-            <span class="hb-line" />
-            <span class="hb-line" />
+            <span />
+            <span />
           </button>
         </div>
       </div>
 
-      <!-- Mobile menu (full-screen overlay) -->
-      <Transition name="mobile-overlay">
-        <div v-if="mobileOpen" class="mobile-overlay" role="dialog" aria-modal="true">
-          <div class="mobile-overlay-bg" aria-hidden="true" />
-          <nav class="mobile-nav">
-            <div class="mobile-nav-heading">
-              <span>Explore</span>
-              <small>Choose a section</small>
+      <Transition name="menu">
+        <div
+          v-if="mobileOpen"
+          id="mobile-navigation"
+          class="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          <div class="mobile-menu__inner">
+            <p class="mobile-kicker">Explore the store</p>
+            <nav class="mobile-nav" aria-label="Mobile navigation">
+              <NuxtLink
+                v-for="(link, index) in navLinks"
+                :key="link.to"
+                :to="link.to"
+                class="mobile-link"
+                :class="{ 'mobile-link--active': isActive(link.to) }"
+                @click="mobileOpen = false"
+              >
+                <span>{{ String(index + 1).padStart(2, '0') }}</span>
+                <strong>{{ link.label }}</strong>
+                <i aria-hidden="true">↗</i>
+              </NuxtLink>
+            </nav>
+
+            <div class="mobile-footer">
+              <a
+                :href="`https://wa.me/${ownerNumber}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-green"
+                @click="mobileOpen = false"
+              >
+                Chat with support
+              </a>
+              <div class="mobile-socials">
+                <a
+                  v-for="social in socialLinks"
+                  :key="social.label"
+                  :href="social.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ social.label }}
+                </a>
+              </div>
             </div>
-            <NuxtLink
-              v-for="(link, i) in navLinks"
-              :key="link.to"
-              :to="link.to"
-              class="mobile-link"
-              :class="{ 'mobile-link--active': isActive(link.to) }"
-              :style="{ '--i': i }"
-              @click="mobileOpen = false"
-            >
-              <span class="mobile-link-num">{{ String(i + 1).padStart(2, '0') }}</span>
-              <span class="mobile-link-label">{{ link.label }}</span>
-              <span v-if="link.hot" class="mobile-hot">NEW</span>
-              <span class="mobile-link-arrow">→</span>
-            </NuxtLink>
-          </nav>
-          <a
-            :href="`https://wa.me/${ownerNumber}`"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mobile-wa-btn"
-            @click="mobileOpen = false"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Connect on WhatsApp
-          </a>
-          <div class="mobile-socials" aria-label="Social media links">
-            <a
-              v-for="s in socialLinks"
-              :key="s.name"
-              :href="s.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mobile-social-link"
-              :aria-label="s.name"
-              :style="{ color: s.color }"
-              v-html="s.icon"
-            />
           </div>
         </div>
       </Transition>
@@ -170,63 +119,28 @@
 </template>
 
 <script setup lang="ts">
-const route      = useRoute()
+const route = useRoute()
 const { ownerNumber } = useWhatsApp()
 
-// ── State ──────────────────────────────────────────
-const scrolled       = ref(false)
-const navHidden      = ref(false)
-const mobileOpen     = useState('mobileOpen', () => false)
-const annVisible     = ref(true)
+const scrolled = ref(false)
 const scrollProgress = ref(0)
-
-const navEl      = ref<HTMLElement | null>(null)
-const pillEl     = ref<HTMLElement | null>(null)
-const spotlightEl = ref<HTMLElement | null>(null)
-
-// Per-link element map for the sliding pill
-const navRefs = new Map<string, HTMLElement>()
-function setNavRef(to: string, el: any) {
-  if (el?.$el) navRefs.set(to, el.$el as HTMLElement)
-  else if (el)  navRefs.set(to, el as HTMLElement)
-}
+const mobileOpen = useState('mobileOpen', () => false)
+let lockedScrollY = 0
 
 const navLinks = [
-  { to: '/',               label: 'Home'         },
-  { to: '/cheats/android', label: 'Phone Panel'  },
-  { to: '/cheats/ios',     label: 'iOS Panel'    },
-  { to: '/pc-panel',       label: 'PC Panel'     },
-  { to: '/free-fire-ids',  label: 'FF IDs'       },
-  { to: '/reseller',       label: 'Reseller Plan', hot: true },
-  { to: '/ssm-panel',      label: 'Socials'      },
+  { to: '/', label: 'Home' },
+  { to: '/cheats/android', label: 'Android' },
+  { to: '/cheats/ios', label: 'iOS' },
+  { to: '/pc-panel', label: 'PC Panels' },
+  { to: '/free-fire-ids', label: 'FF IDs' },
+  { to: '/reseller', label: 'Reseller', hot: true },
 ]
 
-// TODO: replace # with your actual social media URLs
 const socialLinks = [
-  {
-    name: 'Instagram',
-    href: 'https://www.instagram.com/fit_vaidik',
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
-    color: '#e1306c',
-  },
-  {
-    name: 'Telegram',
-    href: 'https://t.me/+fp8yl-Roaek5YmU1',
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
-    color: '#26a5d4',
-  },
-  {
-    name: 'YouTube',
-    href: 'https://www.youtube.com/@aslilgangliveff',
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
-    color: '#ff0000',
-  },
-  {
-    name: 'Discord',
-    href: 'https://discord.gg/g6BdyeWQvQ',
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/></svg>`,
-    color: '#5865F2',
-  },
+  { label: 'Instagram', href: 'https://www.instagram.com/fit_vaidik' },
+  { label: 'Telegram', href: 'https://t.me/+fp8yl-Roaek5YmU1' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@aslilgangliveff' },
+  { label: 'Discord', href: 'https://discord.gg/g6BdyeWQvQ' },
 ]
 
 function isActive(path: string) {
@@ -234,88 +148,49 @@ function isActive(path: string) {
   return route.path.startsWith(path)
 }
 
-// ── Floating pill ──────────────────────────────────
-function movePill(to: string) {
-  if (!pillEl.value || !navEl.value) return
-  const linkEl = navRefs.get(to)
-  if (!linkEl) return
-  const navRect  = navEl.value.getBoundingClientRect()
-  const linkRect = linkEl.getBoundingClientRect()
-  pillEl.value.style.opacity  = '1'
-  pillEl.value.style.width    = `${linkRect.width}px`
-  pillEl.value.style.left     = `${linkRect.left - navRect.left}px`
+function updateScrollState() {
+  const top = window.scrollY
+  const max = document.documentElement.scrollHeight - window.innerHeight
+  scrolled.value = top > 18
+  scrollProgress.value = max > 0 ? top / max : 0
 }
 
-function resetPill() {
-  if (!pillEl.value) return
-  // Slide to active link
-  const activeLink = navLinks.find(l => isActive(l.to))
-  if (activeLink) movePill(activeLink.to)
-  else pillEl.value.style.opacity = '0'
-}
-
-// ── Spotlight follow ──────────────────────────────
-function onMouseMove(e: MouseEvent) {
-  if (!spotlightEl.value) return
-  spotlightEl.value.style.setProperty('--mx', `${e.clientX}px`)
-  spotlightEl.value.style.setProperty('--my', `${e.clientY}px`)
-}
-
-// ── Scroll logic ──────────────────────────────────
-let lastScroll = 0
-
-function onScroll() {
-  if (mobileOpen.value) return
-  const y = window.scrollY
-  const maxY = document.documentElement.scrollHeight - window.innerHeight
-  scrollProgress.value = maxY > 0 ? y / maxY : 0
-  scrolled.value = y > 40
-  navHidden.value = y > lastScroll + 6 && y > 120
-  if (y < lastScroll - 6 || y < 80) navHidden.value = false
-  lastScroll = y
+function closeOnEscape(event: KeyboardEvent) {
+  if (event.key === 'Escape') mobileOpen.value = false
 }
 
 watch(() => route.path, () => {
   mobileOpen.value = false
-  nextTick(() => resetPill())
 })
-
-onMounted(() => {
-  window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-  window.addEventListener('keydown', onKeydown)
-  nextTick(() => resetPill())
-})
-
-let lockedScrollY = 0
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && mobileOpen.value) mobileOpen.value = false
-}
 
 watch(mobileOpen, (open) => {
   if (open) {
     lockedScrollY = window.scrollY
-    navHidden.value = false
     document.documentElement.classList.add('mobile-menu-open')
     document.body.style.position = 'fixed'
     document.body.style.top = `-${lockedScrollY}px`
     document.body.style.width = '100%'
     document.body.style.overflow = 'hidden'
-  } else {
-    document.documentElement.classList.remove('mobile-menu-open')
-    document.body.style.position = ''
-    document.body.style.top = ''
-    document.body.style.width = ''
-    document.body.style.overflow = ''
-    window.scrollTo(0, lockedScrollY)
+    return
   }
+
+  document.documentElement.classList.remove('mobile-menu-open')
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.width = ''
+  document.body.style.overflow = ''
+  window.scrollTo(0, lockedScrollY)
+})
+
+onMounted(() => {
+  updateScrollState()
+  window.addEventListener('scroll', updateScrollState, { passive: true })
+  window.addEventListener('keydown', closeOnEscape)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-  window.removeEventListener('mousemove', onMouseMove)
-  window.removeEventListener('keydown', onKeydown)
+  window.removeEventListener('scroll', updateScrollState)
+  window.removeEventListener('keydown', closeOnEscape)
   document.documentElement.classList.remove('mobile-menu-open')
   document.body.style.position = ''
   document.body.style.top = ''
@@ -325,677 +200,377 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* ── Scroll progress ── */
 .scroll-progress {
   position: fixed;
-  top: 0; left: 0;
+  z-index: 1200;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 2.5px;
-  background: linear-gradient(90deg, #E61E26, #ff6b6b, #E61E26);
+  height: 2px;
+  background: linear-gradient(90deg, var(--red), #ff8a91);
   transform-origin: left;
-  z-index: 9999;
-  transition: transform 0.1s linear;
 }
 
-/* ── Announcement bar ── */
-.ann-bar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  background: var(--red);
-  padding: 0.5rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: #fff;
-}
-
-.ann-text { display: flex; align-items: center; gap: 0.5rem; }
-
-.ann-link {
-  color: #fff;
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.ann-close {
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.7);
-  cursor: pointer;
-  font-size: 0.8rem;
-  padding: 0.2rem 0.4rem;
-  line-height: 1;
-  border-radius: 4px;
-  transition: color 0.2s ease;
-}
-.ann-close:hover { color: #fff; }
-
-.ann-bar-enter-active, .ann-bar-leave-active { transition: all 0.35s ease; }
-.ann-bar-enter-from, .ann-bar-leave-to { opacity: 0; transform: translateY(-100%); }
-
-/* ── Header ── */
 .site-header {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  transition: background 0.4s ease, border-color 0.4s ease,
-              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              top 0.3s ease;
-  border-bottom: 1px solid transparent;
-  overflow: hidden;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 0.9rem 1.25rem;
+  transition: padding 180ms ease;
 }
 
-.site-header--shifted { top: 34px; }
+.header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(1380px, 100%);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 0.65rem 0.75rem 0.65rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
 
 .site-header--scrolled {
-  background: rgba(4, 4, 4, 0.82);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border-bottom-color: rgba(255,255,255,0.06);
+  padding-top: 0.65rem;
 }
 
-.site-header--hidden {
-  transform: translateY(-110%);
+.site-header--scrolled .header-inner,
+.site-header--menu-open .header-inner {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(8, 8, 9, 0.84);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(22px) saturate(145%);
 }
 
-.site-header--menu-open {
-  top: 0;
-  z-index: 1000;
-  transform: none !important;
-  overflow: visible;
-  transition: none;
-}
-
-/* ── Spotlight effect ── */
-.header-spotlight {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    280px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(230,30,38,0.06),
-    transparent 60%
-  );
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.site-header--scrolled .header-spotlight { opacity: 1; }
-
-/* ── Inner layout ── */
-.header-inner {
-  display: flex;
+.brand {
+  display: inline-flex;
+  width: fit-content;
   align-items: center;
-  justify-content: space-between;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0.85rem 2rem;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Logo ── */
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-
-.logo-mark {
-  position: relative;
-  width: 38px; height: 38px;
-  flex-shrink: 0;
-}
-
-.logo-mark-text {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--red);
-  border-radius: 10px;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 900;
+  gap: 0.8rem;
   color: #fff;
-  z-index: 1;
+  text-decoration: none;
 }
 
-.logo-mark-ring {
-  position: absolute;
-  inset: -3px;
-  border-radius: 13px;
-  border: 1.5px solid rgba(230,30,38,0.4);
-  animation: ring-spin 8s linear infinite;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    rgba(230,30,38,0.5) 10%,
-    transparent 20%
-  );
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  color: #fff;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), transparent 38%),
+    linear-gradient(135deg, var(--red-bright), var(--red-deep));
+  box-shadow: 0 10px 28px rgba(255, 52, 65, 0.24);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
 }
 
-@keyframes ring-spin {
-  to { transform: rotate(360deg); }
-}
-
-.logo-words {
+.brand-copy {
   display: flex;
   flex-direction: column;
-  line-height: 1;
+  gap: 0.14rem;
 }
 
-.logo-main {
+.brand-copy strong {
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: 0.06em;
+  font-size: 0.92rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.logo-sub {
-  font-family: var(--font-body);
-  font-size: 0.6rem;
+.brand-copy small {
+  color: var(--gray);
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--red);
 }
 
-.logo-live-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34,197,94,0.9);
-  animation: live-glow 1.8s ease infinite;
-  align-self: flex-start;
-  margin-top: 2px;
-}
-
-@keyframes live-glow {
-  0%, 100% { box-shadow: 0 0 6px rgba(34,197,94,0.9); }
-  50%       { box-shadow: 0 0 14px rgba(34,197,94,0.4); opacity: 0.6; }
-}
-
-/* ── Desktop nav ── */
 .desktop-nav {
-  display: none;
+  display: flex;
   align-items: center;
-  position: relative;
-  padding: 0.3rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.03);
-}
-
-@media (min-width: 1024px) {
-  .desktop-nav { display: flex; }
-}
-
-/* Sliding background pill */
-.nav-pill-bg {
-  position: absolute;
-  top: 0.3rem; bottom: 0.3rem;
-  border-radius: 9999px;
-  background: rgba(230,30,38,0.18);
-  border: 1px solid rgba(230,30,38,0.35);
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.2s ease;
-  pointer-events: none;
-  opacity: 0;
+  gap: 0.2rem;
+  padding: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .nav-link {
   position: relative;
-  padding: 0.45rem 0.95rem;
-  border-radius: 9999px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.62rem 0.72rem;
+  border-radius: 9px;
+  color: rgba(255, 255, 255, 0.58);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.07em;
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: color 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  white-space: nowrap;
-  z-index: 1;
+  transition: color 160ms ease, background-color 160ms ease;
 }
 
-.nav-link:hover { color: rgba(255,255,255,0.9); }
-
+.nav-link:hover,
 .nav-link--active {
   color: #fff;
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.nav-link--active::after {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.24rem;
+  left: 0.7rem;
+  height: 1px;
+  background: var(--red);
+  content: '';
 }
 
 .nav-hot {
-  font-size: 0.52rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  padding: 0.15rem 0.4rem;
+  padding: 0.15rem 0.3rem;
   border-radius: 4px;
-  background: linear-gradient(135deg, #ff6b35, #E61E26);
   color: #fff;
-  line-height: 1;
+  background: var(--red);
+  font-size: 0.48rem;
 }
 
-/* ── Right actions ── */
-.header-right {
+.header-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.75rem;
 }
 
-/* ── Social icon buttons ── */
-.social-icons {
-  display: none;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-@media (min-width: 1024px) { .social-icons { display: flex; } }
-
-.social-icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  text-decoration: none;
-  transition: all 0.25s ease;
-  flex-shrink: 0;
-}
-
-.social-icon-btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
-
-/* Vertical divider BEFORE the social icons (between Contact btn and icons) */
-.social-icons::before {
-  content: '';
-  display: block;
-  width: 1px;
-  height: 22px;
-  background: rgba(255,255,255,0.1);
-  margin: 0 0.35rem;
-}
-
-/* Remove old after divider if present */
-.social-icons::after { display: none; }
-
-/* LIVE badge */
-.live-badge {
-  display: none;
+.support-status {
+  display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(34,197,94,0.25);
-  background: rgba(34,197,94,0.07);
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #22c55e;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  position: relative;
 }
 
-@media (min-width: 1024px) { .live-badge { display: flex; } }
-
-.live-ring {
-  position: absolute;
-  inset: -3px;
-  border-radius: 9999px;
-  border: 1px solid rgba(34,197,94,0.3);
-  animation: ring-pulse 2s ease-out infinite;
-}
-
-@keyframes ring-pulse {
-  0%   { transform: scale(1);    opacity: 0.8; }
-  100% { transform: scale(1.15); opacity: 0;   }
-}
-
-.live-dot {
-  width: 6px; height: 6px;
+.support-status i {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #22c55e;
-  animation: live-glow 1.5s ease infinite;
+  background: #54e789;
+  box-shadow: 0 0 12px rgba(84, 231, 137, 0.72);
 }
 
-/* WhatsApp button — green (WhatsApp brand color) */
-.wa-btn {
-  display: none;
+.header-cta {
+  display: inline-flex;
+  min-height: 42px;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.55rem 1.1rem;
-  border-radius: 9999px;
-  background: #25D366;
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(37,211,102,0.4);
-}
-
-.wa-btn:hover {
-  background: #1ebe5d;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(37,211,102,0.6);
-}
-
-@media (min-width: 1024px) { .wa-btn { display: flex; } }
-
-.wa-btn-text { white-space: nowrap; }
-
-/* ── Hamburger ── */
-.hamburger {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 40px; height: 40px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(84, 231, 137, 0.25);
   border-radius: 10px;
-  cursor: pointer;
+  color: #0a1a10;
+  background: #54e789;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.header-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(84, 231, 137, 0.2);
+}
+
+.menu-button {
+  display: none;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  transition: border-color 0.25s ease, background 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
 }
 
-.hamburger:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(230,30,38,0.4);
-}
-
-@media (min-width: 1024px) { .hamburger { display: none; } }
-
-.hb-line {
+.menu-button span {
   display: block;
-  width: 20px; height: 1.5px;
+  width: 18px;
+  height: 1.5px;
+  margin: 5px auto;
+  border-radius: 99px;
   background: #fff;
-  border-radius: 2px;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center;
+  transition: transform 180ms ease;
 }
 
-.hamburger--open .hb-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.hamburger--open .hb-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger--open .hb-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.menu-button--open span:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
 
-/* ── Mobile overlay ── */
-.mobile-overlay {
+.menu-button--open span:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+.mobile-menu {
   position: fixed;
+  z-index: -1;
   inset: 0;
-  z-index: 90;
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  min-height: 100dvh;
   overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: none;
-  touch-action: pan-y;
-  padding-bottom: max(2rem, env(safe-area-inset-bottom));
-  scrollbar-width: none;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(255, 52, 65, 0.18), transparent 32%),
+    #070708;
 }
 
-.mobile-overlay::-webkit-scrollbar { display: none; }
+.mobile-menu__inner {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  padding: 8rem 1.25rem 2rem;
+}
 
-@media (min-width: 1024px) { .mobile-overlay { display: none !important; } }
-
-.mobile-overlay-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 5, 5, 0.98); /* Almost solid black for high performance */
-  backdrop-filter: blur(8px); /* Efficient blur radius to avoid WebKit lag */
-  -webkit-backdrop-filter: blur(8px);
+.mobile-kicker {
+  margin: 0 0 1.2rem;
+  color: var(--red-bright);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .mobile-nav {
-  position: relative;
-  z-index: 1;
-  padding: 6rem 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.mobile-nav-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0 0 0.8rem;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.mobile-nav-heading span {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-
-.mobile-nav-heading small {
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.35);
+  border-top: 1px solid var(--line);
 }
 
 .mobile-link {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
   align-items: center;
-  gap: 1.25rem;
-  padding: 1.1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  text-decoration: none;
-  animation: mobile-link-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-  animation-delay: calc(var(--i) * 0.06s + 0.1s);
-  transform: translateX(-20px);
-  opacity: 0;
-  transition: background 0.2s ease;
-}
-
-@keyframes mobile-link-in {
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.mobile-link-num {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.2);
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
-  width: 24px;
-}
-
-.mobile-link-label {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 900;
-  color: rgba(255,255,255,0.55);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  transition: color 0.2s ease;
-  flex: 1;
-}
-
-.mobile-link--active .mobile-link-label,
-.mobile-link:hover .mobile-link-label {
-  color: #fff;
-}
-
-.mobile-link--active .mobile-link-num { color: var(--red); }
-
-.mobile-hot {
-  font-size: 0.55rem;
-  font-weight: 800;
-  padding: 0.2rem 0.5rem;
-  border-radius: 5px;
-  background: var(--red);
-  color: #fff;
-  letter-spacing: 0.1em;
-}
-
-.mobile-link-arrow {
-  font-size: 1.5rem;
-  color: rgba(255,255,255,0.1);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.mobile-link:hover .mobile-link-arrow {
-  color: var(--red);
-  transform: translateX(4px);
-}
-
-.mobile-wa-btn {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 0.75rem;
-  margin: 1.5rem 2rem 0;
-  padding: 1rem 2rem;
-  border-radius: 14px;
-  background: #25D366; /* Solid WhatsApp Green brand color */
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
   color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   text-decoration: none;
-  box-shadow: 0 8px 30px rgba(37,211,102,0.4);
-  animation: mobile-link-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-  animation-delay: 0.5s;
-  transform: translateX(-20px);
-  opacity: 0;
-  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.2s;
 }
 
-.mobile-wa-btn:hover {
-  background: #20ba56;
-  transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(37,211,102,0.6);
+.mobile-link > span {
+  color: var(--gray);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+.mobile-link strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 7vw, 2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.mobile-link i {
+  color: var(--gray);
+  font-style: normal;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.mobile-link--active strong,
+.mobile-link:hover strong {
+  color: var(--red-bright);
+}
+
+.mobile-link:hover i {
+  color: var(--red);
+  transform: translate(2px, -2px);
+}
+
+.mobile-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: auto;
+  padding-top: 2rem;
 }
 
 .mobile-socials {
-  position: relative;
-  z-index: 1;
   display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  margin: 0.25rem 1rem 0;
-  padding: 1rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.mobile-social-link {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
+.mobile-socials a {
+  color: var(--gray-lt);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
-.mobile-social-link :deep(svg) {
-  width: 19px;
-  height: 19px;
+.menu-enter-active,
+.menu-leave-active {
+  transition: opacity 200ms ease;
 }
 
-
-/* ── Mobile overlay transition ── */
-.mobile-overlay-enter-active { transition: opacity 0.35s ease; }
-.mobile-overlay-leave-active  { transition: opacity 0.25s ease; }
-.mobile-overlay-enter-from, .mobile-overlay-leave-to { opacity: 0; }
-
-/* Premium Image Logo Wrapper */
-.logo-img-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(230, 30, 38, 0.35);
-  box-shadow: 0 0 16px rgba(230, 30, 38, 0.25);
-  background: rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  flex-shrink: 0;
-}
-.logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.header-logo:hover .logo-img-wrap {
-  border-color: rgba(230, 30, 38, 0.65);
-  box-shadow: 0 0 24px rgba(230, 30, 38, 0.55);
-  transform: scale(1.05) rotate(4deg);
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
 }
 
-@media (max-width: 1023px) {
-  .site-header,
-  .site-header--scrolled,
-  .mobile-overlay-bg {
+@media (max-width: 1180px) {
+  .desktop-nav,
+  .support-status,
+  .header-cta {
+    display: none;
+  }
+
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .menu-button {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 0.65rem;
+  }
+
+  .header-inner {
+    min-height: 60px;
+    border-radius: 15px;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-copy small {
+    display: none;
+  }
+
+  .site-header--scrolled .header-inner {
     backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .mobile-overlay-bg {
-    background:
-      radial-gradient(circle at 85% 15%, rgba(230,30,38,0.14), transparent 28%),
-      linear-gradient(180deg, #080808 0%, #030303 100%);
-  }
-
-  .mobile-nav {
-    padding: 5.5rem 1rem 1rem;
-  }
-
-  .mobile-link {
-    min-height: 58px;
-    padding: 0.9rem 0.25rem;
-  }
-
-  .mobile-link-label {
-    font-size: clamp(1.35rem, 7vw, 1.85rem);
-  }
-
-  .mobile-wa-btn {
-    min-height: 48px;
-    margin: 1rem;
-  }
-
-  .site-header--menu-open .header-inner {
-    background: rgba(5,5,5,0.96);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: rgba(8, 8, 9, 0.96);
   }
 }
 </style>

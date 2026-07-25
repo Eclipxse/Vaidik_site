@@ -22,12 +22,15 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'ASLIL GANG PANEL — India\'s No.1 Free Fire Panel',
+      title: 'Aslil Gang Panel — Premium Free Fire Store',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Premium Free Fire cheats, account IDs, SSM Panel subscriptions and reseller plans. Best prices, instant support via WhatsApp.' },
-        { name: 'theme-color', content: '#E61E26' },
+        {
+          name: 'description',
+          content: 'Premium Free Fire panels, player IDs and reseller access with direct WhatsApp support.',
+        },
+        { name: 'theme-color', content: '#050505' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/products/favicon/logo/image.png' },
@@ -35,7 +38,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap',
         },
       ],
     },
@@ -43,14 +46,12 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Server-only keys (never exposed to client)
     supabaseUrl: process.env.SUPABASE_URL || '',
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY || '',
     adminSecret: process.env.ADMIN_SECRET_PATH || 'admin-x7k2',
     adminPassword: process.env.ADMIN_PASSWORD || '',
     adminSessionSecret: process.env.ADMIN_SESSION_SECRET || 'change-me-in-production',
 
-    // Public keys (exposed to client)
     public: {
       ownerWhatsapp: process.env.NUXT_PUBLIC_OWNER_WHATSAPP || '917874883702',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
@@ -62,7 +63,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-22',
 
   experimental: {
-    // Suppress the "#app-manifest" Vite resolution error in Nuxt 3.21 dev mode
     appManifest: false,
   },
 })

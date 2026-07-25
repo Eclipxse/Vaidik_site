@@ -1,121 +1,81 @@
 <template>
-  <div>
-    <div
-      class="scroll-progress"
-      :style="{ transform: `scaleX(${scrollProgress})` }"
-      aria-hidden="true"
-    />
+  <header class="site-header" :class="{ 'site-header--scrolled': scrolled, 'site-header--open': mobileOpen }">
+    <div class="header-shell">
+      <NuxtLink to="/" class="wordmark" aria-label="Aslil Gang home">
+        <span class="wordmark-mark">A</span>
+        <span class="wordmark-copy">
+          <strong>Aslil Gang</strong>
+          <small>Digital performance</small>
+        </span>
+      </NuxtLink>
 
-    <header
-      class="site-header"
-      :class="{
-        'site-header--scrolled': scrolled,
-        'site-header--menu-open': mobileOpen,
-      }"
-    >
-      <div class="header-inner">
-        <NuxtLink to="/" class="brand" aria-label="Aslil Gang Panel home">
-          <span class="brand-mark" aria-hidden="true">AG</span>
-          <span class="brand-copy">
-            <strong>Aslil Gang</strong>
-            <small>Premium panel store</small>
-          </span>
-        </NuxtLink>
-
-        <nav class="desktop-nav" aria-label="Main navigation">
-          <NuxtLink
-            v-for="link in navLinks"
-            :key="link.to"
-            :to="link.to"
-            class="nav-link"
-            :class="{ 'nav-link--active': isActive(link.to) }"
-          >
-            {{ link.label }}
-            <span v-if="link.hot" class="nav-hot">Pro</span>
-          </NuxtLink>
-        </nav>
-
-        <div class="header-actions">
-          <span class="support-status">
-            <i aria-hidden="true" />
-            Support online
-          </span>
-          <a
-            :href="`https://wa.me/${ownerNumber}`"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="header-cta"
-          >
-            WhatsApp
-            <span aria-hidden="true">↗</span>
-          </a>
-          <button
-            class="menu-button"
-            :class="{ 'menu-button--open': mobileOpen }"
-            :aria-expanded="mobileOpen"
-            aria-controls="mobile-navigation"
-            aria-label="Toggle navigation"
-            @click="mobileOpen = !mobileOpen"
-          >
-            <span />
-            <span />
-          </button>
-        </div>
-      </div>
-
-      <Transition name="menu">
-        <div
-          v-if="mobileOpen"
-          id="mobile-navigation"
-          class="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <NuxtLink
+          v-for="link in navLinks"
+          :key="link.to"
+          :to="link.to"
+          :class="{ active: isActive(link.to) }"
         >
-          <div class="mobile-menu__inner">
-            <p class="mobile-kicker">Explore the store</p>
-            <nav class="mobile-nav" aria-label="Mobile navigation">
-              <NuxtLink
-                v-for="(link, index) in navLinks"
-                :key="link.to"
-                :to="link.to"
-                class="mobile-link"
-                :class="{ 'mobile-link--active': isActive(link.to) }"
-                @click="mobileOpen = false"
-              >
-                <span>{{ String(index + 1).padStart(2, '0') }}</span>
-                <strong>{{ link.label }}</strong>
-                <i aria-hidden="true">↗</i>
-              </NuxtLink>
-            </nav>
+          {{ link.label }}
+        </NuxtLink>
+      </nav>
 
-            <div class="mobile-footer">
-              <a
-                :href="`https://wa.me/${ownerNumber}`"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-green"
-                @click="mobileOpen = false"
-              >
-                Chat with support
-              </a>
-              <div class="mobile-socials">
-                <a
-                  v-for="social in socialLinks"
-                  :key="social.label"
-                  :href="social.href"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ social.label }}
-                </a>
-              </div>
-            </div>
+      <div class="header-actions">
+        <a
+          :href="`https://wa.me/${ownerNumber}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="support-link"
+        >
+          Get support
+          <span aria-hidden="true">↗</span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          :aria-expanded="mobileOpen"
+          aria-controls="mobile-navigation"
+          :aria-label="mobileOpen ? 'Close navigation' : 'Open navigation'"
+          @click="mobileOpen = !mobileOpen"
+        >
+          <span class="menu-toggle__label">{{ mobileOpen ? 'Close' : 'Menu' }}</span>
+          <span class="menu-toggle__icon" :class="{ open: mobileOpen }" aria-hidden="true">
+            <i />
+            <i />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <Transition name="menu">
+      <div v-if="mobileOpen" id="mobile-navigation" class="mobile-menu">
+        <div class="mobile-menu__shell">
+          <span class="mobile-menu__label">Navigation</span>
+          <nav aria-label="Mobile navigation">
+            <NuxtLink
+              v-for="(link, index) in navLinks"
+              :key="link.to"
+              :to="link.to"
+              :class="{ active: isActive(link.to) }"
+              @click="mobileOpen = false"
+            >
+              <small>{{ String(index + 1).padStart(2, '0') }}</small>
+              <strong>{{ link.label }}</strong>
+              <span aria-hidden="true">↗</span>
+            </NuxtLink>
+          </nav>
+
+          <div class="mobile-menu__footer">
+            <a :href="`https://wa.me/${ownerNumber}`" target="_blank" rel="noopener noreferrer">
+              WhatsApp support
+              <span aria-hidden="true">↗</span>
+            </a>
+            <p>PC, Android and iOS products with direct setup guidance.</p>
           </div>
         </div>
-      </Transition>
-    </header>
-  </div>
+      </div>
+    </Transition>
+  </header>
 </template>
 
 <script setup lang="ts">
@@ -123,36 +83,24 @@ const route = useRoute()
 const { ownerNumber } = useWhatsApp()
 
 const scrolled = ref(false)
-const scrollProgress = ref(0)
 const mobileOpen = useState('mobileOpen', () => false)
 let lockedScrollY = 0
 
 const navLinks = [
   { to: '/', label: 'Home' },
+  { to: '/pc-panel', label: 'PC' },
   { to: '/cheats/android', label: 'Android' },
   { to: '/cheats/ios', label: 'iOS' },
-  { to: '/pc-panel', label: 'PC Panels' },
-  { to: '/free-fire-ids', label: 'FF IDs' },
-  { to: '/reseller', label: 'Reseller', hot: true },
-]
-
-const socialLinks = [
-  { label: 'Instagram', href: 'https://www.instagram.com/fit_vaidik' },
-  { label: 'Telegram', href: 'https://t.me/+fp8yl-Roaek5YmU1' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@aslilgangliveff' },
-  { label: 'Discord', href: 'https://discord.gg/g6BdyeWQvQ' },
+  { to: '/free-fire-ids', label: 'Player IDs' },
+  { to: '/reseller', label: 'Reseller' },
 ]
 
 function isActive(path: string) {
-  if (path === '/') return route.path === '/'
-  return route.path.startsWith(path)
+  return path === '/' ? route.path === '/' : route.path.startsWith(path)
 }
 
 function updateScrollState() {
-  const top = window.scrollY
-  const max = document.documentElement.scrollHeight - window.innerHeight
-  scrolled.value = top > 18
-  scrollProgress.value = max > 0 ? top / max : 0
+  scrolled.value = window.scrollY > 12
 }
 
 function closeOnEscape(event: KeyboardEvent) {
@@ -170,7 +118,6 @@ watch(mobileOpen, (open) => {
     document.body.style.position = 'fixed'
     document.body.style.top = `-${lockedScrollY}px`
     document.body.style.width = '100%'
-    document.body.style.overflow = 'hidden'
     return
   }
 
@@ -178,7 +125,6 @@ watch(mobileOpen, (open) => {
   document.body.style.position = ''
   document.body.style.top = ''
   document.body.style.width = ''
-  document.body.style.overflow = ''
   window.scrollTo(0, lockedScrollY)
 })
 
@@ -195,42 +141,30 @@ onUnmounted(() => {
   document.body.style.position = ''
   document.body.style.top = ''
   document.body.style.width = ''
-  document.body.style.overflow = ''
 })
 </script>
 
 <style scoped>
-.scroll-progress {
-  position: fixed;
-  z-index: 1200;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--red), #ff8a91);
-  transform-origin: left;
-}
-
 .site-header {
   position: fixed;
   z-index: 1000;
   top: 0;
   right: 0;
   left: 0;
-  padding: 0.9rem 1.25rem;
+  padding: 1rem 1.25rem 0;
   transition: padding 180ms ease;
 }
 
-.header-inner {
+.header-shell {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  width: min(1380px, 100%);
-  min-height: 68px;
+  width: min(1360px, 100%);
+  min-height: 66px;
   margin: 0 auto;
-  padding: 0.65rem 0.75rem 0.65rem 0.85rem;
+  padding: 0 0.75rem 0 0.8rem;
   border: 1px solid transparent;
-  border-radius: 18px;
+  border-radius: 14px;
   transition:
     border-color 180ms ease,
     background-color 180ms ease,
@@ -241,57 +175,53 @@ onUnmounted(() => {
   padding-top: 0.65rem;
 }
 
-.site-header--scrolled .header-inner,
-.site-header--menu-open .header-inner {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(8, 8, 9, 0.84);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(22px) saturate(145%);
+.site-header--scrolled .header-shell,
+.site-header--open .header-shell {
+  border-color: var(--line);
+  background: rgba(10, 10, 11, 0.86);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 
-.brand {
+.wordmark {
   display: inline-flex;
   width: fit-content;
   align-items: center;
-  gap: 0.8rem;
-  color: #fff;
+  gap: 0.75rem;
+  color: var(--white);
   text-decoration: none;
 }
 
-.brand-mark {
+.wordmark-mark {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 9px;
   color: #fff;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.22), transparent 38%),
-    linear-gradient(135deg, var(--red-bright), var(--red-deep));
-  box-shadow: 0 10px 28px rgba(255, 52, 65, 0.24);
+  background: var(--red);
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.07em;
 }
 
-.brand-copy {
+.wordmark-copy {
   display: flex;
   flex-direction: column;
-  gap: 0.14rem;
+  gap: 0.15rem;
 }
 
-.brand-copy strong {
+.wordmark-copy strong {
   font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-size: 0.83rem;
   line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
-.brand-copy small {
+.wordmark-copy small {
   color: var(--gray);
-  font-size: 0.58rem;
+  font-size: 0.52rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -300,131 +230,123 @@ onUnmounted(() => {
 .desktop-nav {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-  padding: 0.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.025);
+  gap: 1.6rem;
 }
 
-.nav-link {
+.desktop-nav a {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.62rem 0.72rem;
-  border-radius: 9px;
-  color: rgba(255, 255, 255, 0.58);
-  font-family: var(--font-display);
-  font-size: 0.66rem;
+  padding: 0.4rem 0;
+  color: var(--gray-lt);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 160ms ease, background-color 160ms ease;
+  transition: color 160ms ease;
 }
 
-.nav-link:hover,
-.nav-link--active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.065);
-}
-
-.nav-link--active::after {
+.desktop-nav a::after {
   position: absolute;
-  right: 0.7rem;
-  bottom: 0.24rem;
-  left: 0.7rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
   height: 1px;
   background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
   content: '';
+  transition: transform 180ms ease;
 }
 
-.nav-hot {
-  padding: 0.15rem 0.3rem;
-  border-radius: 4px;
-  color: #fff;
-  background: var(--red);
-  font-size: 0.48rem;
+.desktop-nav a:hover,
+.desktop-nav a.active {
+  color: var(--white);
+}
+
+.desktop-nav a.active::after {
+  transform: scaleX(1);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
 }
 
-.support-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: rgba(255, 255, 255, 0.56);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.support-status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #54e789;
-  box-shadow: 0 0 12px rgba(84, 231, 137, 0.72);
-}
-
-.header-cta {
+.support-link {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.9rem;
-  border: 1px solid rgba(84, 231, 137, 0.25);
-  border-radius: 10px;
-  color: #0a1a10;
-  background: #54e789;
-  font-family: var(--font-display);
-  font-size: 0.68rem;
+  gap: 0.7rem;
+  padding: 0 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  color: var(--white);
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: background-color 180ms ease, border-color 180ms ease;
 }
 
-.header-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(84, 231, 137, 0.2);
+.support-link:hover {
+  border-color: var(--red);
+  background: var(--red);
 }
 
-.menu-button {
+.menu-toggle {
   display: none;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.04);
+  min-height: 42px;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--white);
+  background: transparent;
   cursor: pointer;
 }
 
-.menu-button span {
-  display: block;
-  width: 18px;
+.menu-toggle__label {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu-toggle__icon {
+  position: relative;
+  width: 16px;
+  height: 12px;
+}
+
+.menu-toggle__icon i {
+  position: absolute;
+  left: 0;
+  width: 16px;
   height: 1.5px;
-  margin: 5px auto;
-  border-radius: 99px;
-  background: #fff;
-  transition: transform 180ms ease;
+  border-radius: 2px;
+  background: currentColor;
+  transition: top 220ms ease, transform 220ms ease;
 }
 
-.menu-button--open span:first-child {
-  transform: translateY(3.25px) rotate(45deg);
+.menu-toggle__icon i:first-child {
+  top: 2px;
 }
 
-.menu-button--open span:last-child {
-  transform: translateY(-3.25px) rotate(-45deg);
+.menu-toggle__icon i:last-child {
+  top: 9px;
+}
+
+.menu-toggle__icon.open i:first-child {
+  top: 5px;
+  transform: rotate(45deg);
+}
+
+.menu-toggle__icon.open i:last-child {
+  top: 5px;
+  transform: rotate(-45deg);
 }
 
 .mobile-menu {
@@ -433,98 +355,97 @@ onUnmounted(() => {
   inset: 0;
   min-height: 100dvh;
   overflow-y: auto;
-  background:
-    radial-gradient(circle at 85% 12%, rgba(255, 52, 65, 0.18), transparent 32%),
-    #070708;
+  background: #0a0a0b;
 }
 
-.mobile-menu__inner {
+.mobile-menu__shell {
   display: flex;
+  width: min(100% - 2rem, 760px);
   min-height: 100dvh;
   flex-direction: column;
-  padding: 8rem 1.25rem 2rem;
+  margin: 0 auto;
+  padding: 8.5rem 0 2rem;
 }
 
-.mobile-kicker {
-  margin: 0 0 1.2rem;
-  color: var(--red-bright);
-  font-family: var(--font-display);
-  font-size: 0.68rem;
+.mobile-menu__label {
+  margin-bottom: 1rem;
+  color: var(--gray);
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-.mobile-nav {
+.mobile-menu nav {
   border-top: 1px solid var(--line);
 }
 
-.mobile-link {
+.mobile-menu nav a {
   display: grid;
-  grid-template-columns: 2rem 1fr auto;
+  grid-template-columns: 2.25rem 1fr auto;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 0;
+  gap: 0.8rem;
+  padding: 1.05rem 0;
   border-bottom: 1px solid var(--line);
-  color: #fff;
+  color: var(--white);
   text-decoration: none;
 }
 
-.mobile-link > span {
+.mobile-menu nav small {
   color: var(--gray);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
+  font-size: 0.58rem;
 }
 
-.mobile-link strong {
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 7vw, 2rem);
-  line-height: 1;
-  text-transform: uppercase;
+.mobile-menu nav strong {
+  font-size: clamp(1.8rem, 8vw, 3.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
 }
 
-.mobile-link i {
+.mobile-menu nav a > span {
   color: var(--gray);
-  font-style: normal;
-  transition: color 160ms ease, transform 160ms ease;
+  transition: color 180ms ease, transform 180ms ease;
 }
 
-.mobile-link--active strong,
-.mobile-link:hover strong {
-  color: var(--red-bright);
-}
-
-.mobile-link:hover i {
+.mobile-menu nav a:hover > span,
+.mobile-menu nav a.active > span {
   color: var(--red);
   transform: translate(2px, -2px);
 }
 
-.mobile-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.mobile-menu__footer {
+  display: grid;
+  grid-template-columns: auto minmax(200px, 360px);
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
   margin-top: auto;
-  padding-top: 2rem;
+  padding-top: 2.5rem;
 }
 
-.mobile-socials {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.mobile-socials a {
-  color: var(--gray-lt);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+.mobile-menu__footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
   text-decoration: none;
   text-transform: uppercase;
 }
 
+.mobile-menu__footer p {
+  margin: 0;
+  color: var(--gray);
+  font-size: 0.72rem;
+  line-height: 1.65;
+  text-align: right;
+}
+
 .menu-enter-active,
 .menu-leave-active {
-  transition: opacity 200ms ease;
+  transition: opacity 180ms ease;
 }
 
 .menu-enter-from,
@@ -532,45 +453,42 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1160px) {
   .desktop-nav,
-  .support-status,
-  .header-cta {
+  .support-link {
     display: none;
   }
 
-  .header-inner {
+  .header-shell {
     display: flex;
     justify-content: space-between;
   }
 
-  .menu-button {
-    display: block;
+  .menu-toggle {
+    display: inline-flex;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 620px) {
   .site-header {
-    padding: 0.65rem;
+    padding: 0.7rem 0.7rem 0;
   }
 
-  .header-inner {
+  .header-shell {
     min-height: 60px;
-    border-radius: 15px;
   }
 
-  .brand-mark {
-    width: 38px;
-    height: 38px;
-  }
-
-  .brand-copy small {
+  .wordmark-copy small {
     display: none;
   }
 
-  .site-header--scrolled .header-inner {
-    backdrop-filter: none;
-    background: rgba(8, 8, 9, 0.96);
+  .mobile-menu__footer {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-menu__footer p {
+    max-width: 360px;
+    text-align: left;
   }
 }
 </style>

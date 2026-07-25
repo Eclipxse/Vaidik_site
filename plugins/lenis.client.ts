@@ -13,13 +13,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 0.95,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     orientation: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: true,
-    wheelMultiplier: 1,
-    touchMultiplier: 2,
+    wheelMultiplier: 0.9,
+    touchMultiplier: 1.5,
+    anchors: true,
+    autoResize: true,
   })
 
   // Sync GSAP ScrollTrigger with Lenis

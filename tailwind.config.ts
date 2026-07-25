@@ -29,7 +29,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
+        display: ['"Inter Tight"', '"Inter"', 'sans-serif'],
         body:    ['"Inter"', 'sans-serif'],
       },
       borderRadius: {

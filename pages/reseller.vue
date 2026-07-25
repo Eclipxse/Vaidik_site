@@ -5,12 +5,17 @@
       <span class="page-eyebrow">Start Your Business</span>
       <h1 class="page-title">Reseller <span class="text-red">Plan.</span></h1>
       <p class="page-sub">
-        Become an official Aslil Gang reseller. Get wholesale prices, priority stock access,
-        and unlimited earning potential.
+        Become an official Aslil Gang reseller. Get wholesale prices, credit dashboard tools,
+        and high earning potential.
       </p>
     </div>
 
     <div class="cards-outer">
+
+      <!-- Interactive Reseller Profit Calculator -->
+      <div class="calc-section">
+        <ResellerCalculator />
+      </div>
 
       <!-- Loading Skeleton -->
       <div v-if="pending" class="cards-grid">
@@ -105,11 +110,13 @@
 </template>
 
 <script setup lang="ts">
+import ResellerCalculator from '~/components/ResellerCalculator.vue'
+
 definePageMeta({ layout: 'default' })
 useHead({ title: 'Reseller Plan — ASLIL GANG PANEL' })
 
 const router = useRouter()
-const { handleBuyNow, ownerNumber } = useWhatsApp()
+const { ownerNumber } = useWhatsApp()
 const client = useSupabaseClient()
 
 // Fetch reseller products from Supabase
@@ -157,7 +164,7 @@ const steps = [
 .info-page { min-height: 100vh; padding-top: 8rem; padding-bottom: 6rem; }
 
 .page-hero {
-  text-align: center; padding: 2rem 2rem 4rem;
+  text-align: center; padding: 2rem 2rem 3rem;
   max-width: 650px; margin: 0 auto;
 }
 
@@ -180,6 +187,10 @@ const steps = [
 .page-sub { font-family: var(--font-body); font-size: 1rem; color: var(--gray); line-height: 1.6; margin: 0; }
 
 .cards-outer { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+.calc-section {
+  margin-bottom: 4rem;
+}
 
 /* Cards Grid */
 .cards-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 5rem; }

@@ -1,391 +1,246 @@
-<template>
-  <footer class="site-footer">
-    <div class="footer-shell">
-      <div class="footer-lead">
-        <div>
-          <span class="footer-kicker">Ready when you are</span>
-          <h2>Your next upgrade starts here.</h2>
-        </div>
-        <a
-          :href="`https://wa.me/${ownerNumber}`"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="footer-contact"
-        >
-          <span>
-            <small>Direct support</small>
-            Start a conversation
-          </span>
-          <i aria-hidden="true">↗</i>
-        </a>
-      </div>
-
-      <div class="footer-main">
-        <div class="footer-brand">
-          <NuxtLink to="/" class="brand" aria-label="Aslil Gang Panel home">
-            <span class="brand-mark" aria-hidden="true">AG</span>
-            <span>
-              <strong>Aslil Gang</strong>
-              <small>Premium panel store</small>
-            </span>
-          </NuxtLink>
-          <p>
-            A focused Free Fire marketplace for panels, player IDs and reseller
-            access—supported directly from India.
-          </p>
-          <div class="footer-socials">
-            <a
-              v-for="social in socials"
-              :key="social.label"
-              :href="social.href"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ social.label }}
-            </a>
-          </div>
-        </div>
-
-        <nav class="footer-nav" aria-label="Footer navigation">
-          <div v-for="column in navColumns" :key="column.title" class="footer-column">
-            <h3>{{ column.title }}</h3>
-            <ul>
-              <li v-for="link in column.links" :key="link.to">
-                <NuxtLink :to="link.to">{{ link.label }}</NuxtLink>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-
-      <div class="footer-bottom">
-        <p>© {{ year }} Aslil Gang Panel</p>
-        <p>Built for players who take the details seriously.</p>
-        <a :href="`https://wa.me/${ownerNumber}`" target="_blank" rel="noopener noreferrer">
-          WhatsApp +{{ ownerNumber }}
-        </a>
-      </div>
-    </div>
-  </footer>
-</template>
-
 <script setup lang="ts">
 const { ownerNumber } = useWhatsApp()
 const year = new Date().getFullYear()
 
-const socials = [
+const collections = [
+  { label: 'PC panels', to: '/pc-panel' },
+  { label: 'Android', to: '/cheats/android' },
+  { label: 'iOS', to: '/cheats/ios' },
+  { label: 'Player IDs', to: '/free-fire-ids' },
+  { label: 'Reseller', to: '/reseller' },
+]
+
+const socialLinks = [
   { label: 'Instagram', href: 'https://www.instagram.com/fit_vaidik' },
   { label: 'Telegram', href: 'https://t.me/+fp8yl-Roaek5YmU1' },
   { label: 'YouTube', href: 'https://www.youtube.com/@aslilgangliveff' },
   { label: 'Discord', href: 'https://discord.gg/g6BdyeWQvQ' },
 ]
 
-const navColumns = [
-  {
-    title: 'Shop',
-    links: [
-      { to: '/cheats/android', label: 'Android panels' },
-      { to: '/cheats/ios', label: 'iOS panels' },
-      { to: '/pc-panel', label: 'PC panels' },
-      { to: '/free-fire-ids', label: 'Free Fire IDs' },
-    ],
-  },
-  {
-    title: 'More',
-    links: [
-      { to: '/ssm-panel', label: 'Social panels' },
-      { to: '/reseller', label: 'Reseller access' },
-      { to: '/', label: 'Store home' },
-    ],
-  },
-]
+function scrollToTop() {
+  const lenis = (useNuxtApp() as any).$lenis
+  if (lenis) {
+    lenis.scrollTo(0)
+    return
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
+
+<template>
+  <footer class="site-footer">
+    <div class="footer-shell">
+      <div class="footer-lead">
+        <NuxtLink to="/" class="footer-wordmark">
+          <span>A</span>
+          <strong>Aslil Gang</strong>
+        </NuxtLink>
+        <p>
+          A focused digital storefront for panels, player IDs and reseller
+          access—supported directly through WhatsApp.
+        </p>
+        <a
+          :href="`https://wa.me/${ownerNumber}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-support"
+        >
+          Talk to support
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div class="footer-nav">
+        <div>
+          <span class="footer-label">Collections</span>
+          <nav aria-label="Footer collections">
+            <NuxtLink v-for="link in collections" :key="link.to" :to="link.to">
+              {{ link.label }}
+            </NuxtLink>
+          </nav>
+        </div>
+        <div>
+          <span class="footer-label">Follow</span>
+          <nav aria-label="Social links">
+            <a
+              v-for="link in socialLinks"
+              :key="link.href"
+              :href="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ link.label }}
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {{ year }} Aslil Gang</span>
+      <span>Built for clear choices and direct support.</span>
+      <button type="button" @click="scrollToTop">
+        Back to top
+        <span aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </footer>
+</template>
 
 <style scoped>
 .site-footer {
-  position: relative;
-  overflow: hidden;
   border-top: 1px solid var(--line);
-  background:
-    radial-gradient(circle at 18% 100%, rgba(255, 52, 65, 0.1), transparent 30%),
-    #050505;
-}
-
-.site-footer::after {
-  position: absolute;
-  right: -16rem;
-  bottom: -28rem;
-  width: 48rem;
-  height: 48rem;
-  border: 1px solid rgba(255, 255, 255, 0.045);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 7rem rgba(255, 255, 255, 0.012),
-    0 0 0 14rem rgba(255, 255, 255, 0.008);
-  content: '';
-  pointer-events: none;
+  background: #080809;
 }
 
 .footer-shell {
-  position: relative;
-  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 0.7fr);
+  justify-content: space-between;
+  gap: clamp(4rem, 10vw, 10rem);
   width: min(1280px, calc(100% - 3rem));
   margin: 0 auto;
+  padding: clamp(5rem, 8vw, 8rem) 0;
 }
 
-.footer-lead {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 3rem;
-  padding: clamp(5rem, 9vw, 8rem) 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.footer-kicker {
-  color: var(--red-bright);
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.footer-lead h2 {
-  max-width: 820px;
-  margin: 1rem 0 0;
-  font-size: clamp(3rem, 6.5vw, 6.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.07em;
-  text-transform: uppercase;
-}
-
-.footer-contact {
-  display: flex;
-  min-width: 280px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.15rem 1.25rem;
-  border: 1px solid rgba(84, 231, 137, 0.22);
-  border-radius: 15px;
-  color: #07140b;
-  background: #54e789;
-  text-decoration: none;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-}
-
-.footer-contact:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(84, 231, 137, 0.17);
-}
-
-.footer-contact > span {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.footer-contact small {
-  color: rgba(7, 20, 11, 0.6);
-  font-family: var(--font-body);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.footer-contact i {
-  font-size: 1.4rem;
-  font-style: normal;
-}
-
-.footer-main {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) 1fr;
-  gap: clamp(4rem, 10vw, 10rem);
-  padding: 4.5rem 0;
-}
-
-.brand {
+.footer-wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  color: #fff;
+  gap: 0.75rem;
+  color: var(--white);
   text-decoration: none;
 }
 
-.brand-mark {
+.footer-wordmark > span {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   place-items: center;
-  border-radius: 12px;
-  color: #fff;
-  background: linear-gradient(135deg, var(--red-bright), var(--red-deep));
+  border-radius: 10px;
+  background: var(--red);
   font-family: var(--font-display);
-  font-size: 0.8rem;
   font-weight: 700;
 }
 
-.brand > span:last-child {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.brand strong {
+.footer-wordmark strong {
   font-family: var(--font-display);
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
 }
 
-.brand small {
-  color: var(--gray);
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.footer-brand p {
-  max-width: 440px;
-  margin: 1.3rem 0 0;
+.footer-lead p {
+  max-width: 500px;
+  margin: 1.5rem 0 0;
   color: var(--gray);
   font-size: 0.84rem;
-  line-height: 1.7;
+  line-height: 1.72;
 }
 
-.footer-socials {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem 1.25rem;
-  margin-top: 1.5rem;
-}
-
-.footer-socials a {
-  color: var(--gray-lt);
-  font-family: var(--font-display);
-  font-size: 0.62rem;
-  font-weight: 600;
+.footer-support {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--white);
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 160ms ease;
-}
-
-.footer-socials a:hover {
-  color: var(--red-bright);
 }
 
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 2rem;
 }
 
-.footer-column h3 {
-  margin: 0 0 1.2rem;
-  color: rgba(255, 255, 255, 0.42);
-  font-family: var(--font-display);
-  font-size: 0.62rem;
+.footer-label {
+  display: block;
+  margin-bottom: 1.3rem;
+  color: var(--gray);
+  font-size: 0.6rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
-.footer-column ul {
+.footer-nav nav {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  align-items: flex-start;
+  gap: 0.9rem;
 }
 
-.footer-column a {
+.footer-nav a {
   color: var(--gray-lt);
-  font-size: 0.84rem;
+  font-size: 0.76rem;
   text-decoration: none;
-  transition: color 160ms ease, transform 160ms ease;
+  transition: color 160ms ease;
 }
 
-.footer-column a:hover {
-  color: #fff;
+.footer-nav a:hover {
+  color: var(--white);
 }
 
 .footer-bottom {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 1rem;
-  padding: 1.5rem 0 2rem;
+  width: min(1280px, calc(100% - 3rem));
+  min-height: 76px;
+  margin: 0 auto;
   border-top: 1px solid var(--line);
+  color: var(--gray);
+  font-size: 0.57rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
-.footer-bottom p,
-.footer-bottom a {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.36);
-  font-size: 0.62rem;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-}
-
-.footer-bottom p:nth-child(2) {
+.footer-bottom > span:nth-child(2) {
   text-align: center;
 }
 
-.footer-bottom a {
-  text-align: right;
+.footer-bottom button {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-transform: inherit;
+  cursor: pointer;
 }
 
-@media (max-width: 820px) {
-  .footer-lead,
-  .footer-main {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-contact {
-    width: min(100%, 360px);
-  }
-
-  .footer-main {
-    gap: 3rem;
-  }
-}
-
-@media (max-width: 620px) {
+@media (max-width: 800px) {
   .footer-shell {
-    width: min(100% - 2rem, 1280px);
-  }
-
-  .footer-lead {
-    gap: 2rem;
-  }
-
-  .footer-lead h2 {
-    font-size: 3.15rem;
-  }
-
-  .footer-contact {
-    min-width: 0;
-  }
-
-  .footer-nav {
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
   }
 
   .footer-bottom {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
   }
 
-  .footer-bottom p:nth-child(2),
-  .footer-bottom a {
-    text-align: left;
+  .footer-bottom > span:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer-shell,
+  .footer-bottom {
+    width: min(100% - 2rem, 1280px);
+  }
+
+  .footer-nav {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>

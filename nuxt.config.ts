@@ -22,15 +22,15 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Aslil Gang Panel — Premium Free Fire Store',
+      title: 'Aslil Gang — Panels, Player IDs and Setup Support',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
-          content: 'Premium Free Fire panels, player IDs and reseller access with direct WhatsApp support.',
+          content: 'Explore PC, Android and iOS products, player IDs and reseller access with direct WhatsApp support.',
         },
-        { name: 'theme-color', content: '#050505' },
+        { name: 'theme-color', content: '#0a0a0b' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/products/favicon/logo/image.png' },
@@ -38,7 +38,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap',
         },
       ],
     },

@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Motion } from 'motion-v'
 import BlurReveal from '~/components/ui/inspira/BlurReveal.vue'
 import BorderBeam from '~/components/ui/inspira/BorderBeam.vue'
-import NumberTicker from '~/components/ui/inspira/NumberTicker.vue'
 import ParticlesBg from '~/components/ui/inspira/ParticlesBg.vue'
-import SpotlightCard from '~/components/ui/inspira/SpotlightCard.vue'
 
 const showWizard = ref(false)
-const showCompare = ref(false)
+const heroRef = ref<HTMLElement | null>(null)
+
+function handlePointerMove(event: PointerEvent) {
+  if (!heroRef.value) return
+  const rect = heroRef.value.getBoundingClientRect()
+  heroRef.value.style.setProperty('--pointer-x', `${event.clientX - rect.left}px`)
+  heroRef.value.style.setProperty('--pointer-y', `${event.clientY - rect.top}px`)
+}
 
 function scrollToCollection() {
   const target = document.getElementById('featured')
@@ -15,7 +21,7 @@ function scrollToCollection() {
 
   const lenis = (useNuxtApp() as any).$lenis
   if (lenis) {
-    lenis.scrollTo(target, { offset: -96 })
+    lenis.scrollTo(target, { offset: -106 })
     return
   }
 
@@ -24,388 +30,641 @@ function scrollToCollection() {
 </script>
 
 <template>
-  <section class="hero" aria-labelledby="hero-heading">
-    <!-- Interactive Background Particles -->
-    <ParticlesBg :quantity="60" color="#ff4136" :staticity="35" />
+  <section
+    ref="heroRef"
+    class="hero"
+    aria-labelledby="hero-heading"
+    @pointermove="handlePointerMove"
+  >
+    <div class="hero-ambient" aria-hidden="true">
+      <span class="hero-aura hero-aura--one" />
+      <span class="hero-aura hero-aura--two" />
+      <span class="hero-grid" />
+      <span class="hero-orbit hero-orbit--one" />
+      <span class="hero-orbit hero-orbit--two" />
+      <span class="hero-orbit hero-orbit--three" />
+      <span class="hero-pointer" />
+      <ParticlesBg :quantity="48" color="#ff4a46" :staticity="55" :ease="80" />
+    </div>
+
+    <Motion
+      as="aside"
+      class="hero-float hero-float--left"
+      :initial="{ opacity: 0, x: -22, rotate: -8 }"
+      :animate="{ opacity: 1, x: 0, rotate: -5 }"
+      :transition="{ delay: 0.55, type: 'spring', stiffness: 120, damping: 18 }"
+    >
+      <NuxtLink to="/products/pc-external-panel">
+        <img src="/products/PC_EXTERNAL PANEL/External.png" alt="" />
+        <span>
+          <small>PC / Featured</small>
+          External Panel
+        </span>
+        <i aria-hidden="true">↗</i>
+      </NuxtLink>
+    </Motion>
+
+    <Motion
+      as="aside"
+      class="hero-float hero-float--right"
+      :initial="{ opacity: 0, x: 22, rotate: 8 }"
+      :animate="{ opacity: 1, x: 0, rotate: 5 }"
+      :transition="{ delay: 0.64, type: 'spring', stiffness: 120, damping: 18 }"
+    >
+      <NuxtLink to="/cheats/ios">
+        <img src="/products/IOS_PANEL/IOSPANEL.png" alt="" />
+        <span>
+          <small>Apple / Mobile</small>
+          iOS Panel
+        </span>
+        <i aria-hidden="true">↗</i>
+      </NuxtLink>
+    </Motion>
 
     <div class="hero-shell">
-      <div class="hero-copy">
-        <BlurReveal :delay="0.06" :duration="0.65">
-          <div class="hero-kicker">
-            <span class="live-dot" aria-hidden="true" />
-            <span>INSTANT DELIVERY • 100% ANTI-BAN ACTIVE</span>
-          </div>
+      <BlurReveal :delay="0.04" :duration="0.62">
+        <div class="hero-brand">
+          <span class="hero-brand__logo">
+            <img src="/brand/aslil-logo.png" alt="" />
+          </span>
+          <span>Aslil Gang / Panel Store</span>
+          <i aria-hidden="true" />
+          <small>Online now</small>
+        </div>
+      </BlurReveal>
+
+      <h1 id="hero-heading">
+        <BlurReveal :delay="0.1" :duration="0.82" blur="14px" :y-offset="32">
+          <span class="hero-title hero-title--light">ASLIL GANG</span>
         </BlurReveal>
-
-        <BlurReveal :delay="0.14" :duration="0.72" blur="16px">
-          <h1 id="hero-heading">
-            Build your
-            <span class="text-glow">advantage.</span>
-          </h1>
+        <BlurReveal :delay="0.16" :duration="0.86" blur="16px" :y-offset="38">
+          <span class="hero-title hero-title--red">PANEL</span>
         </BlurReveal>
+      </h1>
 
-        <BlurReveal :delay="0.22" :duration="0.68">
-          <p class="hero-description">
-            A state-of-the-art cyberpunk marketplace for PC, Android, and iOS cheat panels—backed by 1:1 setup guidance and stream-safe protection.
-          </p>
-        </BlurReveal>
+      <BlurReveal :delay="0.24" :duration="0.62">
+        <p class="hero-description">
+          Premium PC, Android and iOS panels presented clearly, backed by
+          direct compatibility checks and one-to-one setup support.
+        </p>
+      </BlurReveal>
 
-        <BlurReveal :delay="0.3" :duration="0.64">
-          <div class="hero-actions">
-            <button class="btn-red" @click="scrollToCollection">
-              Explore catalog
-              <span aria-hidden="true">↓</span>
-            </button>
-            <button class="btn-outline" @click="showWizard = true">
-              ⚡ Find My Panel (10s)
-            </button>
-            <button class="btn-outline" @click="showCompare = true">
-              📊 Compare Specs
-            </button>
-          </div>
-        </BlurReveal>
+      <BlurReveal :delay="0.3" :duration="0.58">
+        <div class="hero-actions">
+          <button class="btn-red hero-primary" type="button" @click="scrollToCollection">
+            Explore the collection
+            <span aria-hidden="true">↓</span>
+          </button>
+          <button class="btn-outline" type="button" @click="showWizard = true">
+            Find my setup
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </BlurReveal>
 
-        <BlurReveal :delay="0.38" :duration="0.62">
-          <dl class="hero-facts">
-            <div>
-              <dt><NumberTicker :value="8" suffix="+" /></dt>
-              <dd>Panels &amp; Cheats</dd>
-            </div>
-            <div>
-              <dt><NumberTicker :value="3" /></dt>
-              <dd>Supported Platforms</dd>
-            </div>
-            <div>
-              <dt>1:1</dt>
-              <dd>WhatsApp Support</dd>
-            </div>
-          </dl>
-        </BlurReveal>
-      </div>
-
-      <BlurReveal class="hero-visual-reveal" :delay="0.18" :duration="0.82" :y-offset="28">
-        <SpotlightCard spotlight-color="rgba(255, 65, 54, 0.22)" border-color="rgba(255, 65, 54, 0.5)">
-          <div class="hero-visual">
-            <BorderBeam :duration="12" :size="190" color-from="#ff4136" color-to="#8ff0ae" />
-            <div class="visual-topline">
-              <span class="live-pill">FEATURED / PC STREAMER</span>
-              <span class="visual-tag">AG—01</span>
-            </div>
-
-            <NuxtLink to="/products/pc-streamer-panel" class="visual-media">
-              <img
-                src="/products/PC_STREAMER_PANEL/streamer_panel.png"
-                alt="Aslil Gang Streamer Panel product"
-              />
-            </NuxtLink>
-
-            <div class="visual-footer">
-              <div>
-                <small>OBS &amp; Screen Share Safe</small>
-                <strong>PC Streamer Panel</strong>
-              </div>
-              <NuxtLink to="/products/pc-streamer-panel" aria-label="View PC Streamer Panel">
-                ↗
-              </NuxtLink>
-            </div>
-          </div>
-        </SpotlightCard>
+      <BlurReveal :delay="0.36" :duration="0.56">
+        <div class="hero-proof">
+          <span><i /> Catalog online</span>
+          <span>PC / Android / iOS</span>
+          <span>Direct WhatsApp guidance</span>
+        </div>
       </BlurReveal>
     </div>
 
-    <div class="hero-foot">
-      <span>Aslil Gang / India</span>
-      <span class="hero-foot__rule" aria-hidden="true" />
-      <button @click="scrollToCollection">
-        Scroll to discover
-        <span aria-hidden="true">↓</span>
-      </button>
+    <div class="hero-edge hero-edge--left" aria-hidden="true">
+      <span>AG / 2026</span>
+    </div>
+    <div class="hero-edge hero-edge--right" aria-hidden="true">
+      <span>Scroll to explore</span>
     </div>
 
-    <!-- Modals -->
+    <button class="scroll-cue" type="button" aria-label="Scroll to featured products" @click="scrollToCollection">
+      <span />
+      Explore
+    </button>
+
+    <div class="hero-frame" aria-hidden="true">
+      <BorderBeam :duration="18" :size="220" color-from="#ff2d2d" color-to="#f6f1e8" :border-width="1" />
+    </div>
+
     <CompatibilityWizard v-if="showWizard" @close="showWizard = false" />
-    <ProductComparisonModal v-if="showCompare" @close="showCompare = false" />
   </section>
 </template>
 
 <style scoped>
 .hero {
+  --pointer-x: 50%;
+  --pointer-y: 45%;
   position: relative;
-  display: flex;
-  min-height: 100svh;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  min-height: max(760px, 100svh);
+  place-items: center;
   overflow: hidden;
-  padding: 9rem 1.5rem 3rem;
-  background:
-    linear-gradient(rgba(245, 244, 239, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 244, 239, 0.025) 1px, transparent 1px),
-    #0a0a0b;
-  background-size: 72px 72px;
+  padding: 10rem 2rem 5rem;
+  background: #070708;
+  isolation: isolate;
 }
 
 .hero::after {
   position: absolute;
+  z-index: -1;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
-  height: 32%;
-  background: linear-gradient(to top, #0a0a0b, transparent);
+  height: 22%;
+  background: linear-gradient(to top, #070708 8%, transparent);
   content: '';
   pointer-events: none;
 }
 
+.hero-ambient,
+.hero-ambient > span {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-ambient {
+  z-index: -2;
+  overflow: hidden;
+}
+
+.hero-aura {
+  border-radius: 50%;
+  filter: blur(58px);
+  opacity: 0.6;
+}
+
+.hero-aura--one {
+  inset: 8% 22% 18%;
+  background: radial-gradient(circle, rgba(255, 30, 36, 0.3), rgba(96, 0, 12, 0.08) 48%, transparent 72%);
+  animation: aura-breathe 11s ease-in-out infinite;
+}
+
+.hero-aura--two {
+  top: 18%;
+  right: -12%;
+  bottom: 4%;
+  left: 65%;
+  background: radial-gradient(circle, rgba(201, 8, 24, 0.18), transparent 64%);
+  animation: aura-drift 16s ease-in-out infinite alternate;
+}
+
+.hero-grid {
+  top: 42%;
+  right: -16%;
+  bottom: -38%;
+  left: -16%;
+  background:
+    linear-gradient(rgba(255, 61, 61, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 61, 61, 0.11) 1px, transparent 1px);
+  background-size: 62px 62px;
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 28%, #000 62%, transparent 100%);
+  transform: perspective(420px) rotateX(64deg) scale(1.2);
+  transform-origin: center bottom;
+  animation: grid-travel 14s linear infinite;
+}
+
+.hero-orbit {
+  top: 18%;
+  right: 8%;
+  bottom: 8%;
+  left: 8%;
+  border: 1px solid rgba(255, 69, 69, 0.14);
+  border-radius: 50%;
+  transform: rotate(-10deg);
+}
+
+.hero-orbit::before {
+  position: absolute;
+  top: 48%;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 16px rgba(255, 45, 45, 0.9);
+  content: '';
+}
+
+.hero-orbit--one {
+  animation: orbit-rotate 28s linear infinite;
+}
+
+.hero-orbit--two {
+  inset: 28% 20% 16%;
+  border-color: rgba(246, 241, 232, 0.08);
+  transform: rotate(14deg);
+  animation: orbit-rotate-reverse 34s linear infinite;
+}
+
+.hero-orbit--three {
+  inset: 12% 28% 26%;
+  border-color: rgba(255, 45, 45, 0.09);
+  transform: rotate(78deg);
+  animation: orbit-rotate 42s linear infinite;
+}
+
+.hero-pointer {
+  background: radial-gradient(360px circle at var(--pointer-x) var(--pointer-y), rgba(255, 63, 63, 0.09), transparent 72%);
+  transition: background-position 120ms linear;
+}
+
 .hero-shell {
   position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 0.78fr);
+  z-index: 4;
+  display: flex;
+  width: min(1120px, 100%);
   align-items: center;
-  gap: clamp(3rem, 7vw, 8rem);
-  width: min(1320px, 100%);
-  margin: 0 auto;
+  flex-direction: column;
+  text-align: center;
 }
 
-.hero-copy {
-  min-width: 0;
-}
-
-.hero-kicker {
+.hero-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  color: var(--gray-lt);
-  background: rgba(17, 17, 19, 0.7);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  backdrop-filter: blur(10px);
+  gap: 0.62rem;
+  padding: 0.38rem 0.72rem 0.38rem 0.4rem;
+  border: 1px solid rgba(246, 241, 232, 0.13);
+  border-radius: 999px;
+  color: rgba(246, 241, 232, 0.72);
+  background: rgba(10, 10, 12, 0.58);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  backdrop-filter: blur(16px);
 }
 
-.live-dot {
-  width: 7px;
-  height: 7px;
+.hero-brand__logo {
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 241, 232, 0.2);
   border-radius: 50%;
-  background: #8ff0ae;
-  box-shadow: 0 0 10px #8ff0ae;
-  animation: pulse 2s infinite ease-in-out;
+}
+
+.hero-brand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-brand i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px rgba(84, 230, 139, 0.72);
+}
+
+.hero-brand small {
+  color: var(--green);
+  font: inherit;
 }
 
 .hero h1 {
-  display: flex;
-  flex-direction: column;
-  margin: 1.5rem 0 0;
-  font-size: clamp(4.5rem, 8.5vw, 9rem);
-  line-height: 0.8;
-  letter-spacing: -0.08em;
+  width: 100%;
+  margin: 1.4rem 0 0;
+  line-height: 0.72;
 }
 
-.text-glow {
-  color: var(--red);
-  text-shadow: 0 0 35px rgba(255, 65, 54, 0.35);
+.hero h1 > :deep(*) {
+  display: block;
+}
+
+.hero-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(6.4rem, 14vw, 13.6rem);
+  font-weight: 900;
+  letter-spacing: -0.062em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-title--light {
+  color: var(--white);
+  text-shadow: 0 12px 70px rgba(0, 0, 0, 0.52);
+}
+
+.hero-title--red {
+  position: relative;
+  font-size: clamp(7.5rem, 17vw, 15rem);
+  letter-spacing: -0.025em;
+  color: transparent;
+  background:
+    linear-gradient(180deg, #ff6b62 0%, #ff302f 48%, #c30c19 100%);
+  background-clip: text;
+  filter: drop-shadow(0 18px 32px rgba(177, 6, 20, 0.28));
 }
 
 .hero-description {
-  max-width: 590px;
-  margin: 1.8rem 0 0;
-  color: var(--gray-lt);
-  font-size: clamp(0.96rem, 1.3vw, 1.1rem);
+  max-width: 650px;
+  margin: 2.2rem 0 0;
+  color: rgba(246, 241, 232, 0.67);
+  font-size: clamp(0.92rem, 1.15vw, 1.03rem);
   line-height: 1.72;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  justify-content: center;
+  gap: 0.72rem;
+  margin-top: 1.8rem;
 }
 
-.hero-facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  width: min(610px, 100%);
-  margin: 3rem 0 0;
-  padding: 0;
-  border-top: 1px solid var(--line);
+.hero-actions button span {
+  font-size: 1rem;
 }
 
-.hero-facts div {
-  padding: 1.1rem 1.1rem 0 0;
+.hero-primary {
+  min-width: 218px;
 }
 
-.hero-facts div + div {
-  padding-left: 1.1rem;
-  border-left: 1px solid var(--line);
-}
-
-.hero-facts dt {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 600;
-  letter-spacing: -0.045em;
-}
-
-.hero-facts dd {
-  margin: 0.3rem 0 0;
-  color: var(--gray);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.hero-visual-reveal {
-  min-width: 0;
-}
-
-.hero-visual {
-  position: relative;
-  padding: 0.7rem;
-}
-
-.visual-topline,
-.visual-footer {
+.hero-proof {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0;
+  margin-top: 2.4rem;
+  border-top: 1px solid rgba(246, 241, 232, 0.11);
+  border-bottom: 1px solid rgba(246, 241, 232, 0.11);
 }
 
-.visual-topline {
-  min-height: 42px;
-  padding: 0 0.55rem;
-  color: var(--gray);
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+.hero-proof span {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  color: rgba(246, 241, 232, 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.live-pill {
-  color: var(--red-bright);
+.hero-proof span + span {
+  border-left: 1px solid rgba(246, 241, 232, 0.11);
 }
 
-.visual-media {
-  display: block;
-  height: clamp(380px, 52vh, 620px);
-  overflow: hidden;
-  border-radius: 12px;
-  background: #080809;
+.hero-proof i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
 }
 
-.visual-media img {
-  width: 100%;
-  height: 100%;
+.hero-float {
+  position: absolute;
+  z-index: 3;
+  width: 190px;
+}
+
+.hero-float--left {
+  top: 31%;
+  left: max(2rem, calc((100vw - 1500px) / 2));
+}
+
+.hero-float--right {
+  top: 48%;
+  right: max(2rem, calc((100vw - 1500px) / 2));
+}
+
+.hero-float a {
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.52rem;
+  border: 1px solid rgba(246, 241, 232, 0.14);
+  border-radius: 16px;
+  color: var(--white);
+  background: rgba(12, 12, 15, 0.68);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.36);
+  text-decoration: none;
+  backdrop-filter: blur(18px);
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+
+.hero-float a:hover {
+  border-color: rgba(255, 70, 65, 0.5);
+  transform: translateY(-4px);
+}
+
+.hero-float img {
+  width: 50px;
+  height: 58px;
+  border-radius: 10px;
   object-fit: cover;
-  filter: saturate(0.9) contrast(1.02);
-  transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 300ms ease;
 }
 
-.visual-media:hover img {
-  filter: saturate(1);
-  transform: scale(1.025);
-}
-
-.visual-footer {
-  min-height: 64px;
-  padding: 0.65rem 0.55rem 0.1rem;
-}
-
-.visual-footer > div {
+.hero-float span {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 0.2rem;
-}
-
-.visual-footer small {
-  color: var(--gray);
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.visual-footer strong {
+  gap: 0.18rem;
   font-family: var(--font-display);
   font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hero-float small {
+  overflow: hidden;
+  color: var(--red-bright);
+  font-family: var(--font-mono);
+  font-size: 0.43rem;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-float i {
+  color: rgba(246, 241, 232, 0.6);
+  font-style: normal;
+}
+
+.hero-edge {
+  position: absolute;
+  z-index: 4;
+  bottom: 2rem;
+  color: rgba(246, 241, 232, 0.34);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
   font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
 }
 
-.visual-footer > a {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  color: var(--white);
-  text-decoration: none;
-  transition: border-color 180ms ease, background-color 180ms ease;
+.hero-edge--left {
+  left: 1.4rem;
+  transform: rotate(180deg);
 }
 
-.visual-footer > a:hover {
-  border-color: var(--red);
-  background: var(--red);
+.hero-edge--right {
+  right: 1.4rem;
 }
 
-.hero-foot {
-  position: relative;
-  z-index: 3;
+.scroll-cue {
+  position: absolute;
+  z-index: 5;
+  bottom: 1.35rem;
+  left: 50%;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  width: min(1320px, 100%);
-  margin: 2.8rem auto 0;
-  color: var(--gray);
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hero-foot__rule {
-  height: 1px;
-  flex: 1;
-  background: var(--line);
-}
-
-.hero-foot button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
   padding: 0;
   border: 0;
-  color: inherit;
+  color: rgba(246, 241, 232, 0.45);
   background: transparent;
-  font: inherit;
-  text-transform: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
   cursor: pointer;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+.scroll-cue span {
+  position: relative;
+  width: 22px;
+  height: 34px;
+  border: 1px solid rgba(246, 241, 232, 0.2);
+  border-radius: 999px;
 }
 
-@media (max-width: 1050px) {
+.scroll-cue span::after {
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  width: 2px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--red-bright);
+  animation: scroll-dot 1.8s ease-in-out infinite;
+  content: '';
+}
+
+.hero-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 7.8rem 1.25rem 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(246, 241, 232, 0.07);
+  border-radius: 26px;
+  pointer-events: none;
+}
+
+@keyframes aura-breathe {
+  0%, 100% { opacity: 0.42; transform: scale(0.92); }
+  50% { opacity: 0.72; transform: scale(1.08); }
+}
+
+@keyframes aura-drift {
+  to { transform: translate3d(-12%, 8%, 0) scale(1.14); }
+}
+
+@keyframes grid-travel {
+  to { background-position: 0 62px, 62px 0; }
+}
+
+@keyframes orbit-rotate {
+  to { transform: rotate(350deg); }
+}
+
+@keyframes orbit-rotate-reverse {
+  to { transform: rotate(-346deg); }
+}
+
+@keyframes scroll-dot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(10px); }
+}
+
+@media (max-width: 1220px) {
+  .hero-float {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
   .hero {
-    padding-top: 8.5rem;
+    min-height: 820px;
+    padding: 8.7rem 1rem 5rem;
   }
-  .hero-shell {
-    grid-template-columns: 1fr;
-    gap: 4rem;
+
+  .hero-frame {
+    inset: 7.2rem 0.65rem 0.65rem;
+    border-radius: 20px;
   }
-  .hero-copy {
-    max-width: 850px;
+
+  .hero-brand small,
+  .hero-brand > i {
+    display: none;
   }
-  .hero-visual-reveal {
-    width: min(100%, 760px);
-    margin-left: auto;
+
+  .hero h1 {
+    margin-top: 1.6rem;
+    line-height: 0.79;
   }
-  .visual-media {
-    height: clamp(430px, 68vw, 670px);
+
+  .hero-title {
+    font-size: clamp(4.65rem, 23vw, 7.4rem);
+    white-space: normal;
+  }
+
+  .hero-title--red {
+    font-size: clamp(5.5rem, 27vw, 8.5rem);
+  }
+
+  .hero-description {
+    max-width: 460px;
+    margin-top: 1.7rem;
+    font-size: 0.87rem;
+  }
+
+  .hero-actions {
+    width: min(100%, 390px);
+  }
+
+  .hero-actions button {
+    width: 100%;
+  }
+
+  .hero-proof {
+    width: min(100%, 440px);
+    overflow-x: auto;
+  }
+
+  .hero-proof span {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 0.7rem;
+    font-size: 0.43rem;
+  }
+
+  .hero-proof span:last-child {
+    display: none;
+  }
+
+  .hero-edge {
+    display: none;
+  }
+
+  .hero-orbit {
+    inset: 22% -20% 16%;
+  }
+
+  .hero-grid {
+    top: 50%;
   }
 }
 </style>

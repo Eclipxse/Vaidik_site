@@ -1,58 +1,28 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-
-const searchQuery = ref('')
-const activeCategory = ref<'all' | 'setup' | 'safety' | 'payment' | 'reseller'>('all')
 const openIndex = ref<number | null>(0)
 
 const faqs = [
   {
-    category: 'setup',
-    question: 'How long does setup take after purchase?',
-    answer: 'Setup takes under 5 minutes. As soon as you purchase via WhatsApp, our team sends your license key, secure download link, and step-by-step video guide or 1:1 setup assistance.',
+    question: 'How do I know which panel fits my device?',
+    answer: 'Choose the closest platform collection, then message the team with your device model and operating system. Compatibility can be confirmed before you order.',
   },
   {
-    category: 'safety',
-    question: 'Are Aslil Gang Panels safe from anti-cheat bans?',
-    answer: 'Yes! Our panels use advanced kernel-level driver injection, anti-detection hooks, and stream-safe OBS masking to keep your main account 100% safe.',
+    question: 'What happens after I place an order?',
+    answer: 'Delivery and setup details are shared directly through WhatsApp. The team can guide you through the product-specific installation steps.',
   },
   {
-    category: 'setup',
-    question: 'Does the PC External Panel work on Windows 11?',
-    answer: 'Yes! All PC panels support both Windows 10 and Windows 11 (64-bit). You can keep Windows Virus Protection ON while using our external panel.',
+    question: 'Can any panel guarantee that an account will never be banned?',
+    answer: 'No third-party game tool can honestly guarantee zero risk. Review the current product notes, use an alternate account where appropriate, and confirm the latest status with support before purchasing.',
   },
   {
-    category: 'setup',
-    question: 'Do I need to jailbreak my iPhone to use the iOS Panel?',
-    answer: 'No! The iOS Panel works on all iPhone and iPad devices without any jailbreak. Setup takes only 10 minutes.',
+    question: 'Which payment options are available?',
+    answer: 'Available payment methods are confirmed during the WhatsApp order conversation, along with the final price and delivery details.',
   },
   {
-    category: 'setup',
-    question: 'Does the Phone Panel work on Non-Rooted Android devices?',
-    answer: 'Yes! Our mobile panel works seamlessly on both Rooted and Non-Rooted Android phones and tablets with 0% lag.',
-  },
-  {
-    category: 'payment',
-    question: 'What payment methods do you accept?',
-    answer: 'We accept Google Pay, PhonePe, Paytm, UPI ID, Bank Transfer, and Crypto (USDT). Transactions are verified instantly via WhatsApp.',
-  },
-  {
-    category: 'reseller',
-    question: 'How do I start as an Aslil Gang Reseller?',
-    answer: 'You can start with as little as 10 panel keys. Contact us on WhatsApp to unlock reseller panel access with credit dashboard tools and direct wholesale pricing.',
+    question: 'Is reseller access available?',
+    answer: 'Yes. The reseller section explains the program, and the team can confirm current entry requirements and pricing directly.',
   },
 ]
-
-const filteredFaqs = computed(() => {
-  return faqs.filter((faq) => {
-    const matchesCategory = activeCategory.value === 'all' || faq.category === activeCategory.value
-    const matchesSearch =
-      searchQuery.value.trim() === '' ||
-      faq.question.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.value.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
-})
 
 function toggle(index: number) {
   openIndex.value = openIndex.value === index ? null : index
@@ -61,81 +31,44 @@ function toggle(index: number) {
 
 <template>
   <section class="faq-section" aria-labelledby="faq-title">
-    <div class="section-shell">
-      <div class="faq-head">
-        <div>
-          <span class="section-label">HELP &amp; KNOWLEDGE BASE</span>
-          <h2 id="faq-title">Frequently Asked Questions</h2>
-        </div>
-        <div class="faq-search">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search questions (e.g. Windows 11, iOS, Anti-ban)..."
-            aria-label="Search FAQs"
-          />
-        </div>
-      </div>
+    <div class="section-shell faq-layout">
+      <header class="faq-head">
+        <span class="section-label">Before you order</span>
+        <h2 id="faq-title">Clear answers.<br />No hard sell.</h2>
+        <p>
+          The useful details, kept short. If your setup is unusual, ask the team
+          before making a purchase.
+        </p>
+      </header>
 
-      <!-- Categories -->
-      <div class="faq-tabs">
-        <button
-          class="faq-tab"
-          :class="{ active: activeCategory === 'all' }"
-          @click="activeCategory = 'all'"
-        >
-          All Questions
-        </button>
-        <button
-          class="faq-tab"
-          :class="{ active: activeCategory === 'setup' }"
-          @click="activeCategory = 'setup'"
-        >
-          Setup &amp; Compatibility
-        </button>
-        <button
-          class="faq-tab"
-          :class="{ active: activeCategory === 'safety' }"
-          @click="activeCategory = 'safety'"
-        >
-          Anti-Ban &amp; Safety
-        </button>
-        <button
-          class="faq-tab"
-          :class="{ active: activeCategory === 'payment' }"
-          @click="activeCategory = 'payment'"
-        >
-          Payments &amp; Delivery
-        </button>
-        <button
-          class="faq-tab"
-          :class="{ active: activeCategory === 'reseller' }"
-          @click="activeCategory = 'reseller'"
-        >
-          Reseller Portal
-        </button>
-      </div>
-
-      <!-- Accordion List -->
       <div class="faq-accordion">
-        <div
-          v-for="(faq, idx) in filteredFaqs"
+        <article
+          v-for="(faq, index) in faqs"
           :key="faq.question"
           class="faq-item"
-          :class="{ open: openIndex === idx }"
+          :class="{ open: openIndex === index }"
         >
-          <button class="faq-question" @click="toggle(idx)">
+          <button
+            class="faq-question"
+            type="button"
+            :aria-expanded="openIndex === index"
+            :aria-controls="`faq-answer-${index}`"
+            @click="toggle(index)"
+          >
+            <small>{{ String(index + 1).padStart(2, '0') }}</small>
             <span>{{ faq.question }}</span>
-            <span class="faq-icon" aria-hidden="true">{{ openIndex === idx ? '−' : '+' }}</span>
+            <i aria-hidden="true">{{ openIndex === index ? '−' : '+' }}</i>
           </button>
-          <div v-if="openIndex === idx" class="faq-answer">
-            <p>{{ faq.answer }}</p>
-          </div>
-        </div>
-
-        <div v-if="filteredFaqs.length === 0" class="faq-empty">
-          <p>No questions found matching "{{ searchQuery }}".</p>
-        </div>
+          <Transition name="answer">
+            <div
+              v-if="openIndex === index"
+              :id="`faq-answer-${index}`"
+              class="faq-answer"
+            >
+              <p>{{ faq.answer }}</p>
+            </div>
+          </Transition>
+        </article>
       </div>
     </div>
   </section>
@@ -143,134 +76,146 @@ function toggle(index: number) {
 
 <style scoped>
 .faq-section {
-  padding: clamp(5rem, 8vw, 8rem) 0;
+  padding: clamp(6rem, 10vw, 10rem) 0;
   border-top: 1px solid var(--line);
-  background: #0b0b0d;
+  background:
+    radial-gradient(circle at 12% 28%, rgba(135, 6, 18, 0.08), transparent 26rem),
+    #08080a;
+}
+
+.faq-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(3rem, 8vw, 8rem);
 }
 
 .faq-head {
-  display: grid;
-  grid-template-columns: 1fr minmax(280px, 420px);
-  align-items: end;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+  position: sticky;
+  top: 8rem;
 }
 
 .faq-head h2 {
-  margin: 0.8rem 0 0;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  margin: 1rem 0 0;
+  font-size: clamp(4rem, 7vw, 7.2rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
 }
 
-.faq-search input {
-  width: 100%;
-  padding: 0.9rem 1.2rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  color: var(--white);
-  background: #141417;
-  font-size: 0.82rem;
-  outline: none;
-  transition: border-color 180ms ease;
-}
-
-.faq-search input:focus {
-  border-color: var(--red);
-}
-
-.faq-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-bottom: 2rem;
-}
-
-.faq-tab {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+.faq-head p {
+  max-width: 430px;
+  margin: 1.4rem 0 0;
   color: var(--gray-lt);
-  background: #111113;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 180ms ease;
-}
-
-.faq-tab:hover {
-  border-color: var(--line-strong);
-  color: var(--white);
-}
-
-.faq-tab.active {
-  border-color: var(--red);
-  color: #fff;
-  background: var(--red);
+  font-size: 0.88rem;
+  line-height: 1.72;
 }
 
 .faq-accordion {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #111114;
   overflow: hidden;
+  border-top: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(14, 14, 17, 0.72);
 }
 
 .faq-item {
   border-bottom: 1px solid var(--line);
 }
 
-.faq-item:last-child {
-  border-bottom: 0;
-}
-
 .faq-question {
-  display: flex;
+  display: grid;
   width: 100%;
+  grid-template-columns: 2.2rem minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
-  padding: 1.4rem 1.6rem;
+  padding: 1.5rem 1.2rem;
   border: 0;
   color: var(--white);
   background: transparent;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 650;
   text-align: left;
   cursor: pointer;
-  transition: background 180ms ease;
 }
 
-.faq-question:hover {
-  background: rgba(255, 255, 255, 0.03);
+.faq-question small {
+  color: var(--red-bright);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
 }
 
-.faq-icon {
-  color: var(--red);
-  font-size: 1.4rem;
+.faq-question span {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.faq-question i {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--gray-lt);
+  font-size: 1rem;
+  font-style: normal;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.faq-question:hover i,
+.faq-item.open .faq-question i {
+  border-color: var(--red);
+  color: var(--red-bright);
 }
 
 .faq-answer {
-  padding: 0 1.6rem 1.4rem;
+  overflow: hidden;
 }
 
 .faq-answer p {
+  max-width: 720px;
   margin: 0;
+  padding: 0 4rem 1.7rem 4.4rem;
   color: var(--gray-lt);
-  font-size: 0.88rem;
-  line-height: 1.7;
+  font-size: 0.87rem;
+  line-height: 1.75;
 }
 
-.faq-empty {
-  padding: 3rem;
-  color: var(--gray);
-  text-align: center;
+.answer-enter-active,
+.answer-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
 }
 
-@media (max-width: 800px) {
-  .faq-head {
+.answer-enter-from,
+.answer-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+@media (max-width: 820px) {
+  .faq-layout {
     grid-template-columns: 1fr;
+  }
+
+  .faq-head {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .faq-question {
+    grid-template-columns: 1.6rem minmax(0, 1fr) auto;
+    gap: 0.7rem;
+  }
+
+  .faq-answer p {
+    padding-left: 2.3rem;
   }
 }
 </style>

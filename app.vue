@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const requestUrl = useRequestURL()
-const socialImage = `${requestUrl.origin}/og-editorial.png`
+const socialImage = `${requestUrl.origin}/og-v2.png`
 
 useSeoMeta({
   ogTitle: 'Aslil Gang — Panels, Player IDs and Setup Support',

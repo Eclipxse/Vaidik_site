@@ -8,13 +8,13 @@ const collections = [
   { label: 'iOS', to: '/cheats/ios' },
   { label: 'Player IDs', to: '/free-fire-ids' },
   { label: 'Reseller', to: '/reseller' },
+  { label: 'Social services', to: '/ssm-panel' },
 ]
 
-const socialLinks = [
-  { label: 'Instagram', href: 'https://www.instagram.com/fit_vaidik' },
-  { label: 'Telegram', href: 'https://t.me/+fp8yl-Roaek5YmU1' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@aslilgangliveff' },
-  { label: 'Discord', href: 'https://discord.gg/g6BdyeWQvQ' },
+const socials = [
+  { label: 'Instagram', color: '#E4405F', href: 'https://www.instagram.com/fit_vaidik' },
+  { label: 'Telegram', color: '#229ED9', href: 'https://t.me/+fp8yl-Roaek5YmU1' },
+  { label: 'YouTube', color: '#FF0033', href: 'https://www.youtube.com/@aslilgangliveff' },
 ]
 
 function scrollToTop() {
@@ -29,56 +29,62 @@ function scrollToTop() {
 
 <template>
   <footer class="site-footer">
-    <div class="footer-shell">
-      <div class="footer-lead">
-        <NuxtLink to="/" class="footer-wordmark">
-          <span>A</span>
-          <strong>Aslil Gang</strong>
+    <section class="footer-contact">
+      <div>
+        <span>Need help choosing?</span>
+        <h2>Send your device.<br />Get a clearer answer.</h2>
+      </div>
+      <a
+        :href="`https://wa.me/${ownerNumber}`"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Talk on WhatsApp
+        <span aria-hidden="true">↗</span>
+      </a>
+    </section>
+
+    <div class="footer-main">
+      <div class="footer-brand">
+        <NuxtLink to="/" aria-label="Aslil Gang home">
+          <img src="/brand/aslil-logo.png" alt="" />
+          <span>
+            <strong>Aslil Gang</strong>
+            <small>Panel store</small>
+          </span>
         </NuxtLink>
         <p>
-          A focused digital storefront for panels, player IDs and reseller
-          access—supported directly through WhatsApp.
+          A focused digital storefront for panels, player IDs, creator services
+          and reseller access.
         </p>
-        <a
-          :href="`https://wa.me/${ownerNumber}`"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="footer-support"
-        >
-          Talk to support
-          <span aria-hidden="true">↗</span>
-        </a>
       </div>
 
-      <div class="footer-nav">
-        <div>
-          <span class="footer-label">Collections</span>
-          <nav aria-label="Footer collections">
-            <NuxtLink v-for="link in collections" :key="link.to" :to="link.to">
-              {{ link.label }}
-            </NuxtLink>
-          </nav>
-        </div>
-        <div>
-          <span class="footer-label">Follow</span>
-          <nav aria-label="Social links">
-            <a
-              v-for="link in socialLinks"
-              :key="link.href"
-              :href="link.href"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ link.label }}
-            </a>
-          </nav>
-        </div>
-      </div>
+      <nav class="footer-links" aria-label="Footer collections">
+        <span>Collections</span>
+        <NuxtLink v-for="link in collections" :key="link.to" :to="link.to">
+          {{ link.label }}
+        </NuxtLink>
+      </nav>
+
+      <nav class="footer-links" aria-label="Social links">
+        <span>Follow</span>
+        <a
+          v-for="social in socials"
+          :key="social.href"
+          :href="social.href"
+          target="_blank"
+          rel="noopener noreferrer"
+          :style="{ '--social-color': social.color }"
+        >
+          {{ social.label }}
+          <i aria-hidden="true" />
+        </a>
+      </nav>
     </div>
 
     <div class="footer-bottom">
       <span>© {{ year }} Aslil Gang</span>
-      <span>Built for clear choices and direct support.</span>
+      <span>Compatibility and availability should be confirmed before payment.</span>
       <button type="button" @click="scrollToTop">
         Back to top
         <span aria-hidden="true">↑</span>
@@ -90,20 +96,77 @@ function scrollToTop() {
 <style scoped>
 .site-footer {
   border-top: 1px solid var(--line);
-  background: #080809;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(140, 6, 18, 0.08), transparent 26rem),
+    #070708;
 }
 
-.footer-shell {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 0.7fr);
-  justify-content: space-between;
-  gap: clamp(4rem, 10vw, 10rem);
-  width: min(1280px, calc(100% - 3rem));
+.footer-contact,
+.footer-main,
+.footer-bottom {
+  width: min(var(--shell), calc(100% - 3rem));
   margin: 0 auto;
+}
+
+.footer-contact {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 3rem;
+  padding: clamp(4rem, 8vw, 7rem);
+  overflow: hidden;
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  color: var(--white);
+  background:
+    linear-gradient(120deg, rgba(255, 45, 45, 0.08), transparent 42%),
+    #0e0e11;
+}
+
+.footer-contact > div > span {
+  color: var(--red-bright);
+  font-family: var(--font-mono);
+  font-size: 0.51rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer-contact h2 {
+  margin: 0.9rem 0 0;
+  font-size: clamp(3.5rem, 6.4vw, 6.8rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.footer-contact > a {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(255, 69, 64, 0.42);
+  border-radius: 999px;
+  color: #fff;
+  background: var(--red);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) repeat(2, minmax(150px, 0.34fr));
+  gap: clamp(3rem, 8vw, 8rem);
   padding: clamp(5rem, 8vw, 8rem) 0;
 }
 
-.footer-wordmark {
+.footer-brand > a {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -111,108 +174,103 @@ function scrollToTop() {
   text-decoration: none;
 }
 
-.footer-wordmark > span {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--red);
+.footer-brand img {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.footer-brand a > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.footer-brand strong {
   font-family: var(--font-display);
-  font-weight: 700;
-}
-
-.footer-wordmark strong {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  letter-spacing: -0.03em;
-}
-
-.footer-lead p {
-  max-width: 500px;
-  margin: 1.5rem 0 0;
-  color: var(--gray);
-  font-size: 0.84rem;
-  line-height: 1.72;
-}
-
-.footer-support {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-top: 2rem;
-  padding-bottom: 0.3rem;
-  border-bottom: 1px solid var(--line-strong);
-  color: var(--white);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-decoration: none;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
 }
 
-.footer-nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
-  gap: 2rem;
-}
-
-.footer-label {
-  display: block;
-  margin-bottom: 1.3rem;
-  color: var(--gray);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
+.footer-brand small {
+  color: var(--red-bright);
+  font-family: var(--font-mono);
+  font-size: 0.45rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
-.footer-nav nav {
+.footer-brand p {
+  max-width: 430px;
+  margin: 1.4rem 0 0;
+  color: var(--gray);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.footer-links {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.9rem;
+  gap: 0.8rem;
 }
 
-.footer-nav a {
+.footer-links > span {
+  margin-bottom: 0.35rem;
+  color: var(--gray);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--gray-lt);
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   text-decoration: none;
-  transition: color 160ms ease;
+  transition: color 180ms ease;
 }
 
-.footer-nav a:hover {
+.footer-links a:hover {
   color: var(--white);
+}
+
+.footer-links a i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--social-color, transparent);
 }
 
 .footer-bottom {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 1rem;
-  width: min(1280px, calc(100% - 3rem));
-  min-height: 76px;
-  margin: 0 auto;
+  gap: 2rem;
+  min-height: 70px;
   border-top: 1px solid var(--line);
   color: var(--gray);
-  font-size: 0.57rem;
+  font-family: var(--font-mono);
+  font-size: 0.46rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-}
-
-.footer-bottom > span:nth-child(2) {
-  text-align: center;
 }
 
 .footer-bottom button {
   justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   padding: 0;
   border: 0;
-  color: inherit;
+  color: var(--gray-lt);
   background: transparent;
   font: inherit;
   text-transform: inherit;
@@ -220,8 +278,21 @@ function scrollToTop() {
 }
 
 @media (max-width: 800px) {
-  .footer-shell {
+  .footer-contact,
+  .footer-main {
     grid-template-columns: 1fr;
+  }
+
+  .footer-contact > a {
+    width: fit-content;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
   }
 
   .footer-bottom {
@@ -234,13 +305,14 @@ function scrollToTop() {
 }
 
 @media (max-width: 560px) {
-  .footer-shell,
+  .footer-contact,
+  .footer-main,
   .footer-bottom {
     width: min(100% - 2rem, 1280px);
   }
 
-  .footer-nav {
-    grid-template-columns: 1fr 1fr;
+  .footer-contact {
+    padding: 3rem 1.3rem;
   }
 }
 </style>

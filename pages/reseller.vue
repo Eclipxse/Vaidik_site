@@ -1,494 +1,381 @@
-<template>
-  <div class="info-page">
-
-    <div class="page-hero">
-      <span class="page-eyebrow">Start Your Business</span>
-      <h1 class="page-title">Reseller <span class="text-red">Plan.</span></h1>
-      <p class="page-sub">
-        Become an official Aslil Gang reseller. Get wholesale prices, credit dashboard tools,
-        and high earning potential.
-      </p>
-    </div>
-
-    <div class="cards-outer">
-
-      <!-- Interactive Reseller Profit Calculator -->
-      <div class="calc-section">
-        <ResellerCalculator />
-      </div>
-
-      <!-- Loading Skeleton -->
-      <div v-if="pending" class="cards-grid">
-        <div v-for="i in 3" :key="i" class="plan-skeleton" />
-      </div>
-
-      <!-- Error State -->
-      <div v-else-if="error" class="empty-state">
-        <span class="empty-icon">⚠️</span>
-        <p class="empty-text">Failed to load plans. Please refresh the page.</p>
-      </div>
-
-      <!-- Products from Supabase -->
-      <div v-else-if="resellerPlans && resellerPlans.length > 0" class="cards-grid">
-        <div
-          v-for="plan in resellerPlans"
-          :key="plan.id"
-          class="product-card"
-          @click="openDetail(plan)"
-        >
-          <!-- Image -->
-          <div class="card-gallery">
-            <img
-              :src="plan.thumbnail_url || '/products/uploads/1779623174189_content.png'"
-              :alt="plan.name"
-              class="card-img"
-              loading="lazy"
-            />
-            <span class="card-badge" v-if="plan.is_featured">Most Popular</span>
-            <span class="card-badge" v-else>Reseller</span>
-            <div class="card-img-glow" aria-hidden="true" />
-          </div>
-
-          <!-- Body -->
-          <div class="card-body">
-            <span class="card-cat">Reseller Plan</span>
-            <h2 class="card-name">{{ plan.name }}</h2>
-            <p class="card-desc">{{ plan.description }}</p>
-
-            <!-- Feature pills — top 4 only -->
-            <ul class="card-feats" v-if="plan.features && plan.features.length">
-              <li v-for="f in plan.features.slice(0, 4)" :key="f">
-                <span class="feat-dot" aria-hidden="true" />{{ f }}
-              </li>
-            </ul>
-
-            <!-- Price + CTA -->
-            <div class="card-footer">
-              <div class="price-wrap">
-                <span class="price">₹{{ plan.price }}</span>
-                <span class="price-note" v-if="plan.duration">/ {{ plan.duration }}</span>
-              </div>
-              <span class="btn-buy-details">
-                View Details
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Empty State: no plans added yet -->
-      <div v-else class="empty-state">
-        <span class="empty-icon">📦</span>
-        <h2 class="empty-title">Plans Coming Soon</h2>
-        <p class="empty-text">Our reseller plans are being set up. Contact us on WhatsApp to get the latest pricing and availability.</p>
-      </div>
-
-      <!-- How it works -->
-      <div class="how-section">
-        <h2 class="how-title">How It <span class="text-red">Works.</span></h2>
-        <div class="steps">
-          <div v-for="step in steps" :key="step.num" class="step">
-            <span class="step-num">{{ step.num }}</span>
-            <h3 class="step-title">{{ step.title }}</h3>
-            <p class="step-desc">{{ step.desc }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="cta-box">
-        <p class="cta-text">Ready to start? Message us on WhatsApp and we'll get you set up within minutes.</p>
-        <a :href="`https://wa.me/${ownerNumber}?text=${encodeURIComponent('Hi! I want to become a reseller.')}`"
-           target="_blank" rel="noopener noreferrer" class="btn-green">
-          Become a Reseller →
-        </a>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import ResellerCalculator from '~/components/ResellerCalculator.vue'
 
 definePageMeta({ layout: 'default' })
-useHead({ title: 'Reseller Plan — ASLIL GANG PANEL' })
 
-const router = useRouter()
-const { ownerNumber } = useWhatsApp()
+useHead({
+  title: 'Reseller Program — Aslil Gang',
+  meta: [{
+    name: 'description',
+    content: 'Review Aslil Gang reseller options and discuss current entry requirements directly.',
+  }],
+})
+
 const client = useSupabaseClient()
+const { ownerNumber } = useWhatsApp()
+const contactLink = computed(() => `https://wa.me/${ownerNumber}?text=${encodeURIComponent('Hi! I want to learn about the reseller program.')}`)
 
-// Fetch reseller products from Supabase
-const { data: resellerPlans, pending, error } = await useAsyncData(
+const { data: resellerPlans, pending } = await useAsyncData(
   'reseller-plans',
   async () => {
-    const { data, error } = await client
+    const { data } = await client
       .from('products')
       .select('*')
       .eq('category', 'Reseller')
       .eq('is_published', true)
       .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: true })
-
-    if (error) throw error
-    return data as Array<{
-      id: string
-      name: string
-      description: string | null
-      price: number
-      original_price: number | null
-      duration: string | null
-      thumbnail_url: string | null
-      features: string[]
-      stock_status: 'active' | 'limited' | 'out'
-      is_featured: boolean
-      is_published: boolean
-      sort_order: number
-    }>
+    return data ?? []
   }
 )
 
-function openDetail(plan: any) {
-  router.push(`/product/${plan.id}`)
-}
-
 const steps = [
-  { num: '01', title: 'Choose a Plan', desc: 'Pick the reseller tier that matches your goals and budget.' },
-  { num: '02', title: 'Contact on WhatsApp', desc: 'Message us and we\'ll set up your account within minutes.' },
-  { num: '03', title: 'Start Selling', desc: 'List products at your own price and keep the difference as profit.' },
+  { number: '01', title: 'Discuss your market', copy: 'Share your expected volume, platform mix and sales channel.' },
+  { number: '02', title: 'Review current terms', copy: 'Confirm the available plan, pricing and operating expectations.' },
+  { number: '03', title: 'Start with support', copy: 'Receive access details and a direct point of contact for questions.' },
 ]
 </script>
 
+<template>
+  <div class="reseller-page">
+    <PageHeader
+      eyebrow="Business access / Reseller"
+      title="Reseller Program"
+      subtitle="A direct path for sellers who want to offer the Aslil Gang catalog. Current requirements and pricing are confirmed in conversation."
+    />
+
+    <main class="reseller-main">
+      <section class="reseller-intro">
+        <div>
+          <span class="section-label">Program overview</span>
+          <h2>Built around a real sales conversation.</h2>
+        </div>
+        <p>
+          There is no generic sign-up funnel. Start by sharing your audience,
+          expected volume and the products you want to carry; the team can then
+          explain the current options.
+        </p>
+      </section>
+
+      <section class="plan-section" aria-labelledby="plans-title">
+        <div class="section-rail">
+          <span id="plans-title">Available plans</span>
+          <small>{{ resellerPlans?.length || 0 }} currently listed</small>
+        </div>
+
+        <div v-if="pending" class="plan-grid" aria-busy="true">
+          <div v-for="index in 3" :key="index" class="plan-skeleton" />
+        </div>
+
+        <div v-else-if="resellerPlans?.length" class="plan-grid">
+          <ProductCard
+            v-for="(plan, index) in resellerPlans"
+            :key="plan.id"
+            :to="`/product/${plan.id}`"
+            :name="plan.name"
+            :description="plan.description"
+            category="Reseller access"
+            :features="Array.isArray(plan.features) ? plan.features : []"
+            :price="Number(plan.price || 0)"
+            :duration="plan.duration"
+            :thumbnail="plan.thumbnail_url || plan.images?.[0]"
+            :stock-status="plan.stock_status || 'active'"
+            :featured="index === 0"
+          />
+        </div>
+
+        <div v-else class="plan-empty">
+          <span>AG—RESELLER</span>
+          <h3>Plans are confirmed directly.</h3>
+          <p>Message the team for current entry requirements and pricing.</p>
+          <a :href="contactLink" target="_blank" rel="noopener noreferrer">
+            Start the conversation
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="reseller-steps" aria-labelledby="steps-title">
+        <div class="steps-copy">
+          <span class="section-label">How it starts</span>
+          <h2 id="steps-title">Three useful steps. No theatre.</h2>
+        </div>
+        <ol>
+          <li v-for="step in steps" :key="step.number">
+            <span>{{ step.number }}</span>
+            <div>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.copy }}</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="calculator-section" aria-labelledby="calculator-title">
+        <header>
+          <span class="section-label">Planning tool</span>
+          <h2 id="calculator-title">Explore a sales scenario.</h2>
+          <p>The calculator is an estimate, not a quote. Confirm current reseller terms directly.</p>
+        </header>
+        <ResellerCalculator />
+      </section>
+
+      <section class="reseller-contact">
+        <span>Ready to discuss the program?</span>
+        <h2>Tell us what you plan to sell.</h2>
+        <a :href="contactLink" target="_blank" rel="noopener noreferrer">
+          Contact on WhatsApp
+          <span aria-hidden="true">↗</span>
+        </a>
+      </section>
+    </main>
+  </div>
+</template>
+
 <style scoped>
-.info-page { min-height: 100vh; padding-top: 8rem; padding-bottom: 6rem; }
-
-.page-hero {
-  text-align: center; padding: 2rem 2rem 3rem;
-  max-width: 650px; margin: 0 auto;
+.reseller-page {
+  background: var(--black);
 }
 
-.page-eyebrow {
-  display: inline-block; font-family: var(--font-body);
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--red); margin-bottom: 1rem;
+.reseller-main {
+  width: min(var(--shell), calc(100% - 3rem));
+  margin: 0 auto;
+  padding: clamp(5rem, 8vw, 8rem) 0;
 }
 
-.page-title {
-  font-family: var(--font-display); font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 900; line-height: 1; letter-spacing: -0.02em; color: #fff; margin: 0 0 1.25rem;
+.reseller-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
+  align-items: end;
+  gap: clamp(3rem, 8vw, 8rem);
+  padding-bottom: clamp(5rem, 8vw, 8rem);
 }
 
-.text-red {
-  background: linear-gradient(135deg, #ff4040, #cc0000);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-
-.page-sub { font-family: var(--font-body); font-size: 1rem; color: var(--gray); line-height: 1.6; margin: 0; }
-
-.cards-outer { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-
-.calc-section {
-  margin-bottom: 4rem;
-}
-
-/* Cards Grid */
-.cards-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 5rem; }
-@media (min-width: 640px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
-
-/* Loading Skeleton */
-.plan-skeleton {
-  height: 380px;
-  border-radius: 20px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s infinite;
-  border: 1px solid rgba(255,255,255,0.06);
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Empty / Error State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 4rem 3rem;
-  border-radius: 24px;
-  background: rgba(255,255,255,0.02);
-  border: 1px dashed rgba(255,255,255,0.1);
-  max-width: 520px;
-  width: 100%;
-  text-align: center;
-  margin: 0 auto 5rem;
-}
-
-.empty-icon { font-size: 3rem; }
-
-.empty-title {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #fff;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-.empty-text {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--gray);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ── Card ── */
-.product-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 20px;
-  overflow: hidden;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  cursor: pointer;
-  transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-  text-align: left;
-}
-
-.product-card:hover {
-  border-color: rgba(230,30,38,0.5);
-  transform: translateY(-8px);
-  box-shadow:
-    0 28px 70px rgba(0,0,0,0.7),
-    0 0 0 1px rgba(230,30,38,0.15),
-    0 0 60px rgba(230,30,38,0.1);
-}
-
-/* ── Gallery ── */
-.card-gallery {
-  position: relative;
-  width: 100%;
-  background: #080808;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  max-height: 300px;
-}
-
-.card-img {
-  width: 100%;
-  height: 280px;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.5s ease, filter 0.5s ease;
-  background: #080808;
-}
-
-.product-card:hover .card-img {
-  transform: scale(1.04);
-  filter: brightness(1.08);
-}
-
-/* Red glow sweep on hover */
-.card-img-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 120%, rgba(230,30,38,0.18) 0%, transparent 65%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.product-card:hover .card-img-glow { opacity: 1; }
-
-.card-badge {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  padding: 0.28rem 0.8rem;
-  border-radius: 9999px;
-  background: rgba(230,30,38,0.92);
-  backdrop-filter: blur(8px);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.62rem;
+.reseller-intro h2,
+.steps-copy h2,
+.calculator-section header h2,
+.reseller-contact h2 {
+  margin: 1rem 0 0;
+  font-size: clamp(3.8rem, 7vw, 7.2rem);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
   text-transform: uppercase;
-  box-shadow: 0 2px 12px rgba(230,30,38,0.5);
 }
 
-/* ── Body ── */
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  padding: 1.4rem 1.5rem 1.5rem;
-  flex: 1;
-}
-
-.card-cat {
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-
-.card-name {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: #fff;
+.reseller-intro > p,
+.calculator-section header p {
   margin: 0;
-  text-transform: uppercase;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  color: var(--gray-lt);
+  font-size: 0.88rem;
+  line-height: 1.75;
 }
 
-.card-desc {
-  font-family: var(--font-body);
-  font-size: 0.83rem;
-  color: var(--gray);
-  line-height: 1.55;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Feature pills */
-.card-feats {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.card-feats li {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem 0.7rem;
-  border-radius: 9999px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  font-family: var(--font-body);
-  font-size: 0.67rem;
-  color: rgba(255,255,255,0.7);
-  font-weight: 500;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.product-card:hover .card-feats li {
-  background: rgba(230,30,38,0.07);
-  border-color: rgba(230,30,38,0.2);
-}
-
-.feat-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--red);
-  flex-shrink: 0;
-}
-
-/* Footer */
-.card-footer {
+.section-rail {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  margin-top: auto;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--gray);
+  font-family: var(--font-mono);
+  font-size: 0.49rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.price-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
+.section-rail span {
+  color: var(--red-bright);
 }
 
-.price {
-  font-family: var(--font-display);
-  font-size: 1.7rem;
-  font-weight: 900;
-  color: #fff;
-  line-height: 1;
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
 }
 
-.price-note {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
+.plan-skeleton {
+  min-height: 460px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #101012;
+}
+
+.plan-empty {
+  padding: clamp(3rem, 7vw, 6rem);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 45, 45, 0.08), transparent 38%),
+    #101012;
+  text-align: center;
+}
+
+.plan-empty > span {
+  color: var(--red-bright);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.plan-empty h3 {
+  margin: 1rem 0 0;
+  font-size: clamp(2rem, 4vw, 4rem);
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+.plan-empty p {
+  margin: 0.8rem 0 0;
   color: var(--gray);
 }
 
-.btn-buy-details {
+.plan-empty a {
+  display: inline-flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  color: var(--white);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.plan-empty a span {
+  color: var(--red-bright);
+}
+
+.reseller-steps,
+.calculator-section {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.65fr) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 8rem);
+  padding: clamp(6rem, 10vw, 10rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.reseller-steps ol {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line-strong);
+  list-style: none;
+}
+
+.reseller-steps li {
+  display: grid;
+  grid-template-columns: 2.8rem 1fr;
+  gap: 1rem;
+  padding: 1.7rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.reseller-steps li > span {
+  padding-top: 0.2rem;
+  color: var(--red-bright);
+  font-family: var(--font-mono);
+  font-size: 0.49rem;
+  font-weight: 600;
+}
+
+.reseller-steps h3 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.reseller-steps p {
+  margin: 0.55rem 0 0;
+  color: var(--gray);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.calculator-section {
+  align-items: start;
+}
+
+.calculator-section header {
+  position: sticky;
+  top: 8rem;
+}
+
+.calculator-section header p {
+  margin-top: 1.2rem;
+}
+
+.reseller-contact {
+  overflow: hidden;
+  padding: clamp(4rem, 8vw, 7rem);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  color: var(--white);
+  background:
+    radial-gradient(circle at 80% 50%, rgba(255, 80, 70, 0.18), transparent 30%),
+    linear-gradient(120deg, #560710, #a40c19);
+}
+
+.reseller-contact > span {
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.reseller-contact h2 {
+  max-width: 850px;
+}
+
+.reseller-contact a {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1.1rem;
-  border-radius: 9999px;
-  background: var(--red);
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 18px rgba(230,30,38,0.35);
-  cursor: pointer;
-  border: none;
-}
-
-.product-card:hover .btn-buy-details {
-  background: #ff2a35;
   gap: 0.7rem;
-  box-shadow: 0 6px 28px rgba(230,30,38,0.55);
+  margin-top: 2rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  color: #171312;
+  background: var(--white);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
-/* How it works */
-.how-section { margin-bottom: 4rem; }
-.how-title {
-  font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 900; color: #fff; margin: 0 0 3rem; text-align: center;
+@media (max-width: 900px) {
+  .reseller-intro,
+  .reseller-steps,
+  .calculator-section {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calculator-section header {
+    position: static;
+  }
 }
 
-.steps { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-@media (min-width: 768px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 620px) {
+  .reseller-main {
+    width: min(100% - 2rem, 1280px);
+  }
 
-.step {
-  padding: 2rem; border-radius: 16px;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  .plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reseller-contact {
+    padding: 3rem 1.4rem;
+  }
 }
-
-.step-num {
-  display: block; font-family: var(--font-display); font-size: 2.5rem;
-  font-weight: 900; color: rgba(230,30,38,0.3); line-height: 1; margin-bottom: 1rem;
-}
-
-.step-title {
-  font-family: var(--font-display); font-size: 1.1rem; font-weight: 900;
-  color: #fff; margin: 0 0 0.5rem; text-transform: uppercase;
-}
-
-.step-desc { font-family: var(--font-body); font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin: 0; }
-
-.cta-box {
-  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
-  padding: 3rem 2rem; border-radius: 20px; text-align: center;
-  background: rgba(230,30,38,0.05); border: 1px solid rgba(230,30,38,0.12);
-}
-.cta-text { font-family: var(--font-body); font-size: 1rem; color: var(--gray); line-height: 1.6; margin: 0; }
 </style>

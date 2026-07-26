@@ -4,27 +4,34 @@
 
 @layer base {
   :root {
-    --red: #ff4136;
-    --red-bright: #ff655d;
-    --red-deep: #c71f1a;
-    --black: #0a0a0b;
-    --black-soft: #111113;
-    --white: #f5f4ef;
-    --paper: #e9e7e0;
-    --gray: #8c8b88;
-    --gray-lt: #b8b6b0;
-    --brand-gray: #8c8b88;
-    --line: rgba(245, 244, 239, 0.12);
-    --line-strong: rgba(245, 244, 239, 0.22);
-    --surface: #111113;
-    --surface-strong: #171719;
-    --font-display: 'Inter Tight', 'Inter', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --red: #ff2d2d;
+    --red-bright: #ff5851;
+    --red-deep: #a70d18;
+    --red-dark: #4a070d;
+    --black: #070708;
+    --black-soft: #0d0d10;
+    --white: #f6f1e8;
+    --paper: #ebe4d8;
+    --gray: #77767a;
+    --gray-lt: #b8b6b2;
+    --brand-gray: #85858a;
+    --line: rgba(246, 241, 232, 0.1);
+    --line-strong: rgba(246, 241, 232, 0.2);
+    --surface: #0e0e11;
+    --surface-strong: #151519;
+    --surface-glass: rgba(15, 15, 18, 0.74);
+    --green: #54e68b;
+    --shell: 1340px;
+    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
   }
 
   html {
     color: var(--white);
-    background: var(--black);
+    background:
+      radial-gradient(circle at 50% -20%, rgba(115, 8, 17, 0.13), transparent 35rem),
+      var(--black);
     scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -67,7 +74,8 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 800;
+    text-wrap: balance;
   }
 
   ::selection {
@@ -87,15 +95,16 @@
   .btn-outline,
   .btn-premium {
     display: inline-flex;
-    min-height: 48px;
+    min-height: 52px;
     align-items: center;
     justify-content: center;
     gap: 0.65rem;
-    padding: 0.85rem 1.2rem;
+    padding: 0.9rem 1.3rem;
     border: 1px solid transparent;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.69rem;
+    font-weight: 800;
     line-height: 1;
     letter-spacing: 0.08em;
     text-decoration: none;
@@ -112,7 +121,10 @@
   .btn-red,
   .btn-premium {
     color: #fff;
-    background: var(--red);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 45%),
+      var(--red);
+    box-shadow: 0 12px 36px rgba(255, 45, 45, 0.2);
   }
 
   .btn-red:hover,
@@ -134,7 +146,8 @@
   .btn-outline {
     color: var(--white);
     border-color: var(--line-strong);
-    background: transparent;
+    background: rgba(255, 255, 255, 0.025);
+    backdrop-filter: blur(12px);
   }
 
   .btn-outline:hover {
@@ -154,8 +167,10 @@
     overflow: hidden;
     padding: 1.5rem;
     border: 1px solid var(--line);
-    border-radius: 16px;
-    background: var(--surface);
+    border-radius: 24px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.04), transparent 36%),
+      var(--surface);
     transition:
       border-color 200ms ease,
       transform 200ms ease;
@@ -171,8 +186,9 @@
     align-items: center;
     gap: 0.65rem;
     color: var(--gray-lt);
-    font-size: 0.68rem;
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.61rem;
+    font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
   }
@@ -209,12 +225,14 @@
 
   .page-enter-active,
   .page-leave-active {
-    transition: opacity 180ms ease;
+    transition: opacity 260ms ease, filter 260ms ease, transform 260ms ease;
   }
 
   .page-enter-from,
   .page-leave-to {
     opacity: 0;
+    filter: blur(8px);
+    transform: translateY(8px);
   }
 }
 
@@ -269,4 +287,23 @@ html.mobile-menu-open .wa-fab,
 html.mobile-menu-open .btt-btn {
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+.section-shell {
+  width: min(var(--shell), calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 680px) {
+  .section-shell {
+    width: min(100% - 2rem, var(--shell));
+  }
 }

@@ -17,12 +17,12 @@ const platforms = [
 const stylesByPlatform: Record<string, { id: string; label: string; desc: string }[]> = {
   PC: [
     { id: 'streamer', label: 'Streamer & OBS Safe', desc: 'Hidden on screen share / recording, 5-type aimbot' },
-    { id: 'legit', label: 'External Legit', desc: 'External AI targeting, maximum anti-ban safety' },
+    { id: 'legit', label: 'External Legit', desc: 'External AI targeting with a more discreet feature set' },
     { id: 'rage', label: 'Rage / Aimkill', desc: 'Fastest aimkill, fly hack, tele-kill, joystick control' },
     { id: 'bypass', label: 'UID Tournament Bypass', desc: 'Remove PC logo, play in phone tournaments, 50 BR players' },
   ],
   Mobile: [
-    { id: 'nonroot', label: 'Non-Root VIP Panel', desc: 'Drag headshot, chams location, 0% lag, 100% safe' },
+    { id: 'nonroot', label: 'Non-Root VIP Panel', desc: 'Drag headshot and location chams for supported Android devices' },
   ],
   iOS: [
     { id: 'ios-all', label: 'Full Season iOS Panel', desc: 'No jailbreak, neck/head aimbot, hologram ESP' },
@@ -143,12 +143,12 @@ function resetWizard() {
 
             <div class="result-metrics">
               <div>
-                <small>Anti-Ban Status</small>
-                <strong>100% Undetected</strong>
+                <small>Compatibility</small>
+                <strong>Confirm before order</strong>
               </div>
               <div>
-                <small>Setup Time</small>
-                <strong>Under 5 Mins</strong>
+                <small>Setup</small>
+                <strong>Guidance included</strong>
               </div>
               <div>
                 <small>Starting Price</small>

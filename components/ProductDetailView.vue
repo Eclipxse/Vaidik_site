@@ -14,6 +14,8 @@ export interface DetailProduct {
   category: string
   tagline: string
   badge?: string
+  youtubeUrl?: string
+  telegramUrl?: string
   images: string[]
   durations: DetailDuration[]
   features: string[]
@@ -27,8 +29,10 @@ const props = defineProps<{
 const activeImage = ref(0)
 const selectedDuration = ref(0)
 const { ownerNumber } = useWhatsApp()
+const defaultTelegramUrl = 'https://t.me/+fp8yl-Roaek5YmU1'
 
 const currentDuration = computed(() => props.product.durations[selectedDuration.value] || props.product.durations[0])
+const telegramUrl = computed(() => props.product.telegramUrl || defaultTelegramUrl)
 const formattedPrice = computed(() => {
   const price = currentDuration.value?.price
   if (typeof price === 'number') return `₹${price.toLocaleString('en-IN')}`
@@ -89,23 +93,33 @@ const orderMessage = computed(() => encodeURIComponent(
       </section>
 
       <section class="purchase-panel">
+        <BorderBeam :duration="14" :size="180" color-from="#ff2d2d" color-to="#28d875" />
+
         <div class="purchase-head">
-          <span>{{ product.badge || product.category }}</span>
-          <i aria-hidden="true" />
-          <small>Available to enquire</small>
+          <span>Premium asset</span>
+          <div>
+            <i aria-hidden="true" />
+            <small>{{ product.badge || product.category }}</small>
+          </div>
         </div>
 
         <h1>{{ product.name }}</h1>
         <p>{{ product.tagline }}</p>
 
+        <div class="selected-price" aria-live="polite">
+          <strong>{{ formattedPrice }}</strong>
+          <span v-if="currentDuration?.label">/ {{ currentDuration.label }}</span>
+        </div>
+
         <div v-if="product.durations.length" class="duration-picker">
-          <span class="picker-label">Choose an option</span>
-          <div>
+          <span class="picker-label">Select duration</span>
+          <div :class="{ 'single-option': product.durations.length === 1 }">
             <button
               v-for="(duration, index) in product.durations"
               :key="`${duration.label}-${index}`"
               type="button"
               :class="{ active: selectedDuration === index }"
+              :aria-pressed="selectedDuration === index"
               @click="selectedDuration = index"
             >
               <Motion
@@ -116,7 +130,11 @@ const orderMessage = computed(() => encodeURIComponent(
                 aria-hidden="true"
                 :transition="{ type: 'spring', stiffness: 340, damping: 31 }"
               />
-              <span>{{ duration.label || `Option ${index + 1}` }}</span>
+              <span class="duration-name">{{ duration.label || `Option ${index + 1}` }}</span>
+              <small v-if="duration.stock !== undefined">
+                <i aria-hidden="true" />
+                {{ duration.stock }} stock
+              </small>
               <strong>
                 {{ typeof duration.price === 'number' ? `₹${duration.price.toLocaleString('en-IN')}` : duration.price }}
               </strong>
@@ -124,24 +142,47 @@ const orderMessage = computed(() => encodeURIComponent(
           </div>
         </div>
 
-        <div class="purchase-action">
-          <div>
-            <small>Selected price</small>
-            <strong>{{ formattedPrice }}</strong>
-          </div>
+        <div class="purchase-links" :class="{ 'single-action': !product.youtubeUrl }">
           <a
-            :href="`https://wa.me/${ownerNumber}?text=${orderMessage}`"
+            v-if="product.youtubeUrl"
+            :href="product.youtubeUrl"
             target="_blank"
             rel="noopener noreferrer"
+            class="purchase-link purchase-link--youtube"
           >
-            Confirm and order
-            <span aria-hidden="true">↗</span>
+            <span class="channel-icon channel-icon--youtube" aria-hidden="true">▶</span>
+            Watch demo
+          </a>
+          <a
+            :href="telegramUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="purchase-link purchase-link--telegram"
+          >
+            <span class="channel-icon channel-icon--telegram" aria-hidden="true">↗</span>
+            Telegram
           </a>
         </div>
 
+        <a
+          :href="`https://wa.me/${ownerNumber}?text=${orderMessage}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="buy-now"
+        >
+          <span class="channel-icon channel-icon--whatsapp" aria-hidden="true">W</span>
+          Buy now
+          <span class="buy-now__arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <div class="purchase-trust" aria-label="Purchase support">
+          <span><i aria-hidden="true">◇</i> Secure purchase</span>
+          <span><i aria-hidden="true">◷</i> Instant delivery</span>
+          <span><i aria-hidden="true">⌕</i> 24/7 support</span>
+        </div>
+
         <p class="purchase-note">
-          Confirm your device, operating system, current availability and final
-          price with the team before payment.
+          Confirm compatibility and current availability with the team before payment.
         </p>
       </section>
     </main>
@@ -336,106 +377,213 @@ const orderMessage = computed(() => encodeURIComponent(
 }
 
 .purchase-panel {
+  position: relative;
+  isolation: isolate;
   display: flex;
   min-width: 0;
   flex-direction: column;
-  padding: clamp(2rem, 4vw, 4rem);
-  border: 1px solid var(--line);
-  border-radius: 24px;
+  overflow: hidden;
+  padding: clamp(2rem, 3.6vw, 3.4rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.035), transparent 32%),
-    rgba(14, 14, 17, 0.88);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+    radial-gradient(circle at 12% 0%, rgba(191, 6, 19, 0.32), transparent 39%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), transparent 32%),
+    #0a0a0c;
+  box-shadow:
+    0 32px 90px rgba(0, 0, 0, 0.38),
+    inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.purchase-panel::before {
+  position: absolute;
+  z-index: -1;
+  top: -11rem;
+  left: -9rem;
+  width: 25rem;
+  height: 25rem;
+  border-radius: 50%;
+  background: rgba(161, 0, 12, 0.18);
+  filter: blur(68px);
+  content: '';
+  pointer-events: none;
 }
 
 .purchase-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.6rem;
   color: var(--gray);
   font-family: var(--font-mono);
-  font-size: 0.48rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .purchase-head > span {
-  color: var(--red-bright);
+  color: #aaa8ad;
+}
+
+.purchase-head > div {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
 }
 
 .purchase-head i {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #76e899;
+  background: #48d984;
+  box-shadow: 0 0 12px rgba(72, 217, 132, 0.72);
+}
+
+.purchase-head small {
+  color: #8c898f;
+  font: inherit;
 }
 
 .purchase-panel h1 {
-  margin: 1.4rem 0 0;
-  font-size: clamp(4rem, 6.4vw, 6.7rem);
-  font-weight: 900;
-  line-height: 0.78;
-  letter-spacing: -0.045em;
+  max-width: 12ch;
+  margin: 1.7rem 0 0;
+  font-size: clamp(3rem, 4.4vw, 5rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
   text-transform: uppercase;
 }
 
 .purchase-panel > p {
-  margin: 1.4rem 0 0;
-  color: var(--gray-lt);
-  font-size: 0.88rem;
-  line-height: 1.72;
+  max-width: 46rem;
+  margin: 1.05rem 0 0;
+  color: #97949a;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.selected-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
+.selected-price strong {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4.4vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.selected-price span {
+  overflow: hidden;
+  color: #a7a4aa;
+  font-size: 0.76rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .duration-picker {
-  margin-top: 2.2rem;
+  margin-top: 1.85rem;
 }
 
 .picker-label,
 .ledger-label {
   display: block;
-  margin-bottom: 0.7rem;
-  color: var(--gray);
+  margin-bottom: 0.85rem;
+  color: #98959c;
   font-family: var(--font-mono);
-  font-size: 0.47rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .duration-picker > div {
   display: grid;
-  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.duration-picker > div.single-option {
+  grid-template-columns: 1fr;
 }
 
 .duration-picker button {
   position: relative;
   isolation: isolate;
   display: flex;
-  min-height: 52px;
+  min-height: 112px;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  color: var(--gray-lt);
-  background: #101012;
-  font-size: 0.7rem;
-  text-align: left;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.34rem;
+  padding: 1rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 16px;
+  color: #d9d6da;
+  background: rgba(13, 13, 15, 0.78);
+  text-align: center;
   cursor: pointer;
-  transition: border-color 180ms ease, color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
 }
 
 .duration-picker button.active {
-  border-color: rgba(255, 69, 64, 0.56);
-  color: var(--white);
+  border-color: #ff2929;
+  color: #fff;
+  background: rgba(62, 6, 10, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(255, 45, 45, 0.05);
 }
 
-.duration-picker button > span,
+.duration-picker button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.duration-picker button > .duration-name,
+.duration-picker button > small,
 .duration-picker button > strong {
   position: relative;
   z-index: 2;
+}
+
+.duration-name {
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.duration-picker button small {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8e8b91;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.duration-picker button small i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #389c66;
 }
 
 .duration-active {
@@ -444,68 +592,179 @@ const orderMessage = computed(() => encodeURIComponent(
   inset: 0;
   border-radius: inherit;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
-    rgba(255, 45, 45, 0.09);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 55%),
+    radial-gradient(circle at 50% 120%, rgba(255, 27, 34, 0.2), transparent 60%);
 }
 
 .duration-picker button strong {
-  color: var(--white);
-}
-
-.purchase-action {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: end;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 2.5rem;
-}
-
-.purchase-action > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.22rem;
-}
-
-.purchase-action small {
-  color: var(--gray);
-  font-size: 0.5rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.purchase-action strong {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  letter-spacing: -0.04em;
-}
-
-.purchase-action a {
-  display: flex;
-  min-height: 52px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0 1rem;
-  border-radius: 999px;
+  margin-top: 0.15rem;
   color: #fff;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 50%),
-    var(--red);
-  box-shadow: 0 14px 38px rgba(255, 45, 45, 0.18);
-  font-size: 0.65rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  letter-spacing: 0.07em;
+}
+
+.duration-picker button.active strong {
+  color: var(--red-bright);
+}
+
+.purchase-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+}
+
+.purchase-links.single-action {
+  grid-template-columns: 1fr;
+}
+
+.purchase-link {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: #d5d2d7;
+  background: rgba(7, 7, 9, 0.72);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-decoration: none;
   text-transform: uppercase;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.purchase-link:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.purchase-link--youtube {
+  border-color: rgba(255, 0, 0, 0.28);
+}
+
+.purchase-link--youtube:hover {
+  border-color: rgba(255, 0, 0, 0.72);
+  background: rgba(255, 0, 0, 0.08);
+}
+
+.purchase-link--telegram {
+  border-color: rgba(34, 158, 217, 0.28);
+}
+
+.purchase-link--telegram:hover {
+  border-color: rgba(34, 158, 217, 0.72);
+  background: rgba(34, 158, 217, 0.08);
+}
+
+.channel-icon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.52rem;
+  font-weight: 900;
+}
+
+.channel-icon--youtube {
+  border-radius: 6px;
+  color: #fff;
+  background: #ff0000;
+}
+
+.channel-icon--telegram {
+  border-radius: 50%;
+  color: #061018;
+  background: #229ed9;
+}
+
+.channel-icon--whatsapp {
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.56rem;
+}
+
+.buy-now {
+  position: relative;
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.72rem;
+  margin-top: 0.85rem;
+  border: 1px solid #5ef49a;
+  border-radius: 16px;
+  color: #06130c;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 55%),
+    #28d875;
+  box-shadow:
+    0 0 0 4px rgba(40, 216, 117, 0.12),
+    0 18px 42px rgba(40, 216, 117, 0.22);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.buy-now:hover {
+  background: #55e991;
+  box-shadow:
+    0 0 0 4px rgba(40, 216, 117, 0.16),
+    0 22px 50px rgba(40, 216, 117, 0.3);
+  transform: translateY(-2px);
+}
+
+.buy-now__arrow {
+  position: absolute;
+  right: clamp(2.4rem, 4vw, 3.8rem);
+  font-size: 0.88rem;
+}
+
+.purchase-trust {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1.65rem;
+  padding-top: 1.05rem;
+  border-top: 1px solid var(--line);
+}
+
+.purchase-trust span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+  color: #737077;
+  font-size: 0.52rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.purchase-trust i {
+  color: #8f8c93;
+  font-style: normal;
 }
 
 .purchase-note {
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
-  color: var(--gray) !important;
-  font-size: 0.68rem !important;
+  margin-top: 0.9rem !important;
+  color: #68656b !important;
+  font-size: 0.58rem !important;
+  line-height: 1.5 !important;
+  text-align: center;
 }
 
 .detail-ledger {
@@ -648,13 +907,64 @@ const orderMessage = computed(() => encodeURIComponent(
 
   .purchase-panel {
     min-height: 560px;
-    padding: 2rem 0;
+    padding: 1.6rem 1.2rem;
   }
 
-  .purchase-action,
   .ledger-grid,
   .detail-footer {
     grid-template-columns: 1fr;
+  }
+
+  .purchase-head > div {
+    display: none;
+  }
+
+  .purchase-panel h1 {
+    font-size: clamp(2.7rem, 13vw, 4rem);
+  }
+
+  .selected-price {
+    align-items: flex-end;
+  }
+
+  .selected-price span {
+    padding-bottom: 0.24rem;
+    font-size: 0.68rem;
+  }
+
+  .duration-picker > div {
+    gap: 0.55rem;
+  }
+
+  .duration-picker button {
+    min-height: 106px;
+    padding-inline: 0.55rem;
+  }
+
+  .duration-name {
+    font-size: 0.6rem;
+  }
+
+  .purchase-link {
+    min-height: 52px;
+    font-size: 0.6rem;
+  }
+
+  .buy-now {
+    min-height: 60px;
+  }
+
+  .buy-now__arrow {
+    right: 1.25rem;
+  }
+
+  .purchase-trust {
+    gap: 0.25rem;
+  }
+
+  .purchase-trust span {
+    gap: 0.24rem;
+    font-size: 0.44rem;
   }
 
   .detail-footer {

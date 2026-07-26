@@ -338,8 +338,8 @@ function scrollToCollection() {
   display: block;
   font-family: var(--font-display);
   font-size: clamp(6.4rem, 14vw, 13.6rem);
-  font-weight: 900;
-  letter-spacing: -0.062em;
+  font-weight: 800;
+  letter-spacing: -0.075em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -617,12 +617,12 @@ function scrollToCollection() {
   }
 
   .hero-title {
-    font-size: clamp(4.65rem, 23vw, 7.4rem);
-    white-space: normal;
+    font-size: clamp(2.95rem, 14.8vw, 5.2rem);
+    white-space: nowrap;
   }
 
   .hero-title--red {
-    font-size: clamp(5.5rem, 27vw, 8.5rem);
+    font-size: clamp(4.2rem, 22vw, 7rem);
   }
 
   .hero-description {

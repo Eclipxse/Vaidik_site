@@ -43,6 +43,7 @@ const product = computed<DetailProduct>(() => {
     category: String(source.sub_category || source.category || 'Product'),
     tagline: String(source.description || ''),
     badge: String(source.badge || (source.is_featured ? 'Featured' : 'Available')),
+    youtubeUrl: source.youtube_url ? String(source.youtube_url) : undefined,
     images: sourceImages.length ? sourceImages : ['/products/uploads/1779623174189_content.png'],
     durations: sourceDurations.map((duration: any) => ({
       label: String(duration.label || source.duration || 'Standard'),

@@ -17,6 +17,7 @@ const product = computed<DetailProduct>(() => ({
   category: sourceProduct.value!.category,
   tagline: sourceProduct.value!.tagline,
   badge: sourceProduct.value!.badge,
+  youtubeUrl: sourceProduct.value!.youtube_url,
   images: sourceProduct.value!.images,
   durations: sourceProduct.value!.durations.map(duration => ({
     label: duration.label,

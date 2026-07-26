@@ -22,9 +22,9 @@
     --surface-glass: rgba(15, 15, 18, 0.74);
     --green: #54e68b;
     --shell: 1340px;
-    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-    --font-body: 'Manrope', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    --font-display: 'Sora', 'Arial', sans-serif;
+    --font-body: 'Inter', 'Arial', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
   }
 
   html {
@@ -75,6 +75,7 @@
   h4 {
     font-family: var(--font-display);
     font-weight: 800;
+    font-feature-settings: 'ss01' 1, 'cv11' 1;
     text-wrap: balance;
   }
 

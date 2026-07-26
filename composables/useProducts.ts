@@ -14,6 +14,7 @@ export interface Product {
   category: 'PC' | 'Mobile' | 'iOS'
   tagline: string
   badge: string
+  youtube_url?: string
   images: string[]
   durations: ProductDuration[]
   features: string[]
